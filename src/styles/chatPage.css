@@ -1,0 +1,101 @@
+/* index.css */
+.chat-container {
+    display: flex;
+    min-height: 100vh;
+  }
+  
+  .sidebar {
+    position: relative;
+    flex: 0 0 250px;
+    max-width: 250px;
+    transition: all 0.3s;
+    background-color: #f8f9fa;
+    padding: 10px;
+    border-right: 1px solid #dee2e6;
+  }
+  
+  .sidebar.collapsed {
+    flex: 0 0 50px;
+    max-width: 50px;
+    overflow: hidden;
+  }
+  
+  .sidebar .sidebar-toggle-btn {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 1;
+  }
+  
+  .chat-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+  }
+  
+  .chat-history {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px;
+    border: 1px solid #dee2e6;
+    margin-bottom: 10px;
+  }
+  
+  .message-wrapper {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .message {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #dee2e6;
+    margin-right: 10px;
+  }
+  
+  .icon {
+    font-size: 1.5rem;
+  }
+  
+  .message-box {
+    background-color: #f1f1f1;
+    padding: 10px;
+    border-radius: 10px;
+    position: relative;
+    max-width: 70%;
+  }
+  
+  .message.user .message-box {
+    background-color: #e0f7fa;
+    margin-left: 10px;
+  }
+  
+  .message.bot .message-box {
+    background-color: #e8eaf6;
+    margin-right: 10px;
+  }
+  
+  .message-text {
+    display: block;
+  }
+  
+  .message-time {
+    display: block;
+    font-size: 0.75rem;
+    color: #999;
+    margin-top: 5px;
+    text-align: right;
+  }
+  
