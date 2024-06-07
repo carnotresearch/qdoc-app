@@ -112,7 +112,6 @@ function FileUrlForm({ setSubmittedData }) {
           Carnot Research
         </h1>
       </div>
-      {/* <h1 style={titleStyles}>Carnot Research</h1> */}
       <h3
         style={{ marginTop: "0.5cm", marginBottom: "1cm", textAlign: "center" }}
       >
@@ -180,8 +179,8 @@ function FileUrlForm({ setSubmittedData }) {
               <Form.Group className="mb-3">
                 <Form.Label>Input Language</Form.Label>
                 <Form.Select onChange={(e) => setInputLanguage(e.target.value)}>
-                  {/* <option value="">Select input language</option> */}
-                  {/*<option value="1">Hindi</option>
+                  <option value="23">English</option>
+                  <option value="1">Hindi</option>
                   <option value="2">Gom</option>
                   <option value="3">Kannada</option>
                   <option value="4">Dogri</option>
@@ -202,8 +201,7 @@ function FileUrlForm({ setSubmittedData }) {
                   <option value="19">Nepali</option>
                   <option value="20">Santali</option>
                   <option value="21">Gujarati</option>
-              <option value="22">Odia</option>*/}
-                  <option value="23">English</option>
+                  <option value="22">Odia</option>
                 </Form.Select>
               </Form.Group>
               <Form.Group className="mb-3">
