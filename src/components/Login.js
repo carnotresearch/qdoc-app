@@ -2,6 +2,13 @@ import React, { useState } from "react";
 import axios from "axios";
 import ReCAPTCHA from "react-google-recaptcha";
 import { useNavigate } from "react-router-dom";
+import {
+  MDBBtn,
+  MDBContainer,
+  MDBRow,
+  MDBCol,
+  MDBInput,
+} from "mdb-react-ui-kit";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -11,8 +18,10 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log(email, password);
     try {
       if (!recaptchaToken) {
+        console.log("no captcha");
         return;
       }
       const response = await axios.post(
@@ -23,7 +32,9 @@ const Login = () => {
         }
       );
       console.log(response);
+      const expiryTime = Date.now() + 3600 * 1000;
       sessionStorage.setItem("token", response.data.token);
+      localStorage.setItem("expiryTime", expiryTime.toString());
       navigate("/");
     } catch (error) {
       console.error("Login error", error);
@@ -36,38 +47,61 @@ const Login = () => {
   };
 
   return (
-    <div className="container mt-4">
-      <h1 className="text-center mb-4">Login</h1>
-      <form onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </div>
-        <div className="mb-3">
-          <input
-            type="password"
-            className="form-control"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-        <ReCAPTCHA
-          sitekey={process.env.REACT_APP_RECAPTCHA_SITE_KEY}
-          onChange={onReCAPTCHAChange}
-        />
-        <button type="submit" className="btn btn-primary">
-          Login
-        </button>
-      </form>
-    </div>
+    <MDBContainer className="my-5 gradient-form align-items-center justify-content-center">
+      <MDBRow>
+        <MDBCol className="mb-5">
+          <div className="d-flex flex-column">
+            <div className="text-center">
+              <img src="/logo.png" style={{ width: "185px" }} alt="logo" />
+              <h4 className="mt-1 mb-5 pb-1">We are Carnot Research</h4>
+            </div>
+
+            <p>Please login to your account</p>
+
+            <MDBInput
+              wrapperClass="mb-4"
+              label="Username"
+              id="form1"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <MDBInput
+              wrapperClass="mb-4"
+              label="Password"
+              id="form2"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+
+            <ReCAPTCHA
+              sitekey={process.env.REACT_APP_RECAPTCHA_SITE_KEY}
+              onChange={onReCAPTCHAChange}
+            />
+
+            <div className="text-center pt-1 mb-5 pb-1">
+              <MDBBtn
+                className="mb-4 w-100 gradient-custom-2"
+                onClick={handleSubmit}
+              >
+                Sign in
+              </MDBBtn>
+              <a className="text-muted" href="#">
+                Forgot password?
+              </a>
+            </div>
+
+            <div className="d-flex flex-row align-items-center justify-content-center pb-4 mb-4">
+              <p className="mb-0">Don't have an account?</p>
+              <MDBBtn outline className="mx-2" color="danger">
+                Register
+              </MDBBtn>
+            </div>
+          </div>
+        </MDBCol>
+      </MDBRow>
+    </MDBContainer>
   );
 };
 

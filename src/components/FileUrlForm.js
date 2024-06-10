@@ -63,7 +63,7 @@ function FileUrlForm({ setSubmittedData }) {
 
     try {
       const response = await axios.post(
-        `http://54.174.84.57:5000/upload`,
+        `http://34.227.86.139:5000/upload`,
         formData,
         {
           headers: {
@@ -209,7 +209,6 @@ function FileUrlForm({ setSubmittedData }) {
                 <Form.Select
                   onChange={(e) => setOutputLanguage(e.target.value)}
                 >
-                  {/* <option value="">Select output language</option> */}
                   <option value="23">English</option>
                   <option value="1">Hindi</option>
                   <option value="2">Gom</option>
