@@ -18,10 +18,17 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(email, password);
     try {
+      if (!email) {
+        alert("Email is required");
+        return;
+      }
+      if (!password) {
+        alert("Password is required");
+        return;
+      }
       if (!recaptchaToken) {
-        console.log("no captcha");
+        alert("ReCaptcha not validated");
         return;
       }
       const response = await axios.post(
@@ -38,7 +45,7 @@ const Login = () => {
       navigate("/");
     } catch (error) {
       console.error("Login error", error);
-      alert("Login error");
+      alert(error.data.message);
     }
   };
 
@@ -49,7 +56,22 @@ const Login = () => {
   return (
     <MDBContainer className="my-5 gradient-form align-items-center justify-content-center">
       <MDBRow>
-        <MDBCol className="mb-5">
+        <MDBCol lg="6" md="12" sm="12" className="mb-5">
+          <div className="d-flex flex-column  justify-content-center gradient-custom-2 h-100 mb-4">
+            <div className="text-white px-3 py-4 p-md-5 mx-md-4">
+              <h4 className="mb-4">Welcome to Carnot Research</h4>
+              <p className="small mb-0">
+                Empowering individuals and organizations to leverage cutting
+                edge research and enable innovation. Right Mix of academics and
+                industry professionals. Key differentiator is our ability to
+                provide managed research for serving your innovation needs.
+                Active in wide variety of research areas with major focus on
+                Computer Vision and NLP.
+              </p>
+            </div>
+          </div>
+        </MDBCol>
+        <MDBCol lg="6" md="12" sm="12" className="mb-5">
           <div className="d-flex flex-column">
             <div className="text-center">
               <img src="/logo.png" style={{ width: "185px" }} alt="logo" />
@@ -87,17 +109,17 @@ const Login = () => {
               >
                 Sign in
               </MDBBtn>
-              <a className="text-muted" href="#">
+              {/* <a className="text-muted" href="#">
                 Forgot password?
-              </a>
+              </a> */}
             </div>
 
-            <div className="d-flex flex-row align-items-center justify-content-center pb-4 mb-4">
+            {/* <div className="d-flex flex-row align-items-center justify-content-center pb-4 mb-4">
               <p className="mb-0">Don't have an account?</p>
               <MDBBtn outline className="mx-2" color="danger">
                 Register
               </MDBBtn>
-            </div>
+            </div> */}
           </div>
         </MDBCol>
       </MDBRow>
