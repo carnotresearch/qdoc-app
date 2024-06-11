@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import ReCAPTCHA from "react-google-recaptcha";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   MDBBtn,
   MDBContainer,
@@ -9,12 +9,21 @@ import {
   MDBCol,
   MDBInput,
 } from "mdb-react-ui-kit";
+import "./styles.css";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [recaptchaToken, setRecaptchaToken] = useState(null);
+  const emailRef = useRef(null);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.state?.focusEmail && emailRef.current) {
+      emailRef.current.focus();
+    }
+  }, [location]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -53,14 +62,26 @@ const Login = () => {
     setRecaptchaToken(token);
   };
 
+  const textStyles = {
+    textShadow: "2px 2px 4px rgba(0, 0, 0, 0.7)",
+    // backgroundColor: "rgba(0, 0, 0, 0.3)",
+    // padding: "10px",
+    // display: "inline-block",
+    boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.2)",
+    padding: "10px",
+  };
+
   return (
     <MDBContainer className="my-5 gradient-form align-items-center justify-content-center">
       <MDBRow>
         <MDBCol lg="6" md="12" sm="12" className="mb-5">
-          <div className="d-flex flex-column  justify-content-center gradient-custom-2 h-100 mb-4">
-            <div className="text-white px-3 py-4 p-md-5 mx-md-4">
-              <h4 className="mb-4">Welcome to Carnot Research</h4>
-              <p className="small mb-0">
+          <div className="d-flex flex-column  justify-content-center gradient-custom-2 h-100 mb-4 background-image">
+            <div
+              className="text-white px-3 py-4 p-md-5 mx-md-4"
+              style={textStyles}
+            >
+              <h2 className="mb-4">Welcome to Carnot Research</h2>
+              <p className="large mb-0">
                 Empowering individuals and organizations to leverage cutting
                 edge research and enable innovation. Right Mix of academics and
                 industry professionals. Key differentiator is our ability to
@@ -87,6 +108,7 @@ const Login = () => {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              ref={emailRef}
             />
             <MDBInput
               wrapperClass="mb-4"

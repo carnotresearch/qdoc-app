@@ -1,0 +1,8 @@
+.background-image {
+    background-image: url('/public/computer-vision.png'); /* Ensure the correct path to your image */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+    z-index: 1; /* Ensure it appears above other background layers if any */
+  }

@@ -11,6 +11,10 @@ const Navbar = () => {
     navigate("/login");
   };
 
+  const handleLoginClick = () => {
+    navigate("/login", { state: { focusEmail: true } });
+  };
+
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
       <Link className="navbar-brand" style={{ marginLeft: "0.5cm" }} to="/">
@@ -25,7 +29,13 @@ const Navbar = () => {
           </li>
         ) : (
           <li className="nav-item">
-            <Link to="/login">Login</Link>
+            <button
+              style={{ marginRight: "0.5cm" }}
+              className="btn btn-primary"
+              onClick={handleLoginClick}
+            >
+              Login
+            </button>
           </li>
         )}
       </ul>
