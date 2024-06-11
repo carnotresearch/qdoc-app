@@ -33,7 +33,7 @@ function ChatPage({ submittedData, setSubmittedData }) {
       console.log(submittedData);
 
       try {
-        const response = await axios.post(`http://54.174.84.57:5000/ask`, {
+        const response = await axios.post(`http://34.227.86.139:5000/ask`, {
           message,
           sessionName: submittedData.sessionName,
           inputLanguage: submittedData.inputLanguage,
