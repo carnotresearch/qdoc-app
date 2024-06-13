@@ -9,12 +9,14 @@ import {
   MDBCol,
   MDBInput,
 } from "mdb-react-ui-kit";
+import { Spinner } from "react-bootstrap";
 import "./styles.css";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [recaptchaToken, setRecaptchaToken] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const emailRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
@@ -40,6 +42,7 @@ const Login = () => {
         alert("ReCaptcha not validated");
         return;
       }
+      setIsLoading(true);
       const response = await axios.post(
         "https://ndwli9gro8.execute-api.ap-south-1.amazonaws.com/default/validateUser",
         {
@@ -51,10 +54,12 @@ const Login = () => {
       const expiryTime = Date.now() + 3600 * 1000;
       sessionStorage.setItem("token", response.data.token);
       localStorage.setItem("expiryTime", expiryTime.toString());
+      setIsLoading(false);
       navigate("/");
     } catch (error) {
       console.error("Login error", error);
-      alert(error.data.message);
+      setIsLoading(false);
+      alert(error.response.data.message);
     }
   };
 
@@ -128,8 +133,13 @@ const Login = () => {
               <MDBBtn
                 className="mb-4 w-100 gradient-custom-2"
                 onClick={handleSubmit}
+                disabled={isLoading}
               >
-                Sign in
+                {isLoading ? (
+                  <Spinner animation="border" size="sm" />
+                ) : (
+                  "Sign in"
+                )}
               </MDBBtn>
               {/* <a className="text-muted" href="#">
                 Forgot password?
