@@ -1,7 +1,7 @@
 /* index.css */
 .chat-container {
     display: flex;
-    min-height: 100vh;
+    min-height: 92vh;
   }
   
   .sidebar {
@@ -39,6 +39,7 @@
     overflow-y: auto;
     padding: 10px;
     border: 1px solid #dee2e6;
+    max-height: 76vh;
     margin-bottom: 10px;
   }
   

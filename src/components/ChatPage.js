@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Sidebar from "./Sidebar";
 import { Button, Container, Form } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -12,12 +12,20 @@ function ChatPage({ submittedData, setSubmittedData }) {
   const [message, setMessage] = useState("");
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
   const navigate = useNavigate();
+  const chatHistoryRef = useRef(null);
 
   useEffect(() => {
     if (!submittedData.files.length && !submittedData.urls.length) {
       navigate("/");
     }
   }, [submittedData, navigate]);
+
+  useEffect(() => {
+    // Scroll to the bottom whenever chatHistory changes
+    if (chatHistoryRef.current) {
+      chatHistoryRef.current.scrollTop = chatHistoryRef.current.scrollHeight;
+    }
+  }, [chatHistory]);
 
   const handleSendMessage = async () => {
     if (message.trim()) {
@@ -33,12 +41,15 @@ function ChatPage({ submittedData, setSubmittedData }) {
       console.log(submittedData);
 
       try {
-        const response = await axios.post(`http://34.227.86.139:5000/ask`, {
-          message,
-          sessionName: submittedData.sessionName,
-          inputLanguage: submittedData.inputLanguage,
-          outputLanguage: submittedData.outputLanguage,
-        });
+        const response = await axios.post(
+          `${process.env.REACT_APP_BACKEND_URL}/ask`,
+          {
+            message,
+            sessionName: submittedData.sessionName,
+            inputLanguage: submittedData.inputLanguage,
+            outputLanguage: submittedData.outputLanguage,
+          }
+        );
 
         console.log("response for /ask is : ");
         console.log(response.data);
@@ -95,7 +106,7 @@ function ChatPage({ submittedData, setSubmittedData }) {
       </div>
       <div className="chat-content">
         <h2>QDoc by Carnot Research</h2>
-        <div className="chat-history">
+        <div className="chat-history" ref={chatHistoryRef}>
           {chatHistory.map((chat, index) => (
             <div key={index} className="message-wrapper">
               <div className="message user">

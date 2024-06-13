@@ -53,6 +53,7 @@ function FileUrlForm({ setSubmittedData }) {
       setIsLoading(true);
     } else {
       alert("Please upload at least one file or URL");
+      return;
     }
 
     const formData = new FormData();
@@ -63,7 +64,7 @@ function FileUrlForm({ setSubmittedData }) {
 
     try {
       const response = await axios.post(
-        `http://34.227.86.139:5000/upload`,
+        `${process.env.REACT_APP_BACKEND_URL}/upload`,
         formData,
         {
           headers: {
@@ -91,7 +92,7 @@ function FileUrlForm({ setSubmittedData }) {
   };
 
   const titleStyles = {
-    marginTop: "2cm",
+    marginTop: "0.5cm",
     textAlign: "center",
   };
 
