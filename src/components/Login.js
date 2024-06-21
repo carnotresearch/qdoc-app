@@ -53,7 +53,7 @@ const Login = () => {
       console.log(response);
       const expiryTime = Date.now() + 3600 * 1000;
       sessionStorage.setItem("token", response.data.token);
-      localStorage.setItem("expiryTime", expiryTime.toString());
+      sessionStorage.setItem("expiryTime", expiryTime.toString());
       setIsLoading(false);
       navigate("/");
     } catch (error) {
