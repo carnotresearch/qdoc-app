@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import Sidebar from "./Sidebar";
-import { Button, Container, Form } from "react-bootstrap";
+import { Button, Container, Form, InputGroup } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars, faUser, faRobot } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faUser } from "@fortawesome/free-solid-svg-icons";
 import "../styles/chatPage.css";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -54,15 +54,15 @@ function ChatPage({ submittedData, setSubmittedData }) {
         console.log("response for /ask is : ");
         console.log(response.data);
 
-        setChatHistory([
-          ...chatHistory,
+        setChatHistory((prevChatHistory) => [
+          ...prevChatHistory.slice(0, -1), // remove the "Loading..." message
           { user: message, bot: response.data.answer, timestamp },
         ]);
       } catch (error) {
         console.error("There was an error!", error);
-        setChatHistory([
-          ...chatHistory,
-          { user: message, bot: "Error! kindly try again", timestamp },
+        setChatHistory((prevChatHistory) => [
+          ...prevChatHistory.slice(0, -1), // remove the "Loading..." message
+          { user: message, bot: "Error! Kindly try again", timestamp },
         ]);
       }
     }
@@ -105,7 +105,6 @@ function ChatPage({ submittedData, setSubmittedData }) {
         )}
       </div>
       <div className="chat-content">
-        <h2>QDoc by Carnot Research</h2>
         <div className="chat-history" ref={chatHistoryRef}>
           {chatHistory.map((chat, index) => (
             <div key={index} className="message-wrapper">
@@ -120,7 +119,7 @@ function ChatPage({ submittedData, setSubmittedData }) {
               </div>
               <div className="message bot">
                 <div className="icon-wrapper">
-                  <FontAwesomeIcon icon={faRobot} className="icon" />
+                  <img src="/logo.png" alt="Bot" className="icon-wrapper" />
                 </div>
                 <div className="message-box">
                   <span className="message-text">{chat.bot}</span>
@@ -131,13 +130,17 @@ function ChatPage({ submittedData, setSubmittedData }) {
           ))}
         </div>
         <Form className="d-flex" onSubmit={handleSubmit}>
-          <Form.Control
-            type="text"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            placeholder="Type your message"
-          />
-          <Button type="submit">Send</Button>
+          <InputGroup className="mb-3">
+            <Form.Control
+              type="text"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              placeholder="Type your message"
+            />
+            <Button type="submit" variant="primary">
+              Send
+            </Button>
+          </InputGroup>
         </Form>
       </div>
     </Container>
