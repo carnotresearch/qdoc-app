@@ -1,8 +1,150 @@
 .background-image {
-    background-image: url('/public/computer-vision.png'); /* Ensure the correct path to your image */
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    position: relative;
-    z-index: 1; /* Ensure it appears above other background layers if any */
+  background: url('https://tse4.mm.bing.net/th?id=OIP.xGI4pSQ1S2IIsHkD01LOPgAAAA&pid=Api&P=0&h=180') no-repeat center center;
+  background-size: cover;
+  height: 100vh; 
+  width: 100%; 
+  position: relative;
+}
+.mt-2{
+  background-color: #39a5d7; /*addurl*/
+  border: 2px solid #39a5d7;
+}
+.mt-3{
+  background-color: #39a5d7;/*sumit*/
+  border: 2px solid #39a5d7;
+}
+.gradient-custom-2{
+  background: linear-gradient(to right,#7fbaed,#7CB9E8,#0066b2);/*sign in*/
+  
+  color:#010002;
+  height:40px;
+  width: 60px;
+  font-size: 20px;
+  font-weight: bold;
+  font-family: var(--font-montserrat);
+}
+
+.text-container {
+  position: absolute;
+  font-weight: bold;
+  top: 15%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  max-width: 950px;
+  text-align: left; /* Align text to the left */
+  color: rgb(255, 255, 255); /* White text color */
+  background: none;
+  padding: 10px; /* Add some padding to give space inside the border */
+  font-size: 28px;
+  font-family: var(--font-montserrat);
+  overflow: hidden; /* Ensure text overflow is hidden */
+  white-space: nowrap; /* Prevent wrapping of text */
+  text-shadow: 
+    -1px -1px 0 #000,  
+     1px -1px 0 #000,
+    -1px  1px 0 #000,
+     1px  1px 0 #000;
+}
+
+.text-container {
+  position: absolute;
+  font-weight: bold;
+  top: 40%; /* Adjust as needed */
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  max-width: 950px;
+  text-align: center;
+  color: rgb(255, 255, 255);
+  background: none;
+  padding: 10px;
+  font-size: 24px;
+  font-family: var(--font-montserrat);
+  overflow: hidden;
+  white-space: pre-wrap;
+  text-shadow: 
+    -1px -1px 0 #000,  
+     1px -1px 0 #000,
+    -1px  1px 0 #000,
+     1px  1px 0 #000;
+}
+
+.typewriter-effect.background-image {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  animation: typing 10s steps(100, end) 1s 1 normal both,
+             blink-caret 0.75s step-end infinite;
+}
+
+@keyframes typing {
+  from {
+    width: 0;
   }
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes blink-caret {
+  from, to {
+    border-color: transparent;
+  }
+}
+
+
+.bold-text {
+  font-weight: bold;
+}
+
+.top-aligned {
+  position: relative;
+  top: 20px; 
+  left: 12%;
+  transform: translateX(-43%); 
+  font-family: var(--font-montserrat);
+  color: black;
+  font-size: 32px; 
+  text-align: center;
+  font-weight: bold;
+  text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25); 
+  max-width: 90%;
+}
+
+.ml-3 {
+  margin-left: 1rem; /* Add left margin to the image */
+}
+
+.text-center{
+  font-weight: bold;
+}
+
+.navbar-brand {
+  position: relative;
+  font-weight: bold;
+  background: linear-gradient(to right, #1d0861, #136870);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: 48px;
+  letter-spacing: 0.02em;
+  font-family: var(--font-alfa-slab-one);
+  text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+  -webkit-text-stroke: 1px #6957a3; 
+}
+
+.btn-login {
+  font-weight: bold;
+  background: linear-gradient(to right, #12063b, #09555c);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: 20px;
+}
+
+.btn-logout {
+  font-weight: bold;
+  background: linear-gradient(to right, #12063b, #09555c);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: 20px;
+}
