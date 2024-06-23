@@ -3,13 +3,23 @@
     display: flex;
     min-height: 92vh;
   }
+
   
+
+.form-control{
+  font-family: var(--font-montserrat);
+  font-size: 18px;
+  border: 2px solid #7a7474;
+  height: 40px;
+  width: 60px;
+  
+}
   .sidebar {
     position: relative;
     flex: 0 0 250px;
     max-width: 250px;
     transition: all 0.3s;
-    background-color: #f8f9fa;
+    background-color:#89CFF0;
     padding: 10px;
     border-right: 1px solid #dee2e6;
   }
@@ -18,13 +28,16 @@
     flex: 0 0 50px;
     max-width: 50px;
     overflow: hidden;
+    background-color: transparent;
   }
   
   .sidebar .sidebar-toggle-btn {
     position: absolute;
     top: 10px;
-    left: 10px;
+    left: 5px;
     z-index: 1;
+    background-color: rgb(54, 54, 54);
+
   }
   
   .chat-content {
@@ -59,11 +72,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
+    width: 60px;
+    height: 60px;
     border-radius: 50%;
-    background-color: #dee2e6;
+    
     margin-right: 10px;
+    
+
   }
   
   .icon {
@@ -71,7 +86,7 @@
   }
   
   .message-box {
-    background-color: #f1f1f1;
+    
     padding: 10px;
     border-radius: 10px;
     position: relative;
@@ -79,14 +94,32 @@
   }
   
   .message.user .message-box {
-    background-color: #e0f7fa;
-    margin-left: 10px;
+    
+    margin-left: 2px;
+    width: 100%;
+    border: 1px solid #7a7474;
+    padding: 6px;
+    overflow-y: auto;
+    font-family: var(--font-montserrat);
+    font-weight: 500;
+    font-size: 18px;
+    margin-right: 7px;
   }
   
   .message.bot .message-box {
-    background-color: #e8eaf6;
+    background-color: transparent;
+    width: 100%;
+    border: 1px solid #7a7474;
+    padding: 10px;
+    overflow-y: auto;
+    font-family: var(--font-montserrat);
+    font-weight: 500;
+    font-size: 18px;
+    background-color: #e7eeee;
     margin-right: 10px;
   }
+    
+  
   
   .message-text {
     display: block;
@@ -99,4 +132,6 @@
     margin-top: 5px;
     text-align: right;
   }
-  
+  .chat-history::-webkit-scrollbar {
+    display: none; 
+  }
