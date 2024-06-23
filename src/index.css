@@ -14,13 +14,13 @@ code {
 
 .gradient-custom-2 {
   /* fallback for old browsers */
-  background: #fccb90;
+  background: #f7f7f7;
 
   /* Chrome 10-25, Safari 5.1-6 */
   background: -webkit-linear-gradient(to right, #ee7724, #d8363a, #dd3675, #b44593);
 
   /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-  background: linear-gradient(to right, #80437f, #455cc4, #0d56a3, #3809d3);
+  background: linear-gradient(to right, #5972e3, #428ddd);
 }
 
 @media (min-width: 768px) {
@@ -33,4 +33,10 @@ code {
     border-top-right-radius: .3rem;
     border-bottom-right-radius: .3rem;
   }
+}
+:root {
+  /* fonts */
+  --font-montserrat: Montserrat;
+  --font-montagu-slab: "Montagu Slab";
+  --font-alfa-slab-one: "Alfa Slab One";
 }
