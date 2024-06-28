@@ -15,6 +15,13 @@ const Navbar = () => {
     navigate("/login", { state: { focusEmail: true } });
   };
 
+  const handleOpenHtml = () => {
+    const htmlContent = localStorage.getItem("htmlContent");
+    const newWindow = window.open();
+    newWindow.document.write(htmlContent);
+    newWindow.document.close();
+  };
+
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
       <Link className="navbar-brand" style={{ marginLeft: "0.5cm" }} to="/">
@@ -22,11 +29,18 @@ const Navbar = () => {
       </Link>
       <ul className="navbar-nav ms-auto">
         {token ? (
-          <li className="nav-item">
-            <button className="btn btn-secondary" onClick={handleLogout}>
-              Logout
-            </button>
-          </li>
+          <>
+            <li className="nav-item">
+              <button className="btn btn-secondary" onClick={handleLogout}>
+                Logout
+              </button>
+            </li>
+            <li className="nav-item">
+              <button className="btn btn-secondary" onClick={handleOpenHtml}>
+                Graph
+              </button>
+            </li>
+          </>
         ) : (
           <li className="nav-item">
             <button
