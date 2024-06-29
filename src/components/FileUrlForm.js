@@ -76,20 +76,20 @@ function FileUrlForm({ setSubmittedData }) {
         }
       );
 
-      // // Make the second API call
-      // const htmlResponse = await axios.post(
-      //   `http://34.131.161.10:8080/upload`,
-      //   formData,
-      //   {
-      //     headers: {
-      //       "Content-Type": "multipart/form-data",
-      //     },
-      //     responseType: "text",
-      //   }
-      // );
+      // Make the second API call
+      const htmlResponse = await axios.post(
+        `http://34.131.24.212:8080/upload`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          responseType: "text",
+        }
+      );
 
-      // // Store the HTML content
-      // localStorage.setItem("htmlContent", htmlResponse.data);
+      // Store the HTML content
+      localStorage.setItem("htmlContent", htmlResponse.data);
 
       console.log(response);
 
