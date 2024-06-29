@@ -39,13 +39,15 @@ function ChatPage({ submittedData, setSubmittedData }) {
       ]);
       setMessage("");
       console.log(submittedData);
+      const token = sessionStorage.getItem("token");
+      console.log(token);
 
       try {
         const response = await axios.post(
           `${process.env.REACT_APP_BACKEND_URL}/ask`,
           {
             message,
-            sessionName: submittedData.sessionName,
+            token,
             inputLanguage: submittedData.inputLanguage,
             outputLanguage: submittedData.outputLanguage,
           }
