@@ -2,7 +2,16 @@ import React, { useState, useEffect, useRef } from "react";
 import Sidebar from "./Sidebar";
 import { Button, Container, Form } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars, faUser, faRobot } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBars,
+  faUser,
+  faRobot,
+  faMicrophone,
+  faVolumeUp,
+  faPause,
+  faPlay,
+  faRedo,
+} from "@fortawesome/free-solid-svg-icons";
 import "../styles/chatPage.css";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -11,8 +20,12 @@ function ChatPage({ submittedData, setSubmittedData }) {
   const [chatHistory, setChatHistory] = useState([]);
   const [message, setMessage] = useState("");
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
+  const [recognizing, setRecognizing] = useState(false);
+  const [currentUtterance, setCurrentUtterance] = useState(null);
+  const [playingIndex, setPlayingIndex] = useState(null); // Index of currently playing response
   const navigate = useNavigate();
   const chatHistoryRef = useRef(null);
+  const recognition = useRef(null);
 
   useEffect(() => {
     if (!submittedData.files.length && !submittedData.urls.length) {
@@ -21,11 +34,34 @@ function ChatPage({ submittedData, setSubmittedData }) {
   }, [submittedData, navigate]);
 
   useEffect(() => {
-    // Scroll to the bottom whenever chatHistory changes
     if (chatHistoryRef.current) {
       chatHistoryRef.current.scrollTop = chatHistoryRef.current.scrollHeight;
     }
   }, [chatHistory]);
+
+  useEffect(() => {
+    if ("webkitSpeechRecognition" in window) {
+      recognition.current = new window.webkitSpeechRecognition();
+      recognition.current.continuous = true;
+      recognition.current.interimResults = true;
+      // recognition.current.lang = "mr-IN"; // Set to desired language
+      recognition.current.onresult = (event) => {
+        let interimTranscript = "";
+        let finalTranscript = "";
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+          if (event.results[i].isFinal) {
+            finalTranscript += event.results[i][0].transcript;
+          } else {
+            interimTranscript += event.results[i][0].transcript;
+          }
+        }
+        setMessage(finalTranscript || interimTranscript);
+      };
+      recognition.current.onend = () => {
+        setRecognizing(false);
+      };
+    }
+  }, []);
 
   const handleSendMessage = async () => {
     if (message.trim()) {
@@ -38,9 +74,7 @@ function ChatPage({ submittedData, setSubmittedData }) {
         { user: message, bot: "Loading...", timestamp },
       ]);
       setMessage("");
-      console.log(submittedData);
       const token = sessionStorage.getItem("token");
-      console.log(token);
 
       try {
         const response = await axios.post(
@@ -52,10 +86,6 @@ function ChatPage({ submittedData, setSubmittedData }) {
             outputLanguage: submittedData.outputLanguage,
           }
         );
-
-        console.log("response for /ask is : ");
-        console.log(response.data);
-
         setChatHistory([
           ...chatHistory,
           { user: message, bot: response.data.answer, timestamp },
@@ -64,7 +94,7 @@ function ChatPage({ submittedData, setSubmittedData }) {
         console.error("There was an error!", error);
         setChatHistory([
           ...chatHistory,
-          { user: message, bot: "Error! kindly try again", timestamp },
+          { user: message, bot: "Error! Kindly try again", timestamp },
         ]);
       }
     }
@@ -73,6 +103,50 @@ function ChatPage({ submittedData, setSubmittedData }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     handleSendMessage();
+  };
+
+  const handleSpeechInput = () => {
+    if (recognition.current) {
+      if (recognizing) {
+        recognition.current.stop();
+      } else {
+        recognition.current.start();
+      }
+      setRecognizing(!recognizing);
+    }
+  };
+
+  const handleSpeechOutput = (text, action, index) => {
+    if (!("speechSynthesis" in window)) {
+      console.error("Speech synthesis not supported");
+      return;
+    }
+
+    // const voices = window.speechSynthesis.getVoices();
+    // const selectedVoice = voices.find((voice) => voice.lang === "mr-IN"); // Change to desired language code
+
+    if (action === "restart" || !currentUtterance) {
+      if (currentUtterance) {
+        window.speechSynthesis.cancel();
+      }
+      const utterance = new SpeechSynthesisUtterance(text);
+      // if (selectedVoice) {
+      //   utterance.voice = selectedVoice;
+      // }
+      utterance.onend = () => {
+        setCurrentUtterance(null);
+        setPlayingIndex(null); // Reset playing state on end
+      };
+      setCurrentUtterance(utterance);
+      window.speechSynthesis.speak(utterance);
+      setPlayingIndex(index); // Set the playing state
+    } else if (action === "play") {
+      window.speechSynthesis.resume();
+      setPlayingIndex(index); // Set the playing state
+    } else if (action === "pause") {
+      window.speechSynthesis.pause();
+      setPlayingIndex(null); // Reset playing state on pause
+    }
   };
 
   const removeFile = (index) => {
@@ -126,6 +200,47 @@ function ChatPage({ submittedData, setSubmittedData }) {
                 </div>
                 <div className="message-box">
                   <span className="message-text">{chat.bot}</span>
+                  {playingIndex === index ? (
+                    <>
+                      <Button
+                        onClick={() =>
+                          handleSpeechOutput(chat.bot, "pause", index)
+                        }
+                        variant="link"
+                      >
+                        <FontAwesomeIcon icon={faPause} />
+                      </Button>
+                      <Button
+                        onClick={() =>
+                          handleSpeechOutput(chat.bot, "restart", index)
+                        }
+                        variant="link"
+                      >
+                        <FontAwesomeIcon icon={faRedo} />
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <Button
+                        onClick={() =>
+                          handleSpeechOutput(chat.bot, "play", index)
+                        }
+                        variant="link"
+                      >
+                        <FontAwesomeIcon icon={faPlay} />
+                      </Button>
+                      {currentUtterance && playingIndex === null && (
+                        <Button
+                          onClick={() =>
+                            handleSpeechOutput(chat.bot, "restart", index)
+                          }
+                          variant="link"
+                        >
+                          <FontAwesomeIcon icon={faRedo} />
+                        </Button>
+                      )}
+                    </>
+                  )}
                   <span className="message-time">{chat.timestamp}</span>
                 </div>
               </div>
@@ -139,6 +254,12 @@ function ChatPage({ submittedData, setSubmittedData }) {
             onChange={(e) => setMessage(e.target.value)}
             placeholder="Type your message"
           />
+          <Button
+            variant={recognizing ? "danger" : "primary"}
+            onClick={handleSpeechInput}
+          >
+            <FontAwesomeIcon icon={faMicrophone} />
+          </Button>
           <Button type="submit">Send</Button>
         </Form>
       </div>
