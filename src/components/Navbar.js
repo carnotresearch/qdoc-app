@@ -31,13 +31,21 @@ const Navbar = () => {
         {token ? (
           <>
             <li className="nav-item">
-              <button className="btn btn-secondary" onClick={handleLogout}>
-                Logout
+              <button
+                className="btn btn-primary"
+                style={{ marginRight: "0.25cm" }}
+                onClick={handleOpenHtml}
+              >
+                Graph
               </button>
             </li>
             <li className="nav-item">
-              <button className="btn btn-secondary" onClick={handleOpenHtml}>
-                Graph
+              <button
+                className="btn btn-secondary"
+                style={{ marginRight: "0.25cm" }}
+                onClick={handleLogout}
+              >
+                Logout
               </button>
             </li>
           </>
