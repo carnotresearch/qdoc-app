@@ -76,20 +76,8 @@ function FileUrlForm({ setSubmittedData }) {
         }
       );
 
-      // Make the second API call
-      const htmlResponse = await axios.post(
-        `http://34.131.24.212:8080/upload`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-          responseType: "text",
-        }
-      );
-
       // Store the HTML content
-      localStorage.setItem("htmlContent", htmlResponse.data);
+      localStorage.setItem("htmlContent", response.data);
 
       console.log(response);
 
@@ -98,7 +86,6 @@ function FileUrlForm({ setSubmittedData }) {
         urls,
         inputLanguage,
         outputLanguage,
-        sessionName: response.data.session_id,
       });
       setIsLoading(false);
       navigate("/chat");
