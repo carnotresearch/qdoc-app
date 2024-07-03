@@ -94,6 +94,12 @@ const Login = () => {
                 Active in wide variety of research areas with major focus on
                 Computer Vision and NLP.
               </p>
+              <p className="large mb-0">
+                <b>
+                  This is a Multilingual Model to query documents with speech
+                  capabilities.
+                </b>
+              </p>
             </div>
           </div>
         </MDBCol>
