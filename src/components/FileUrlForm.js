@@ -10,7 +10,6 @@ import {
   Spinner,
 } from "react-bootstrap";
 import axios from "axios";
-import { height } from "@fortawesome/free-solid-svg-icons/fa0";
 
 function FileUrlForm({ setSubmittedData }) {
   const [files, setFiles] = useState([]);
@@ -22,7 +21,7 @@ function FileUrlForm({ setSubmittedData }) {
   const navigate = useNavigate();
 
   const handleFileChange = (event) => {
-    setFiles([...files, ...event.target.files]);
+    setFiles([...event.target.files]);
   };
 
   const handleUrlChange = (event) => {
@@ -59,10 +58,7 @@ function FileUrlForm({ setSubmittedData }) {
     const formData = new FormData();
     files.forEach((file) => formData.append("files", file));
     urls.forEach((url, index) => formData.append(`urls[${index}]`, url));
-    // formData.append("inputLanguage", inputLanguage);
-    // formData.append("outputLanguage", outputLanguage);
     const token = sessionStorage.getItem("token");
-    console.log("token: ", token);
     formData.append("token", token);
 
     try {
@@ -78,8 +74,6 @@ function FileUrlForm({ setSubmittedData }) {
 
       // Store the HTML content
       localStorage.setItem("htmlContent", response.data);
-
-      console.log(response);
 
       setSubmittedData({
         files,

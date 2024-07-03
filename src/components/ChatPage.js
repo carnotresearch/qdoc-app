@@ -7,7 +7,6 @@ import {
   faUser,
   faRobot,
   faMicrophone,
-  faVolumeUp,
   faPause,
   faPlay,
   faRedo,
@@ -22,6 +21,7 @@ function ChatPage({ submittedData, setSubmittedData }) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
   const [recognizing, setRecognizing] = useState(false);
   const [currentUtterance, setCurrentUtterance] = useState(null);
+  const [showPlayButton, setShowPlayButton] = useState(false);
   const [playingIndex, setPlayingIndex] = useState(null); // Index of currently playing response
   const navigate = useNavigate();
   const chatHistoryRef = useRef(null);
@@ -44,7 +44,24 @@ function ChatPage({ submittedData, setSubmittedData }) {
       recognition.current = new window.webkitSpeechRecognition();
       recognition.current.continuous = true;
       recognition.current.interimResults = true;
-      // recognition.current.lang = "mr-IN"; // Set to desired language
+
+      if (submittedData.inputLanguage === "1") {
+        recognition.current.lang = "hi-IN"; // hindi
+      } else if (submittedData.inputLanguage === "11") {
+        recognition.current.lang = "mr-IN"; // marathi
+      } else if (submittedData.inputLanguage === "10") {
+        recognition.current.lang = "bn-IN"; // bengali
+      } else if (submittedData.inputLanguage === "7") {
+        recognition.current.lang = "ta-IN"; // tamil
+      } else if (submittedData.inputLanguage === "17") {
+        recognition.current.lang = "te-IN"; // telugu
+      } else if (submittedData.inputLanguage === "3") {
+        recognition.current.lang = "kn-IN"; // kannada
+      } else if (submittedData.inputLanguage === "21") {
+        recognition.current.lang = "gu-IN"; // gujarati
+      } else if (submittedData.inputLanguage === "15") {
+        recognition.current.lang = "ml-IN"; // malayalam
+      }
       recognition.current.onresult = (event) => {
         let interimTranscript = "";
         let finalTranscript = "";
@@ -102,6 +119,19 @@ function ChatPage({ submittedData, setSubmittedData }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (recognition.current) {
+      if (recognizing) {
+        recognition.current.stop();
+      }
+    }
+    setRecognizing(false);
+    console.log(submittedData.outputLanguage);
+    if (
+      submittedData.outputLanguage === "1" ||
+      submittedData.outputLanguage === 23
+    ) {
+      setShowPlayButton(true);
+    }
     handleSendMessage();
   };
 
@@ -122,17 +152,20 @@ function ChatPage({ submittedData, setSubmittedData }) {
       return;
     }
 
-    // const voices = window.speechSynthesis.getVoices();
-    // const selectedVoice = voices.find((voice) => voice.lang === "mr-IN"); // Change to desired language code
+    const voices = window.speechSynthesis.getVoices();
+    let selectedVoice = null;
+    if (submittedData.outputLanguage === "1") {
+      selectedVoice = voices.find((voice) => voice.lang === "hi-IN");
+    }
 
     if (action === "restart" || !currentUtterance) {
       if (currentUtterance) {
         window.speechSynthesis.cancel();
       }
       const utterance = new SpeechSynthesisUtterance(text);
-      // if (selectedVoice) {
-      //   utterance.voice = selectedVoice;
-      // }
+      if (selectedVoice) {
+        utterance.voice = selectedVoice;
+      }
       utterance.onend = () => {
         setCurrentUtterance(null);
         setPlayingIndex(null); // Reset playing state on end
@@ -200,36 +233,17 @@ function ChatPage({ submittedData, setSubmittedData }) {
                 </div>
                 <div className="message-box">
                   <span className="message-text">{chat.bot}</span>
-                  {playingIndex === index ? (
-                    <>
-                      <Button
-                        onClick={() =>
-                          handleSpeechOutput(chat.bot, "pause", index)
-                        }
-                        variant="link"
-                      >
-                        <FontAwesomeIcon icon={faPause} />
-                      </Button>
-                      <Button
-                        onClick={() =>
-                          handleSpeechOutput(chat.bot, "restart", index)
-                        }
-                        variant="link"
-                      >
-                        <FontAwesomeIcon icon={faRedo} />
-                      </Button>
-                    </>
-                  ) : (
-                    <>
-                      <Button
-                        onClick={() =>
-                          handleSpeechOutput(chat.bot, "play", index)
-                        }
-                        variant="link"
-                      >
-                        <FontAwesomeIcon icon={faPlay} />
-                      </Button>
-                      {currentUtterance && playingIndex === null && (
+                  {showPlayButton &&
+                    (playingIndex === index ? (
+                      <>
+                        <Button
+                          onClick={() =>
+                            handleSpeechOutput(chat.bot, "pause", index)
+                          }
+                          variant="link"
+                        >
+                          <FontAwesomeIcon icon={faPause} />
+                        </Button>
                         <Button
                           onClick={() =>
                             handleSpeechOutput(chat.bot, "restart", index)
@@ -238,9 +252,29 @@ function ChatPage({ submittedData, setSubmittedData }) {
                         >
                           <FontAwesomeIcon icon={faRedo} />
                         </Button>
-                      )}
-                    </>
-                  )}
+                      </>
+                    ) : (
+                      <>
+                        <Button
+                          onClick={() =>
+                            handleSpeechOutput(chat.bot, "play", index)
+                          }
+                          variant="link"
+                        >
+                          <FontAwesomeIcon icon={faPlay} />
+                        </Button>
+                        {currentUtterance && playingIndex === null && (
+                          <Button
+                            onClick={() =>
+                              handleSpeechOutput(chat.bot, "restart", index)
+                            }
+                            variant="link"
+                          >
+                            <FontAwesomeIcon icon={faRedo} />
+                          </Button>
+                        )}
+                      </>
+                    ))}
                   <span className="message-time">{chat.timestamp}</span>
                 </div>
               </div>
