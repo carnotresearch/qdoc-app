@@ -15,7 +15,12 @@ import "../styles/chatPage.css";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-function ChatPage({ submittedData, setSubmittedData }) {
+function ChatPage({
+  submittedData,
+  setSubmittedData,
+  inputLanguage,
+  outputLanguage,
+}) {
   const [chatHistory, setChatHistory] = useState([]);
   const [message, setMessage] = useState("");
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
@@ -45,21 +50,21 @@ function ChatPage({ submittedData, setSubmittedData }) {
       recognition.current.continuous = true;
       recognition.current.interimResults = true;
 
-      if (submittedData.inputLanguage === "1") {
+      if (inputLanguage === "1") {
         recognition.current.lang = "hi-IN"; // hindi
-      } else if (submittedData.inputLanguage === "11") {
+      } else if (inputLanguage === "11") {
         recognition.current.lang = "mr-IN"; // marathi
-      } else if (submittedData.inputLanguage === "10") {
+      } else if (inputLanguage === "10") {
         recognition.current.lang = "bn-IN"; // bengali
-      } else if (submittedData.inputLanguage === "7") {
+      } else if (inputLanguage === "7") {
         recognition.current.lang = "ta-IN"; // tamil
-      } else if (submittedData.inputLanguage === "17") {
+      } else if (inputLanguage === "17") {
         recognition.current.lang = "te-IN"; // telugu
-      } else if (submittedData.inputLanguage === "3") {
+      } else if (inputLanguage === "3") {
         recognition.current.lang = "kn-IN"; // kannada
-      } else if (submittedData.inputLanguage === "21") {
+      } else if (inputLanguage === "21") {
         recognition.current.lang = "gu-IN"; // gujarati
-      } else if (submittedData.inputLanguage === "15") {
+      } else if (inputLanguage === "15") {
         recognition.current.lang = "ml-IN"; // malayalam
       }
       recognition.current.onresult = (event) => {
@@ -78,7 +83,7 @@ function ChatPage({ submittedData, setSubmittedData }) {
         setRecognizing(false);
       };
     }
-  }, []);
+  }, [inputLanguage]);
 
   const handleSendMessage = async () => {
     if (message.trim()) {
@@ -99,8 +104,8 @@ function ChatPage({ submittedData, setSubmittedData }) {
           {
             message,
             token,
-            inputLanguage: submittedData.inputLanguage,
-            outputLanguage: submittedData.outputLanguage,
+            inputLanguage,
+            outputLanguage,
           }
         );
         setChatHistory([
@@ -125,11 +130,7 @@ function ChatPage({ submittedData, setSubmittedData }) {
       }
     }
     setRecognizing(false);
-    console.log(submittedData.outputLanguage);
-    if (
-      submittedData.outputLanguage === "1" ||
-      submittedData.outputLanguage === 23
-    ) {
+    if (outputLanguage === "1" || outputLanguage === "23") {
       setShowPlayButton(true);
     }
     handleSendMessage();
@@ -154,7 +155,7 @@ function ChatPage({ submittedData, setSubmittedData }) {
 
     const voices = window.speechSynthesis.getVoices();
     let selectedVoice = null;
-    if (submittedData.outputLanguage === "1") {
+    if (outputLanguage === "1") {
       selectedVoice = voices.find((voice) => voice.lang === "hi-IN");
     }
 

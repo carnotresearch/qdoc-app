@@ -15,8 +15,6 @@ function FileUrlForm({ setSubmittedData }) {
   const [files, setFiles] = useState([]);
   const [urls, setUrls] = useState([]);
   const [newUrl, setNewUrl] = useState("");
-  const [inputLanguage, setInputLanguage] = useState(23);
-  const [outputLanguage, setOutputLanguage] = useState(23);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -78,8 +76,6 @@ function FileUrlForm({ setSubmittedData }) {
       setSubmittedData({
         files,
         urls,
-        inputLanguage,
-        outputLanguage,
       });
       setIsLoading(false);
       navigate("/chat");
@@ -119,7 +115,7 @@ function FileUrlForm({ setSubmittedData }) {
       </h3>
       <Container
         className="d-flex justify-content-center"
-        style={{ minHeight: "70vh", marginBottom: "2cm" }}
+        style={{ minHeight: "40vh", marginBottom: "2cm" }}
       >
         <Card style={{ width: "70%" }}>
           <Card.Body>
@@ -176,64 +172,6 @@ function FileUrlForm({ setSubmittedData }) {
                   </Row>
                 ))}
               </div>
-              <Form.Group className="mb-3">
-                <Form.Label>Input Language</Form.Label>
-                <Form.Select onChange={(e) => setInputLanguage(e.target.value)}>
-                  <option value="23">English</option>
-                  <option value="1">Hindi</option>
-                  <option value="2">Gom</option>
-                  <option value="3">Kannada</option>
-                  <option value="4">Dogri</option>
-                  <option value="5">Bodo</option>
-                  <option value="6">Urdu</option>
-                  <option value="7">Tamil</option>
-                  <option value="8">Kashmiri</option>
-                  <option value="9">Assamese</option>
-                  <option value="10">Bengali</option>
-                  <option value="11">Marathi</option>
-                  <option value="12">Sindhi</option>
-                  <option value="13">Maithili</option>
-                  <option value="14">Punjabi</option>
-                  <option value="15">Malayalam</option>
-                  <option value="16">Manipuri</option>
-                  <option value="17">Telugu</option>
-                  <option value="18">Sanskrit</option>
-                  <option value="19">Nepali</option>
-                  <option value="20">Santali</option>
-                  <option value="21">Gujarati</option>
-                  <option value="22">Odia</option>
-                </Form.Select>
-              </Form.Group>
-              <Form.Group className="mb-3">
-                <Form.Label>Output Language</Form.Label>
-                <Form.Select
-                  onChange={(e) => setOutputLanguage(e.target.value)}
-                >
-                  <option value="23">English</option>
-                  <option value="1">Hindi</option>
-                  <option value="2">Gom</option>
-                  <option value="3">Kannada</option>
-                  <option value="4">Dogri</option>
-                  <option value="5">Bodo</option>
-                  <option value="6">Urdu</option>
-                  <option value="7">Tamil</option>
-                  <option value="8">Kashmiri</option>
-                  <option value="9">Assamese</option>
-                  <option value="10">Bengali</option>
-                  <option value="11">Marathi</option>
-                  <option value="12">Sindhi</option>
-                  <option value="13">Maithili</option>
-                  <option value="14">Punjabi</option>
-                  <option value="15">Malayalam</option>
-                  <option value="16">Manipuri</option>
-                  <option value="17">Telugu</option>
-                  <option value="18">Sanskrit</option>
-                  <option value="19">Nepali</option>
-                  <option value="20">Santali</option>
-                  <option value="21">Gujarati</option>
-                  <option value="22">Odia</option>
-                </Form.Select>
-              </Form.Group>
               <Button
                 className="mt-3 w-100"
                 onClick={handleSubmit}

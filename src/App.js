@@ -8,11 +8,18 @@ import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   const [submittedData, setSubmittedData] = useState({ files: [], urls: [] });
+  const [inputLanguage, setInputLanguage] = useState("23");
+  const [outputLanguage, setOutputLanguage] = useState("23");
 
   return (
     <Router>
       <div>
-        <Navbar />
+        <Navbar
+          inputLanguage={inputLanguage}
+          setInputLanguage={setInputLanguage}
+          outputLanguage={outputLanguage}
+          setOutputLanguage={setOutputLanguage}
+        />
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route
@@ -30,6 +37,8 @@ function App() {
                 <ChatPage
                   submittedData={submittedData}
                   setSubmittedData={setSubmittedData}
+                  inputLanguage={inputLanguage}
+                  outputLanguage={outputLanguage}
                 />
               </ProtectedRoute>
             }
