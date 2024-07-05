@@ -1,5 +1,6 @@
 import React from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import LanguageDropdown from "./LanguageDropdown";
 
 const Navbar = ({
   inputLanguage,
@@ -28,113 +29,93 @@ const Navbar = ({
     newWindow.document.close();
   };
 
-  const handleLanguageChange = (type, event) => {
-    const newLanguage = event.target.value;
-    if (type === "inputLanguage") {
-      setInputLanguage(newLanguage);
-    } else {
-      setOutputLanguage(newLanguage);
-    }
-  };
+  const languages = [
+    { value: "23", label: "English" },
+    { value: "1", label: "Hindi" },
+    { value: "2", label: "Gom" },
+    { value: "3", label: "Kannada" },
+    { value: "4", label: "Dogri" },
+    { value: "5", label: "Bodo" },
+    { value: "6", label: "Urdu" },
+    { value: "7", label: "Tamil" },
+    { value: "8", label: "Kashmiri" },
+    { value: "9", label: "Assamese" },
+    { value: "10", label: "Bengali" },
+    { value: "11", label: "Marathi" },
+    { value: "12", label: "Sindhi" },
+    { value: "13", label: "Maithili" },
+    { value: "14", label: "Punjabi" },
+    { value: "15", label: "Malayalam" },
+    { value: "16", label: "Manipuri" },
+    { value: "17", label: "Telugu" },
+    { value: "18", label: "Sanskrit" },
+    { value: "19", label: "Nepali" },
+    { value: "20", label: "Santali" },
+    { value: "21", label: "Gujarati" },
+    { value: "22", label: "Odia" },
+  ];
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-light">
+    <nav className="navbar navbar-expand-lg navbar-light bg-info">
       <Link className="navbar-brand" style={{ marginLeft: "0.5cm" }} to="/">
         QDoc App
       </Link>
       <ul className="navbar-nav ms-auto">
         {token ? (
           <>
-            {location.pathname === "/chat" && (
-              <>
-                <li className="nav-item">
-                  <button
-                    className="btn btn-primary"
-                    style={{ marginRight: "0.25cm" }}
-                    onClick={handleOpenHtml}
-                  >
-                    Graph
-                  </button>
-                </li>
-                <li className="nav-item">
-                  <select
-                    className="form-select"
-                    value={inputLanguage}
-                    onChange={(event) =>
-                      handleLanguageChange("inputLanguage", event)
+            <button
+              className="navbar-toggler btn btn-light"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#navbarNav"
+              aria-controls="navbarNav"
+              aria-expanded="false"
+              aria-label="Toggle navigation"
+            >
+              <span className="navbar-toggler-icon"></span>
+            </button>
+            <div className="collapse navbar-collapse ms-auto" id="navbarNav">
+              {location.pathname === "/chat" && (
+                <>
+                  <li className="nav-item">
+                    <button
+                      className="btn btn-dark"
+                      style={{ marginRight: "0.25cm" }}
+                      onClick={handleOpenHtml}
+                    >
+                      Graph
+                    </button>
+                  </li>
+                  <LanguageDropdown
+                    label="Input"
+                    selectedLanguage={
+                      languages.find((lang) => lang.value === inputLanguage)
+                        ?.label || "English"
                     }
-                    style={{ marginRight: "0.5cm" }}
-                  >
-                    <option value="23">English</option>
-                    <option value="1">Hindi</option>
-                    <option value="2">Gom</option>
-                    <option value="3">Kannada</option>
-                    <option value="4">Dogri</option>
-                    <option value="5">Bodo</option>
-                    <option value="6">Urdu</option>
-                    <option value="7">Tamil</option>
-                    <option value="8">Kashmiri</option>
-                    <option value="9">Assamese</option>
-                    <option value="10">Bengali</option>
-                    <option value="11">Marathi</option>
-                    <option value="12">Sindhi</option>
-                    <option value="13">Maithili</option>
-                    <option value="14">Punjabi</option>
-                    <option value="15">Malayalam</option>
-                    <option value="16">Manipuri</option>
-                    <option value="17">Telugu</option>
-                    <option value="18">Sanskrit</option>
-                    <option value="19">Nepali</option>
-                    <option value="20">Santali</option>
-                    <option value="21">Gujarati</option>
-                    <option value="22">Odia</option>
-                  </select>
-                </li>
-                <li className="nav-item">
-                  <select
-                    className="form-select"
-                    value={outputLanguage}
-                    onChange={(event) =>
-                      handleLanguageChange("outputLanguage", event)
+                    languages={languages}
+                    onChange={setInputLanguage}
+                  />
+                  <LanguageDropdown
+                    label="Output"
+                    selectedLanguage={
+                      languages.find((lang) => lang.value === outputLanguage)
+                        ?.label || "English"
                     }
-                    style={{ marginRight: "0.5cm" }}
-                  >
-                    <option value="23">English</option>
-                    <option value="1">Hindi</option>
-                    <option value="2">Gom</option>
-                    <option value="3">Kannada</option>
-                    <option value="4">Dogri</option>
-                    <option value="5">Bodo</option>
-                    <option value="6">Urdu</option>
-                    <option value="7">Tamil</option>
-                    <option value="8">Kashmiri</option>
-                    <option value="9">Assamese</option>
-                    <option value="10">Bengali</option>
-                    <option value="11">Marathi</option>
-                    <option value="12">Sindhi</option>
-                    <option value="13">Maithili</option>
-                    <option value="14">Punjabi</option>
-                    <option value="15">Malayalam</option>
-                    <option value="16">Manipuri</option>
-                    <option value="17">Telugu</option>
-                    <option value="18">Sanskrit</option>
-                    <option value="19">Nepali</option>
-                    <option value="20">Santali</option>
-                    <option value="21">Gujarati</option>
-                    <option value="22">Odia</option>
-                  </select>
-                </li>
-              </>
-            )}
-            <li className="nav-item">
-              <button
-                className="btn btn-secondary"
-                style={{ marginRight: "0.25cm" }}
-                onClick={handleLogout}
-              >
-                Logout
-              </button>
-            </li>
+                    languages={languages}
+                    onChange={setOutputLanguage}
+                  />
+                </>
+              )}
+              <li className="nav-item">
+                <button
+                  className="btn btn-danger"
+                  style={{ marginRight: "0.25cm" }}
+                  onClick={handleLogout}
+                >
+                  Logout
+                </button>
+              </li>
+            </div>
           </>
         ) : (
           <li className="nav-item">

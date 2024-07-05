@@ -50,7 +50,6 @@ const Login = () => {
           password,
         }
       );
-      console.log(response);
       const expiryTime = Date.now() + 3600 * 1000;
       sessionStorage.setItem("token", response.data.token);
       sessionStorage.setItem("expiryTime", expiryTime.toString());
