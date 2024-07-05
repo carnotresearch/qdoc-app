@@ -11,6 +11,7 @@ import {
   faPlay,
   faRedo,
 } from "@fortawesome/free-solid-svg-icons";
+import FileViewer from "./FileViewer";
 import "../styles/chatPage.css";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -214,6 +215,7 @@ function ChatPage({
           />
         )}
       </div>
+      <FileViewer files={submittedData.files} />
       <div className="chat-content">
         <h2>QDoc by Carnot Research</h2>
         <div className="chat-history" ref={chatHistoryRef}>

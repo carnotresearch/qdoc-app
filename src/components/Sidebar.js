@@ -1,5 +1,5 @@
 import React from "react";
-import { ListGroup, Button } from "react-bootstrap";
+import { ListGroup } from "react-bootstrap";
 
 function Sidebar({ files, urls, removeFile, removeUrl }) {
   const marginStyle = { marginTop: "1.5cm" };
