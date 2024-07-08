@@ -29,9 +29,31 @@ function ChatPage({
   const [currentUtterance, setCurrentUtterance] = useState(null);
   const [showPlayButton, setShowPlayButton] = useState(false);
   const [playingIndex, setPlayingIndex] = useState(null); // Index of currently playing response
+  const [showMicrophone, setShowMicrophone] = useState(true);
   const navigate = useNavigate();
   const chatHistoryRef = useRef(null);
   const recognition = useRef(null);
+
+  const ttsSupportedLanguages = ["1", "23"];
+  const sttSupportedLanguages = {
+    23: "", // English
+    1: "hi-IN", // Hindi
+    11: "mr-IN", // Marathi
+    10: "bn-IN", // Bengali
+    7: "ta-IN", // Tamil
+    17: "te-IN", // Telugu
+    3: "kn-IN", // Kannada
+    21: "gu-IN", // Gujarati
+    15: "ml-IN", // Malayalam
+  };
+
+  useEffect(() => {
+    setShowPlayButton(ttsSupportedLanguages.includes(outputLanguage));
+  }, [outputLanguage]);
+
+  useEffect(() => {
+    setShowMicrophone(sttSupportedLanguages.hasOwnProperty(inputLanguage));
+  }, [inputLanguage]);
 
   useEffect(() => {
     if (!submittedData.files.length && !submittedData.urls.length) {
@@ -51,22 +73,8 @@ function ChatPage({
       recognition.current.continuous = true;
       recognition.current.interimResults = true;
 
-      if (inputLanguage === "1") {
-        recognition.current.lang = "hi-IN"; // hindi
-      } else if (inputLanguage === "11") {
-        recognition.current.lang = "mr-IN"; // marathi
-      } else if (inputLanguage === "10") {
-        recognition.current.lang = "bn-IN"; // bengali
-      } else if (inputLanguage === "7") {
-        recognition.current.lang = "ta-IN"; // tamil
-      } else if (inputLanguage === "17") {
-        recognition.current.lang = "te-IN"; // telugu
-      } else if (inputLanguage === "3") {
-        recognition.current.lang = "kn-IN"; // kannada
-      } else if (inputLanguage === "21") {
-        recognition.current.lang = "gu-IN"; // gujarati
-      } else if (inputLanguage === "15") {
-        recognition.current.lang = "ml-IN"; // malayalam
+      if (sttSupportedLanguages[inputLanguage]) {
+        recognition.current.lang = sttSupportedLanguages[inputLanguage];
       }
       recognition.current.onresult = (event) => {
         let interimTranscript = "";
@@ -131,9 +139,6 @@ function ChatPage({
       }
     }
     setRecognizing(false);
-    if (outputLanguage === "1" || outputLanguage === "23") {
-      setShowPlayButton(true);
-    }
     handleSendMessage();
   };
 
@@ -291,12 +296,14 @@ function ChatPage({
             onChange={(e) => setMessage(e.target.value)}
             placeholder="Type your message"
           />
-          <Button
-            variant={recognizing ? "danger" : "primary"}
-            onClick={handleSpeechInput}
-          >
-            <FontAwesomeIcon icon={faMicrophone} />
-          </Button>
+          {showMicrophone && (
+            <Button
+              variant={recognizing ? "danger" : "primary"}
+              onClick={handleSpeechInput}
+            >
+              <FontAwesomeIcon icon={faMicrophone} />
+            </Button>
+          )}
           <Button type="submit">Send</Button>
         </Form>
       </div>
