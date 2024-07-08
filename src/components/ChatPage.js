@@ -16,6 +16,18 @@ import "../styles/chatPage.css";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
+const sttSupportedLanguages = {
+  23: "", // English
+  1: "hi-IN", // Hindi
+  11: "mr-IN", // Marathi
+  10: "bn-IN", // Bengali
+  7: "ta-IN", // Tamil
+  17: "te-IN", // Telugu
+  3: "kn-IN", // Kannada
+  21: "gu-IN", // Gujarati
+  15: "ml-IN", // Malayalam
+};
+
 function ChatPage({
   submittedData,
   setSubmittedData,
@@ -27,32 +39,20 @@ function ChatPage({
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
   const [recognizing, setRecognizing] = useState(false);
   const [currentUtterance, setCurrentUtterance] = useState(null);
-  const [showPlayButton, setShowPlayButton] = useState(false);
   const [playingIndex, setPlayingIndex] = useState(null); // Index of currently playing response
+  const [pausedIndex, setPausedIndex] = useState(null); // Index of currently paused response
   const [showMicrophone, setShowMicrophone] = useState(true);
   const navigate = useNavigate();
   const chatHistoryRef = useRef(null);
   const recognition = useRef(null);
+  const sttSupportedLanguagesRef = useRef(sttSupportedLanguages);
 
   const ttsSupportedLanguages = ["1", "23"];
-  const sttSupportedLanguages = {
-    23: "", // English
-    1: "hi-IN", // Hindi
-    11: "mr-IN", // Marathi
-    10: "bn-IN", // Bengali
-    7: "ta-IN", // Tamil
-    17: "te-IN", // Telugu
-    3: "kn-IN", // Kannada
-    21: "gu-IN", // Gujarati
-    15: "ml-IN", // Malayalam
-  };
 
   useEffect(() => {
-    setShowPlayButton(ttsSupportedLanguages.includes(outputLanguage));
-  }, [outputLanguage]);
-
-  useEffect(() => {
-    setShowMicrophone(sttSupportedLanguages.hasOwnProperty(inputLanguage));
+    setShowMicrophone(
+      sttSupportedLanguagesRef.current.hasOwnProperty(inputLanguage)
+    );
   }, [inputLanguage]);
 
   useEffect(() => {
@@ -74,7 +74,8 @@ function ChatPage({
       recognition.current.interimResults = true;
 
       if (sttSupportedLanguages[inputLanguage]) {
-        recognition.current.lang = sttSupportedLanguages[inputLanguage];
+        recognition.current.lang =
+          sttSupportedLanguagesRef.current[inputLanguage];
       }
       recognition.current.onresult = (event) => {
         let interimTranscript = "";
@@ -100,10 +101,19 @@ function ChatPage({
         hour: "2-digit",
         minute: "2-digit",
       });
-      setChatHistory([
+
+      const ttsSupport = ttsSupportedLanguages.includes(outputLanguage);
+      const newChatHistory = [
         ...chatHistory,
-        { user: message, bot: "Loading...", timestamp },
-      ]);
+        {
+          user: message,
+          bot: "Loading...",
+          timestamp,
+          ttsSupport,
+        },
+      ];
+
+      setChatHistory(newChatHistory);
       setMessage("");
       const token = sessionStorage.getItem("token");
 
@@ -117,16 +127,14 @@ function ChatPage({
             outputLanguage,
           }
         );
-        setChatHistory([
-          ...chatHistory,
-          { user: message, bot: response.data.answer, timestamp },
-        ]);
+
+        newChatHistory[newChatHistory.length - 1].bot = response.data.answer;
+        setChatHistory([...newChatHistory]);
       } catch (error) {
         console.error("There was an error!", error);
-        setChatHistory([
-          ...chatHistory,
-          { user: message, bot: "Error! Kindly try again", timestamp },
-        ]);
+        newChatHistory[newChatHistory.length - 1].bot =
+          "Error! Kindly try again";
+        setChatHistory([...newChatHistory]);
       }
     }
   };
@@ -185,6 +193,7 @@ function ChatPage({
       setPlayingIndex(index); // Set the playing state
     } else if (action === "pause") {
       window.speechSynthesis.pause();
+      setPausedIndex(playingIndex);
       setPlayingIndex(null); // Reset playing state on pause
     }
   };
@@ -241,7 +250,7 @@ function ChatPage({
                 </div>
                 <div className="message-box">
                   <span className="message-text">{chat.bot}</span>
-                  {showPlayButton &&
+                  {chat.ttsSupport &&
                     (playingIndex === index ? (
                       <>
                         <Button
@@ -262,26 +271,18 @@ function ChatPage({
                         </Button>
                       </>
                     ) : (
-                      <>
-                        <Button
-                          onClick={() =>
-                            handleSpeechOutput(chat.bot, "play", index)
-                          }
-                          variant="link"
-                        >
-                          <FontAwesomeIcon icon={faPlay} />
-                        </Button>
-                        {currentUtterance && playingIndex === null && (
-                          <Button
-                            onClick={() =>
-                              handleSpeechOutput(chat.bot, "restart", index)
-                            }
-                            variant="link"
-                          >
-                            <FontAwesomeIcon icon={faRedo} />
-                          </Button>
-                        )}
-                      </>
+                      <Button
+                        onClick={() =>
+                          handleSpeechOutput(
+                            chat.bot,
+                            pausedIndex === index ? "play" : "restart",
+                            index
+                          )
+                        }
+                        variant="link"
+                      >
+                        <FontAwesomeIcon icon={faPlay} />
+                      </Button>
                     ))}
                   <span className="message-time">{chat.timestamp}</span>
                 </div>
