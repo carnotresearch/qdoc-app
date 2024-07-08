@@ -1,14 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  Container,
-  Form,
-  Button,
-  Row,
-  Col,
-  Card,
-  Spinner,
-} from "react-bootstrap";
+import { Container, Form, Button, Row, Col, Card } from "react-bootstrap";
 import axios from "axios";
 
 function FileUrlForm({ setSubmittedData }) {
@@ -172,17 +164,13 @@ function FileUrlForm({ setSubmittedData }) {
                   </Row>
                 ))}
               </div>
-              <Button
-                className="mt-3 w-100"
-                onClick={handleSubmit}
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <Spinner animation="border" size="sm" />
-                ) : (
-                  "Submit"
-                )}
-              </Button>
+              {isLoading ? (
+                <progress className="mt-3 w-100" value={null} />
+              ) : (
+                <Button className="mt-3 w-100" onClick={handleSubmit}>
+                  Finish
+                </Button>
+              )}
             </Form>
           </Card.Body>
         </Card>
