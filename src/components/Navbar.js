@@ -75,6 +75,16 @@ const Navbar = ({
               <span className="navbar-toggler-icon"></span>
             </button>
             <div className="collapse navbar-collapse ms-auto" id="navbarNav">
+              <li className="nav-item">
+                <a
+                  className="nav-link"
+                  href="https://carnotresearch.com/#section-about"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  About us
+                </a>
+              </li>
               {location.pathname === "/chat" && (
                 <>
                   <li className="nav-item">
