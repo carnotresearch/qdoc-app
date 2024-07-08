@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from "react";
-// import { Buffer } from "buffer";
 import mammoth from "mammoth";
-import { Document, Page, pdfjs } from "react-pdf";
-import "react-pdf/dist/esm/Page/AnnotationLayer.css";
+import PdfViewer from "./PdfViewer";
 import "../styles/fileViewer.css";
-
-pdfjs.GlobalWorkerOptions.workerSrc = `${process.env.PUBLIC_URL}/pdf.worker.mjs`;
 
 function FileViewer({ files }) {
   const [fileContents, setFileContents] = useState([]);
@@ -80,7 +76,9 @@ function FileViewer({ files }) {
 
       reader.onload = async (e) => {
         const arrayBuffer = e.target.result;
-        resolve({ name: file.name, content: arrayBuffer, type: file.type });
+        const blob = new Blob([arrayBuffer], { type: file.type });
+        const url = URL.createObjectURL(blob);
+        resolve({ name: file.name, content: url, type: file.type });
       };
 
       reader.onerror = reject;
@@ -94,9 +92,8 @@ function FileViewer({ files }) {
         <div key={index} className="file-page">
           <h4>{file.name}</h4>
           {file.type === "application/pdf" ? (
-            <>Hello</>
+            <PdfViewer pdfUrl={file.content} />
           ) : (
-            // <PdfViewer pdfData={file.content} />
             file.content.map((page, pageIndex) => (
               <div key={pageIndex} className="doc-page">
                 <div dangerouslySetInnerHTML={{ __html: page }} />
@@ -108,23 +105,5 @@ function FileViewer({ files }) {
     </div>
   );
 }
-
-// function PdfViewer({ pdfData }) {
-//   const [numPages, setNumPages] = useState(null);
-
-//   function onDocumentLoadSuccess({ numPages }) {
-//     setNumPages(numPages);
-//   }
-
-//   return (
-//     <div className="pdf-viewer">
-//       <Document file={{ data: pdfData }} onLoadSuccess={onDocumentLoadSuccess}>
-//         {Array.from(new Array(numPages), (el, index) => (
-//           <Page key={`page_${index + 1}`} pageNumber={index + 1} />
-//         ))}
-//       </Document>
-//     </div>
-//   );
-// }
 
 export default FileViewer;
