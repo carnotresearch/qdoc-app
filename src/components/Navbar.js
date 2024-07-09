@@ -56,7 +56,7 @@ const Navbar = ({
   ];
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-info">
+    <nav className="navbar navbar-expand-lg navbar-light bg-primary">
       <Link className="navbar-brand" style={{ marginLeft: "0.5cm" }} to="/">
         QDoc App
       </Link>
@@ -82,7 +82,7 @@ const Navbar = ({
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  About us
+                  <b>About Us</b>
                 </a>
               </li>
               {location.pathname === "/chat" && (

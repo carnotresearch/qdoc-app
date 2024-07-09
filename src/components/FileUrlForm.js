@@ -168,7 +168,7 @@ function FileUrlForm({ setSubmittedData }) {
                 <progress className="mt-3 w-100" value={null} />
               ) : (
                 <Button className="mt-3 w-100" onClick={handleSubmit}>
-                  Finish
+                  Submit
                 </Button>
               )}
             </Form>
