@@ -99,9 +99,6 @@ function ChatPage({
       setMessage("");
       const token = sessionStorage.getItem("token");
       const googleauth = sessionStorage.getItem("googleauth");
-    
-  
-
       try {
         const response = await axios.post(
           `${process.env.REACT_APP_BACKEND_URL}/ask`,

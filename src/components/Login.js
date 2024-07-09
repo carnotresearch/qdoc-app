@@ -67,23 +67,9 @@ const Login = () => {
   };  
   
   const handlegoogleSubmit = async (tok) => {
-    // e.preventDefault();
+
     try {
-       //if (!email) {
-      //   alert("Email is required");
-      //   return;
-      // }
-      // if (!recaptchaToken) {
-      //   alert("ReCaptcha not validated");
-      //   return;
-      // }
       setIsLoading(true);
-      // const response = await axios.post(
-      //   "https://ndwli9gro8.execute-api.ap-south-1.amazonaws.com/default/validateUser",
-      //   {
-      //     tok
-      //   }
-      // );
       const expiryTime = Date.now() + 3600 * 1000;
       sessionStorage.setItem("token", tok);
       sessionStorage.setItem("expiryTime", expiryTime.toString());
@@ -96,9 +82,7 @@ const Login = () => {
       alert(error.response.data.message);
     }
   };
-
-
-
+  
   const onReCAPTCHAChange = (token) => {
     setRecaptchaToken(token);
   };
@@ -157,8 +141,7 @@ const Login = () => {
   onError={() => {
     console.log('Login Failed');
   }}/>
-
-            <MDBInput
+              <MDBInput
               wrapperClass="mb-4"
               label="Username"
               id="form1"
