@@ -116,7 +116,7 @@ function ChatPage({
       setChatHistory(newChatHistory);
       setMessage("");
       const token = sessionStorage.getItem("token");
-
+      const googleauth = sessionStorage.getItem("googleauth");
       try {
         const response = await axios.post(
           `${process.env.REACT_APP_BACKEND_URL}/ask`,
@@ -125,6 +125,7 @@ function ChatPage({
             token,
             inputLanguage,
             outputLanguage,
+            googleauth,
           }
         );
 

@@ -11,10 +11,13 @@ import {
 } from "mdb-react-ui-kit";
 import { Spinner } from "react-bootstrap";
 import "./styles.css";
-
+import { GoogleOAuthProvider } from '@react-oauth/google';
+import { GoogleLogin } from '@react-oauth/google';
+import {jwtDecode} from 'jwt-decode';
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [googleToken, setGoogleToken] = useState("");
   const [recaptchaToken, setRecaptchaToken] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const emailRef = useRef(null);
@@ -53,6 +56,24 @@ const Login = () => {
       const expiryTime = Date.now() + 3600 * 1000;
       sessionStorage.setItem("token", response.data.token);
       sessionStorage.setItem("expiryTime", expiryTime.toString());
+      sessionStorage.setItem("googleauth", 0);
+      setIsLoading(false);
+      navigate("/");
+    } catch (error) {
+      console.error("Login error", error);
+      setIsLoading(false);
+      alert(error.response.data.message);
+    }
+  };  
+  
+  const handlegoogleSubmit = async (tok) => {
+
+    try {
+      setIsLoading(true);
+      const expiryTime = Date.now() + 3600 * 1000;
+      sessionStorage.setItem("token", tok);
+      sessionStorage.setItem("expiryTime", expiryTime.toString());
+      sessionStorage.setItem("googleauth", 1);
       setIsLoading(false);
       navigate("/");
     } catch (error) {
@@ -61,7 +82,7 @@ const Login = () => {
       alert(error.response.data.message);
     }
   };
-
+  
   const onReCAPTCHAChange = (token) => {
     setRecaptchaToken(token);
   };
@@ -76,6 +97,7 @@ const Login = () => {
   };
 
   return (
+    <GoogleOAuthProvider clientId="936119028466-gbbi3ejafmef3o0u2ebo2j8v8me98qbi.apps.googleusercontent.com">
     <MDBContainer className="my-5 gradient-form align-items-center justify-content-center">
       <MDBRow>
         <MDBCol lg="6" md="12" sm="12" className="mb-5">
@@ -110,8 +132,16 @@ const Login = () => {
             </div>
 
             <p>Please login to your account</p>
-
-            <MDBInput
+            <GoogleLogin
+  onSuccess={credentialResponse => {
+    console.log(jwtDecode(credentialResponse.credential)); 
+    handlegoogleSubmit(credentialResponse.credential);
+    
+  }}
+  onError={() => {
+    console.log('Login Failed');
+  }}/>
+              <MDBInput
               wrapperClass="mb-4"
               label="Username"
               id="form1"
@@ -143,8 +173,10 @@ const Login = () => {
                 {isLoading ? (
                   <Spinner animation="border" size="sm" />
                 ) : (
-                  "Sign in"
+                  "Sign-in"
                 )}
+
+
               </MDBBtn>
               {/* <a className="text-muted" href="#">
                 Forgot password?
@@ -161,6 +193,7 @@ const Login = () => {
         </MDBCol>
       </MDBRow>
     </MDBContainer>
+    </GoogleOAuthProvider>
   );
 };
 
