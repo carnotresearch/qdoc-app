@@ -4,6 +4,9 @@ import Navbar from "./components/Navbar";
 import FileUrlForm from "./components/FileUrlForm";
 import ChatPage from "./components/ChatPage";
 import Login from "./components/Login";
+import Register from "./components/Register";
+import ForgotPassword from "./components/ForgotPassword";
+import ResetPassword from "./components/ResetPassword";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
@@ -22,6 +25,9 @@ function App() {
         />
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/register" element={<Register />} />
           <Route
             path="/"
             element={
