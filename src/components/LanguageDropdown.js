@@ -2,9 +2,9 @@ import React from "react";
 
 const LanguageDropdown = ({ label, selectedLanguage, languages, onChange }) => {
   return (
-    <li className="nav-item dropdown" style={{ marginRight: "0.5cm" }}>
+    <li className="nav-item dropdown" style={{ marginRight: "0.25cm" }}>
       <button
-        className="btn btn-secondary dropdown-toggle"
+        className="btn btn-warning dropdown-toggle"
         id={`${label}LanguageDropdown`}
         data-bs-toggle="dropdown"
         aria-expanded="false"

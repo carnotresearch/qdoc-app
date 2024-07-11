@@ -46,13 +46,10 @@ const Login = () => {
         return;
       }
       setIsLoading(true);
-      const response = await axios.post(
-        "https://ndwli9gro8.execute-api.ap-south-1.amazonaws.com/default/validateUser",
-        {
-          email,
-          password,
-        }
-      );
+      const response = await axios.post(`${process.env.REACT_APP_LOGIN_URL}`, {
+        email,
+        password,
+      });
       const expiryTime = Date.now() + 3600 * 1000;
       sessionStorage.setItem("token", response.data.token);
       sessionStorage.setItem("expiryTime", expiryTime.toString());
@@ -88,9 +85,6 @@ const Login = () => {
 
   const textStyles = {
     textShadow: "2px 2px 4px rgba(0, 0, 0, 0.7)",
-    // backgroundColor: "rgba(0, 0, 0, 0.3)",
-    // padding: "10px",
-    // display: "inline-block",
     boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.2)",
     padding: "10px",
   };
@@ -175,17 +169,22 @@ const Login = () => {
                     "Sign-in"
                   )}
                 </MDBBtn>
-                {/* <a className="text-muted" href="#">
-                Forgot password?
-              </a> */}
+                <a className="text-muted" href="/forgot-password">
+                  Forgot password?
+                </a>
               </div>
 
-              {/* <div className="d-flex flex-row align-items-center justify-content-center pb-4 mb-4">
-              <p className="mb-0">Don't have an account?</p>
-              <MDBBtn outline className="mx-2" color="danger">
-                Register
-              </MDBBtn>
-            </div> */}
+              <div className="d-flex flex-row align-items-center justify-content-center pb-4 mb-4">
+                <p className="mb-0">Don't have an account?</p>
+                <MDBBtn
+                  outline
+                  className="mx-2"
+                  color="danger"
+                  onClick={() => navigate("/register")}
+                >
+                  Register
+                </MDBBtn>
+              </div>
             </div>
           </MDBCol>
         </MDBRow>
