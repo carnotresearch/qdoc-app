@@ -34,3 +34,7 @@ code {
     border-bottom-right-radius: .3rem;
   }
 }
+
+.navbar {
+  background-color: #563d7c;
+}
