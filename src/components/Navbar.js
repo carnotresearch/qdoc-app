@@ -2,6 +2,7 @@ import React from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import LanguageDropdown from "./LanguageDropdown";
 import Profile from "./profile";
+import axios from "axios";
 
 const Navbar = ({
   inputLanguage,
@@ -13,14 +14,13 @@ const Navbar = ({
   const navigate = useNavigate();
   const location = useLocation();
   const token = sessionStorage.getItem("token");
-  const paid= sessionStorage.getItem('paymentStatus');
+  const paid = sessionStorage.getItem("paymentStatus");
   const handleLogout = () => {
     sessionStorage.removeItem("token");
     sessionStorage.removeItem("expiryTime");
     sessionStorage.removeItem("paymentStatus");
     sessionStorage.removeItem("googleauth");
     navigate("/login");
-
   };
 
   const handleLoginClick = () => {
@@ -53,8 +53,7 @@ const Navbar = ({
       newWindow.document.close();
     } catch (error) {
       console.error("There was an error!", error);
-      alert("Error getting the the response, please try again");
-      setIsLoading(false);
+      alert("Error generating graph, please try again");
     }
   };
 
@@ -150,7 +149,7 @@ const Navbar = ({
                   />
                 </>
               )}
-              {paid === '0' && (
+              {paid === "0" && (
                 <li className="nav-item">
                   <Link to="/payment">
                     <button
