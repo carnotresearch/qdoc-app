@@ -7,6 +7,7 @@ const Navbar = ({
   setInputLanguage,
   outputLanguage,
   setOutputLanguage,
+  submittedData,
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -22,11 +23,35 @@ const Navbar = ({
     navigate("/login", { state: { focusEmail: true } });
   };
 
-  const handleOpenHtml = () => {
-    const htmlContent = localStorage.getItem("htmlContent");
-    const newWindow = window.open();
-    newWindow.document.write(htmlContent);
-    newWindow.document.close();
+  const handleOpenHtml = async () => {
+    const formData = new FormData();
+    const files = submittedData.files;
+    const urls = submittedData.urls;
+    files.forEach((file) => formData.append("files", file));
+    urls.forEach((url, index) => formData.append(`urls[${index}]`, url));
+    const token = sessionStorage.getItem("token");
+    formData.append("token", token);
+    const googleauth = sessionStorage.getItem("googleauth");
+    formData.append("googleauth", googleauth);
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_BACKEND_URL}/graph`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      const htmlContent = response.data;
+      const newWindow = window.open();
+      newWindow.document.write(htmlContent);
+      newWindow.document.close();
+    } catch (error) {
+      console.error("There was an error!", error);
+      alert("Error getting the the response, please try again");
+      setIsLoading(false);
+    }
   };
 
   const languages = [

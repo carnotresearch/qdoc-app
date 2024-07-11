@@ -22,6 +22,7 @@ function App() {
           setInputLanguage={setInputLanguage}
           outputLanguage={outputLanguage}
           setOutputLanguage={setOutputLanguage}
+          submittedData={submittedData}
         />
         <Routes>
           <Route path="/login" element={<Login />} />

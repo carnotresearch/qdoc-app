@@ -62,9 +62,7 @@ function FileUrlForm({ setSubmittedData }) {
           },
         }
       );
-
-      // Store the HTML content
-      localStorage.setItem("htmlContent", response.data);
+      console.log(response.data);
 
       setSubmittedData({
         files,
