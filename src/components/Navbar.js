@@ -1,9 +1,7 @@
 import React from "react";
-import { Link, useNavigate, useLocation, defer } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import LanguageDropdown from "./LanguageDropdown";
 import Profile from "./profile";
-import PaymentForm from "./payment";
-import  { useState } from 'react';
 
 const Navbar = ({
   inputLanguage,
@@ -14,11 +12,7 @@ const Navbar = ({
   const navigate = useNavigate();
   const location = useLocation();
   const token = sessionStorage.getItem("token");
-  const [showComponent, setShowComponent] = useState(false);
   const paid= sessionStorage.getItem('paymentStatus');
-  const handleToggleComponent = () => {
-    setShowComponent(!showComponent);
-  };
   const handleLogout = () => {
     sessionStorage.removeItem("token");
     sessionStorage.removeItem("expiryTime");
