@@ -1,6 +1,9 @@
 import React from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate, useLocation, defer } from "react-router-dom";
 import LanguageDropdown from "./LanguageDropdown";
+import Profile from "./profile";
+import PaymentForm from "./payment";
+import  { useState } from 'react';
 
 const Navbar = ({
   inputLanguage,
@@ -11,11 +14,18 @@ const Navbar = ({
   const navigate = useNavigate();
   const location = useLocation();
   const token = sessionStorage.getItem("token");
-
+  const [showComponent, setShowComponent] = useState(false);
+  const paid= sessionStorage.getItem('paymentStatus');
+  const handleToggleComponent = () => {
+    setShowComponent(!showComponent);
+  };
   const handleLogout = () => {
     sessionStorage.removeItem("token");
     sessionStorage.removeItem("expiryTime");
+    sessionStorage.removeItem("paymentStatus");
+    sessionStorage.removeItem("googleauth");
     navigate("/login");
+
   };
 
   const handleLoginClick = () => {
@@ -57,6 +67,7 @@ const Navbar = ({
 
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-primary">
+      <Profile />
       <Link className="navbar-brand" style={{ marginLeft: "0.5cm" }} to="/">
         QDoc App
       </Link>
@@ -115,6 +126,18 @@ const Navbar = ({
                     onChange={setOutputLanguage}
                   />
                 </>
+              )}
+              {paid === '0' && (
+                <li className="nav-item">
+                  <Link to="/payment">
+                    <button
+                      className="btn btn-danger"
+                      style={{ marginRight: "0.25cm" }}
+                    >
+                      Upgrade
+                    </button>
+                  </Link>
+                </li>
               )}
               <li className="nav-item">
                 <button

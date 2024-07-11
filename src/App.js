@@ -5,6 +5,7 @@ import FileUrlForm from "./components/FileUrlForm";
 import ChatPage from "./components/ChatPage";
 import Login from "./components/Login";
 import ProtectedRoute from "./components/ProtectedRoute";
+import PaymentForm from "./components/payment";
 
 function App() {
   const [submittedData, setSubmittedData] = useState({ files: [], urls: [] });
@@ -27,6 +28,15 @@ function App() {
             element={
               <ProtectedRoute>
                 <FileUrlForm setSubmittedData={setSubmittedData} />
+              </ProtectedRoute>
+            }
+          />
+                    <Route
+            path="/payment"
+            element={
+              <ProtectedRoute>
+                
+              <PaymentForm></PaymentForm>
               </ProtectedRoute>
             }
           />
