@@ -40,8 +40,7 @@ function App() {
                     <Route
             path="/payment"
             element={
-              <ProtectedRoute>
-                
+              <ProtectedRoute> 
               <PaymentForm></PaymentForm>
               </ProtectedRoute>
             }
