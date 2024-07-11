@@ -6,3 +6,16 @@
     position: relative;
     z-index: 1; /* Ensure it appears above other background layers if any */
   }
+  .icon {
+    font-size: 24px;
+    cursor: pointer;
+  }
+  
+  .popup {
+    position: absolute;
+    top: 50px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    background-color: white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  }

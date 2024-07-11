@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import LanguageDropdown from "./LanguageDropdown";
+import Profile from "./profile";
 
 const Navbar = ({
   inputLanguage,
@@ -12,11 +13,14 @@ const Navbar = ({
   const navigate = useNavigate();
   const location = useLocation();
   const token = sessionStorage.getItem("token");
-
+  const paid= sessionStorage.getItem('paymentStatus');
   const handleLogout = () => {
     sessionStorage.removeItem("token");
     sessionStorage.removeItem("expiryTime");
+    sessionStorage.removeItem("paymentStatus");
+    sessionStorage.removeItem("googleauth");
     navigate("/login");
+
   };
 
   const handleLoginClick = () => {
@@ -82,6 +86,7 @@ const Navbar = ({
 
   return (
     <nav className="navbar navbar-expand-lg navbar-light">
+      <Profile />
       <Link
         className="navbar-brand"
         style={{ marginLeft: "0.5cm", color: "white" }}
@@ -144,6 +149,18 @@ const Navbar = ({
                     onChange={setOutputLanguage}
                   />
                 </>
+              )}
+              {paid === '0' && (
+                <li className="nav-item">
+                  <Link to="/payment">
+                    <button
+                      className="btn btn-danger"
+                      style={{ marginRight: "0.25cm" }}
+                    >
+                      Upgrade
+                    </button>
+                  </Link>
+                </li>
               )}
               <li className="nav-item">
                 <button
