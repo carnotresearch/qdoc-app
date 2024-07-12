@@ -53,7 +53,6 @@ function PaymentForm() {
       image: '../public/logo.png',
       handler: async function (response) {
         alert(`Payment successful! Payment ID: ${response.razorpay_payment_id}`);
-        
         // Send email to backend
         try {
           const apiResponse = await fetch('http://127.0.0.1:5000/updatepayment', {
