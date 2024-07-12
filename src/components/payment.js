@@ -30,7 +30,7 @@ function PaymentForm() {
       alert('Razorpay SDK failed to load. Are you online?');
       return;
     }
-    
+
     const selectedPlan = paymentPlanOptions.find(plan => plan.value === parseInt(paymentPlan));
   
     if (!selectedPlan) {
@@ -60,7 +60,7 @@ function PaymentForm() {
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ email: email , paymentPlan: paymentPlan.value}),
+            body: JSON.stringify({ email: email , paymentPlan: selectedPlan.value}),
           });
           const apiData = await apiResponse.json();
           console.log(apiData);

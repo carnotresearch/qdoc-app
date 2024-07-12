@@ -27,7 +27,7 @@ function Profile() {
           .then(data => {
             if (data.status === 'paid') {
               sessionStorage.setItem('paymentStatus', 1);
-              setPaymentStatus('Paid Plan');
+              setPaymentStatus(`Paid Plan (Expires in ${data.remaining_days} days)`);
             } else {
               setPaymentStatus('Free Account');
               sessionStorage.setItem('paymentStatus', 0);
