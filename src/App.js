@@ -8,7 +8,7 @@ import Register from "./components/Register";
 import ForgotPassword from "./components/ForgotPassword";
 import ResetPassword from "./components/ResetPassword";
 import ProtectedRoute from "./components/ProtectedRoute";
-import PaymentForm from "./components/payment";
+import PaymentForm from "./components/PaymentForm";
 
 function App() {
   const [submittedData, setSubmittedData] = useState({ files: [], urls: [] });
@@ -38,11 +38,11 @@ function App() {
               </ProtectedRoute>
             }
           />
-                    <Route
+          <Route
             path="/payment"
             element={
-              <ProtectedRoute> 
-              <PaymentForm></PaymentForm>
+              <ProtectedRoute>
+                <PaymentForm />
               </ProtectedRoute>
             }
           />

@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import LanguageDropdown from "./LanguageDropdown";
-import Profile from "./profile";
+import Profile from "./Profile";
 import axios from "axios";
 
 const Navbar = ({

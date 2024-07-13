@@ -52,6 +52,7 @@ const Login = () => {
       });
       const expiryTime = Date.now() + 3600 * 1000;
       sessionStorage.setItem("token", response.data.token);
+      sessionStorage.setItem("expiryDate", response.data.expiryDate);
       sessionStorage.setItem("expiryTime", expiryTime.toString());
       sessionStorage.setItem("googleauth", 0);
       setIsLoading(false);
