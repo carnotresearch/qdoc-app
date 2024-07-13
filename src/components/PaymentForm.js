@@ -1,5 +1,7 @@
 import React, { useState } from "react";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
+
 function PaymentForm() {
   const [email, setEmail] = useState("");
   const [password] = useState("");
@@ -61,21 +63,14 @@ function PaymentForm() {
         );
         // Send email to backend
         try {
-          const apiResponse = await fetch(
-            "http://127.0.0.1:5000/updatepayment",
+          const response = await axios.post(
+            `${process.env.REACT_APP_UPGRADE_ACCOUNT_URL}`,
             {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                email: email,
-                paymentPlan: selectedPlan.value,
-              }),
+              email,
+              paymentPlan: selectedPlan.value,
             }
           );
-          const apiData = await apiResponse.json();
-          console.log(apiData);
+          console.log(response);
           navigate("/");
         } catch (error) {
           console.error("Error sending email to backend:", error);
