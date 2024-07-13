@@ -10,15 +10,20 @@ function Profile() {
 
   useEffect(() => {
     // Decode the token and extract the username
-    const { email } = jwtDecode(sessionStorage.getItem("token"));
-    setUsername(email);
-    const expiryDate = sessionStorage.getItem("expiryDate");
-    if (expiryDate) {
-      sessionStorage.setItem("paymentStatus", 1);
-      setPaymentStatus(`Premium Plan (Untill ${data.remaining_days})`);
-    } else {
-      setPaymentStatus("Free Account");
-      sessionStorage.setItem("paymentStatus", 0);
+    const token = sessionStorage.getItem("token");
+    if (token) {
+      const { email } = jwtDecode(token);
+      setUsername(email);
+
+      const expiryDate = sessionStorage.getItem("expiryDate");
+      if (expiryDate) {
+        sessionStorage.setItem("paymentStatus", 1);
+        // setPaymentStatus(`Premium Plan (Untill ${expiryDate})`);
+        setPaymentStatus("Premium plan");
+      } else {
+        setPaymentStatus("Free Trial");
+        sessionStorage.setItem("paymentStatus", 0);
+      }
     }
   }, [token]);
 
