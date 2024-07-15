@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import LanguageDropdown from "./LanguageDropdown";
-import Profile from "./profile";
+import Profile from "./Profile";
+import { MDBBtn } from "mdb-react-ui-kit";
+import { Spinner } from "react-bootstrap";
 import axios from "axios";
 
 const Navbar = ({
@@ -15,6 +17,9 @@ const Navbar = ({
   const location = useLocation();
   const token = sessionStorage.getItem("token");
   const paid = sessionStorage.getItem("paymentStatus");
+  const [isLoading, setIsLoading] = useState(false);
+  const [isGenerated, setIsGenerated] = useState(false);
+
   const handleLogout = () => {
     sessionStorage.removeItem("token");
     sessionStorage.removeItem("expiryTime");
@@ -27,17 +32,21 @@ const Navbar = ({
     navigate("/login", { state: { focusEmail: true } });
   };
 
-  const handleOpenHtml = async () => {
-    const formData = new FormData();
-    const files = submittedData.files;
-    const urls = submittedData.urls;
-    files.forEach((file) => formData.append("files", file));
-    urls.forEach((url, index) => formData.append(`urls[${index}]`, url));
-    const token = sessionStorage.getItem("token");
-    formData.append("token", token);
-    const googleauth = sessionStorage.getItem("googleauth");
-    formData.append("googleauth", googleauth);
+  const handleGenerateGraph = async () => {
+    setIsLoading(true);
     try {
+      // prepare request data
+      const formData = new FormData();
+      const files = submittedData.files;
+      const urls = submittedData.urls;
+      files.forEach((file) => formData.append("files", file));
+      urls.forEach((url, index) => formData.append(`urls[${index}]`, url));
+      const token = sessionStorage.getItem("token");
+      formData.append("token", token);
+      const googleauth = sessionStorage.getItem("googleauth");
+      formData.append("googleauth", googleauth);
+
+      // API call
       const response = await axios.post(
         `${process.env.REACT_APP_BACKEND_URL}/graph`,
         formData,
@@ -47,14 +56,24 @@ const Navbar = ({
           },
         }
       );
-      const htmlContent = response.data;
-      const newWindow = window.open();
-      newWindow.document.write(htmlContent);
-      newWindow.document.close();
+
+      // store graph in session storage
+      setIsLoading(false);
+      sessionStorage.setItem("graphContent", response.data);
+      setIsGenerated(true);
     } catch (error) {
+      setIsLoading(false);
       console.error("There was an error!", error);
       alert("Error generating graph, please try again");
     }
+  };
+
+  const handleOpenHtml = () => {
+    // open graph from session storage
+    const graphContent = sessionStorage.getItem("graphContent");
+    const newWindow = window.open();
+    newWindow.document.write(graphContent);
+    newWindow.document.close();
   };
 
   const languages = [
@@ -121,13 +140,28 @@ const Navbar = ({
               {location.pathname === "/chat" && (
                 <>
                   <li className="nav-item">
-                    <button
-                      className="btn btn-success"
-                      style={{ marginRight: "0.25cm" }}
-                      onClick={handleOpenHtml}
-                    >
-                      Graph
-                    </button>
+                    {isGenerated ? (
+                      <button
+                        className="btn btn-success"
+                        onClick={handleOpenHtml}
+                        style={{ marginRight: "0.25cm" }}
+                      >
+                        Open
+                      </button>
+                    ) : (
+                      <MDBBtn
+                        className="btn btn-success"
+                        onClick={handleGenerateGraph}
+                        style={{ marginRight: "0.25cm" }}
+                        disabled={isLoading}
+                      >
+                        {isLoading ? (
+                          <Spinner animation="border" size="sm" />
+                        ) : (
+                          "Graph"
+                        )}
+                      </MDBBtn>
+                    )}
                   </li>
                   <LanguageDropdown
                     label="Input"
