@@ -1,0 +1,89 @@
+/* navbar.css */
+body{
+    font-family: 'Roboto';
+}
+.navbar {
+    background-color: #002244; /* Deep navy blue */ /* Fix the navbar to the top */
+    width: 100%; /* Full width */
+    transition: top 0.3s ease-in-out; /* Smooth transition for appearance */
+    z-index: 1000; /* Ensure the navbar is above other content */
+}
+
+
+.navbar-brand {
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.navbar-brand:hover {
+    color: #ffcc00; 
+}
+
+/* Transparent buttons */
+.navbar .btn {
+    background-color: transparent;
+    color: white;
+    border: 2px solid transparent; /* Transparent border initially */
+    transition: all 0.3s ease; 
+}
+
+.navbar .btn:hover {
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5); 
+    transform: translateY(-2px); 
+    border: 2px solid white; 
+}
+
+.btn-purple {
+    background-color: #6f42c1; /* Purple color */
+    border-color: #6f42c1;
+    color: white;
+}
+
+.btn-graph {
+    background-color: #370f82; /* Purple color */
+    border-color: #6f42c1;
+    color: white;
+}
+
+.btn-purple:hover {
+    background-color: #5a32a3; /* Darker purple on hover */
+    border-color: #5a32a3;
+}
+
+/* Hover effects */
+.btn:hover {
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5); 
+    transform: translateY(-2px); 
+    border: 2px solid white; 
+}
+
+
+/* Dropdown styling */
+.dropdown-menu {
+    background-color: #003366; 
+}
+
+.dropdown-item {
+    color: white;
+}
+
+/* Responsive navbar toggle */
+.navbar-toggler {
+    border-color: white; 
+}
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'><path stroke='white' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/></svg>"); 
+}
+.logo-container {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%); /* Center horizontally */
+    top: 50%;
+    transform: translateY(-50%); /* Center vertically */
+    z-index: 1001; /* Make sure it's above the navbar */
+}
+
+.logo {
+    max-height: 40px; /* Adjust the maximum logo height as needed */
+}

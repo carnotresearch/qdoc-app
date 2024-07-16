@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Sidebar from "./Sidebar";
 import { Button, Container, Form } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import ReactMarkdown from "react-markdown";
 import {
   faBars,
   faUser,
@@ -46,8 +47,7 @@ function ChatPage({
   const chatHistoryRef = useRef(null);
   const recognition = useRef(null);
   const sttSupportedLanguagesRef = useRef(sttSupportedLanguages);
-
-  const ttsSupportedLanguages = ["1", "23"];
+  const ttsSupportedLanguages = ["1", "23"]; 
 
   useEffect(() => {
     setShowMicrophone(
@@ -232,7 +232,6 @@ function ChatPage({
       </div>
       <FileViewer files={submittedData.files} />
       <div className="chat-content">
-        <h2>QDoc by Carnot Research</h2>
         <div className="chat-history" ref={chatHistoryRef}>
           {chatHistory.map((chat, index) => (
             <div key={index} className="message-wrapper">
@@ -250,7 +249,9 @@ function ChatPage({
                   <FontAwesomeIcon icon={faRobot} className="icon" />
                 </div>
                 <div className="message-box">
-                  <span className="message-text">{chat.bot}</span>
+                <span className={"message-text"}>
+                    <ReactMarkdown>{chat.bot}</ReactMarkdown> 
+                  </span>
                   {chat.ttsSupport &&
                     (playingIndex === index ? (
                       <>

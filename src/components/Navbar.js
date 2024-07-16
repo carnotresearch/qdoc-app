@@ -5,7 +5,7 @@ import Profile from "./Profile";
 import { MDBBtn } from "mdb-react-ui-kit";
 import { Spinner } from "react-bootstrap";
 import axios from "axios";
-
+import '../styles/navbar.css'
 const Navbar = ({
   inputLanguage,
   setInputLanguage,
@@ -110,7 +110,7 @@ const Navbar = ({
         style={{ marginLeft: "0.5cm", color: "white" }}
         to="/"
       >
-        QDoc App
+        QDoc Chat
       </Link>
       <ul className="navbar-nav ms-auto">
         {token ? (
@@ -134,7 +134,7 @@ const Navbar = ({
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <b style={{ color: "white" }}>About Us</b>
+                  <b style={{ color: "white" }}>About Us ↗</b>
                 </a>
               </li>
               {location.pathname === "/chat" && (
@@ -158,7 +158,7 @@ const Navbar = ({
                         {isLoading ? (
                           <Spinner animation="border" size="sm" />
                         ) : (
-                          "Graph"
+                          "Graph ↗"
                         )}
                       </MDBBtn>
                     )}
@@ -187,7 +187,7 @@ const Navbar = ({
                 <li className="nav-item">
                   <Link to="/payment">
                     <button
-                      className="btn btn-danger"
+                      className="btn btn-purple"
                       style={{ marginRight: "0.25cm" }}
                     >
                       Upgrade
@@ -198,7 +198,7 @@ const Navbar = ({
               <li className="nav-item">
                 <button
                   className="btn btn-danger"
-                  style={{ marginRight: "0.25cm" }}
+                  style={{ marginRight: "0.25cm", color : "white" }}
                   onClick={handleLogout}
                 >
                   Logout
