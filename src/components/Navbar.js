@@ -5,7 +5,8 @@ import Profile from "./Profile";
 import { MDBBtn } from "mdb-react-ui-kit";
 import { Spinner } from "react-bootstrap";
 import axios from "axios";
-import '../styles/navbar.css'
+import "../styles/navbar.css";
+
 const Navbar = ({
   inputLanguage,
   setInputLanguage,
@@ -58,8 +59,8 @@ const Navbar = ({
       );
 
       // store graph in session storage
-      setIsLoading(false);
       sessionStorage.setItem("graphContent", response.data);
+      setIsLoading(false);
       setIsGenerated(true);
     } catch (error) {
       setIsLoading(false);
@@ -146,7 +147,7 @@ const Navbar = ({
                         onClick={handleOpenHtml}
                         style={{ marginRight: "0.25cm" }}
                       >
-                        Open
+                        Open ↗
                       </button>
                     ) : (
                       <MDBBtn
@@ -158,7 +159,7 @@ const Navbar = ({
                         {isLoading ? (
                           <Spinner animation="border" size="sm" />
                         ) : (
-                          "Graph ↗"
+                          "Graph"
                         )}
                       </MDBBtn>
                     )}
@@ -198,7 +199,7 @@ const Navbar = ({
               <li className="nav-item">
                 <button
                   className="btn btn-danger"
-                  style={{ marginRight: "0.25cm", color : "white" }}
+                  style={{ marginRight: "0.25cm", color: "white" }}
                   onClick={handleLogout}
                 >
                   Logout

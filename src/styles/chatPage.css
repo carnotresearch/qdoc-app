@@ -2,6 +2,14 @@
     display: flex;
     min-height: 92vh;
   }
+
+  /* for mobile devices */
+  @media (max-width: 767px) {
+    .chat-container {
+      min-height: 85vh;
+      max-height: 86vh;
+    }
+  }
   
   .sidebar {
     position: relative;
