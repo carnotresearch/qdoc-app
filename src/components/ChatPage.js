@@ -3,7 +3,6 @@ import Sidebar from "./Sidebar";
 import { Button, Container, Form } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ReactMarkdown from "react-markdown";
-//import '../styles/newchatpage.css';
 import {
   faBars,
   faUser,
