@@ -47,7 +47,7 @@ function ChatPage({
   const chatHistoryRef = useRef(null);
   const recognition = useRef(null);
   const sttSupportedLanguagesRef = useRef(sttSupportedLanguages);
-  const ttsSupportedLanguages = ["1", "23"]; 
+  const ttsSupportedLanguages = ["1", "23"];
 
   useEffect(() => {
     setShowMicrophone(
@@ -240,7 +240,10 @@ function ChatPage({
                   <FontAwesomeIcon icon={faUser} className="icon" />
                 </div>
                 <div className="message-box">
-                  <span className="message-text">{chat.user}</span>
+                  <span className="message-text">
+                    <b>Your Query: </b>
+                    {chat.user}
+                  </span>
                   <span className="message-time">{chat.timestamp}</span>
                 </div>
               </div>
@@ -249,8 +252,9 @@ function ChatPage({
                   <FontAwesomeIcon icon={faRobot} className="icon" />
                 </div>
                 <div className="message-box">
-                <span className={"message-text"}>
-                    <ReactMarkdown>{chat.bot}</ReactMarkdown> 
+                  <span className={"message-text"}>
+                    <b className="text-success">Qdoc response: </b>
+                    <ReactMarkdown>{chat.bot}</ReactMarkdown>
                   </span>
                   {chat.ttsSupport &&
                     (playingIndex === index ? (

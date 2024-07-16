@@ -38,7 +38,7 @@
     overflow-y: auto;
     padding: 10px;
     border: 1px solid #dee2e6;
-    max-height: 76vh;
+    max-height: 82vh;
     margin-bottom: 10px;
   }
   
@@ -55,7 +55,7 @@
   }
   
   .icon-wrapper {
-    display: flex;
+    display: none;
     align-items: center;
     justify-content: center;
     width: 40px;
@@ -63,6 +63,13 @@
     border-radius: 50%;
     background-color: #ffffff;
     margin-right: 10px;
+  }
+
+  /* Show the icon-wrapper on large screens */
+  @media (min-width: 1024px) {
+    .icon-wrapper {
+      display: flex;
+    }
   }
   
   .icon {
@@ -74,17 +81,14 @@
     padding: 10px;
     border-radius: 10px;
     position: relative;
-    max-width: 70%;
   }
   
   .message.user .message-box {
     background-color: #e0f7fa;
-    margin-left: 10px;
   }
   
   .message.bot .message-box {
     background-color: #e8eaf6;
-    margin-right: 10px;
   }
   
   .message-text {
