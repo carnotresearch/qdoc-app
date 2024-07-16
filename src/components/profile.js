@@ -48,7 +48,7 @@ function Profile() {
   return (
     <div className="App">
       <div className="icon" onClick={() => setShowPopup(!showPopup)}>
-        👤
+        <img src='/logo.png' alt="profile" className="logo" />
       </div>
       {showPopup && (
         <div className="popup">

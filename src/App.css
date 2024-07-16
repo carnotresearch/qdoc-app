@@ -1,3 +1,6 @@
+body {
+  font-family: 'Roboto'; /* Replace 'Your Chosen Font' */
+}
 .App {
   text-align: center;
 }

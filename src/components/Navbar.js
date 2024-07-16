@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import LanguageDropdown from "./LanguageDropdown";
 import Profile from "./profile";
 import axios from "axios";
-
+import '../styles/navbar.css'
 const Navbar = ({
   inputLanguage,
   setInputLanguage,
@@ -91,7 +91,7 @@ const Navbar = ({
         style={{ marginLeft: "0.5cm", color: "white" }}
         to="/"
       >
-        QDoc App
+        QDoc Chat
       </Link>
       <ul className="navbar-nav ms-auto">
         {token ? (
@@ -115,18 +115,18 @@ const Navbar = ({
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <b style={{ color: "white" }}>About Us</b>
+                  <b style={{ color: "white" }}>About Us ↗</b>
                 </a>
               </li>
               {location.pathname === "/chat" && (
                 <>
                   <li className="nav-item">
                     <button
-                      className="btn btn-success"
+                      className="btn btn-graph"
                       style={{ marginRight: "0.25cm" }}
                       onClick={handleOpenHtml}
                     >
-                      Graph
+                      Graph ↗
                     </button>
                   </li>
                   <LanguageDropdown
@@ -153,7 +153,7 @@ const Navbar = ({
                 <li className="nav-item">
                   <Link to="/payment">
                     <button
-                      className="btn btn-danger"
+                      className="btn btn-purple"
                       style={{ marginRight: "0.25cm" }}
                     >
                       Upgrade
@@ -164,7 +164,7 @@ const Navbar = ({
               <li className="nav-item">
                 <button
                   className="btn btn-danger"
-                  style={{ marginRight: "0.25cm" }}
+                  style={{ marginRight: "0.25cm", color : "white" }}
                   onClick={handleLogout}
                 >
                   Logout
