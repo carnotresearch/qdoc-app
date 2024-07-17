@@ -46,8 +46,13 @@ function ChatPage({
   const navigate = useNavigate();
   const chatHistoryRef = useRef(null);
   const recognition = useRef(null);
+  const inputRef = useRef(null);
   const sttSupportedLanguagesRef = useRef(sttSupportedLanguages);
   const ttsSupportedLanguages = ["1", "23"];
+
+  useEffect(() => {
+    inputRef.current.focus();
+  }, []);
 
   useEffect(() => {
     setShowMicrophone(
@@ -302,6 +307,7 @@ function ChatPage({
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             placeholder="Type your message"
+            ref={inputRef}
           />
           {showMicrophone && (
             <Button
