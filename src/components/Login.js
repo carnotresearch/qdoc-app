@@ -66,11 +66,12 @@ const Login = () => {
     }
   };
 
-  const handlegoogleSubmit = async (tok) => {
+  const handlegoogleSubmit = async (googleToken) => {
     try {
       setIsLoading(true);
+      console.log(jwtDecode(googleToken));
       const expiryTime = Date.now() + 3600 * 1000;
-      sessionStorage.setItem("token", tok);
+      sessionStorage.setItem("token", googleToken);
       sessionStorage.setItem("expiryTime", expiryTime.toString());
       sessionStorage.setItem("googleauth", 1);
       setIsLoading(false);
@@ -130,7 +131,6 @@ const Login = () => {
               <p>Please login to your account</p>
               <GoogleLogin
                 onSuccess={(credentialResponse) => {
-                  console.log(jwtDecode(credentialResponse.credential));
                   handlegoogleSubmit(credentialResponse.credential);
                 }}
                 onError={() => {
