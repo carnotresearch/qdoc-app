@@ -8,14 +8,9 @@
   margin: 0px;
 }
 
-html{
-  font-size: 10px;
-}
-
 body{
   font-family: "Poppins", sans-serif;
   height: 100vh;
-
 }
 
 .login-main{
@@ -24,7 +19,7 @@ body{
 
 .login-left{
   flex-grow: 1;
-  height: 100vh;
+  height: calc(100vh - 60px);
   background-color: #E9E9E9;
 
   display: flex;
@@ -33,16 +28,28 @@ body{
 }
 
 .login-left img{
-  width: 400px;
+  width: 300px;
 }
 
 .login-right{
-
-  height: 100vh;
-
+  height: calc(100vh - 60px);
   flex-grow: 1;
+}
 
+/* for small screens */
+@media (max-width: 767px) {
+  .login-main {
+    flex-direction: column;
+    align-items: center;
+  }
 
+  .login-right {
+    width: 100%;
+  }
+
+  .login-left {
+    display: none;
+  }
 }
 
 .login-right-container{
@@ -75,7 +82,7 @@ body{
 }
 
 .login-center h2{
-  font-size: 3.5rem;
+  font-size: 2rem;
 }
 
 .login-center{
@@ -84,7 +91,7 @@ body{
 
 .login-center p{
   font-weight: 400;
-  font-size: 2rem;
+  font-size: 1.5rem;
   margin-bottom: 40px;
 }
 
@@ -92,7 +99,7 @@ form input[type='email'],
 form input[type='password'],
 form input[type='text']
  {
-  font-size: 1.7rem;
+  font-size: 1.2rem;
   width: 100%;
   padding: 16px;
   margin-bottom: 16px;
@@ -134,7 +141,7 @@ form button[type='button'] {
 
 .forgot-pass-link{
   text-decoration: none;
-  font-size: 1.3rem;
+  font-size: 1.1rem;
 }
 
 .forgot-pass-link:hover{
@@ -177,7 +184,7 @@ form button[type='button'] {
 
 .login-bottom-p{
   text-align: center;
-  font-size: 1.5rem;
+  font-size: 1rem;
   padding-bottom: 40px;
 }
 
