@@ -1,15 +1,15 @@
 .chat-container {
     display: flex;
-    min-height: 92vh;
+    height: calc(100vh - 60px);
   }
 
   /* for mobile devices */
-  @media (max-width: 767px) {
+  /* @media (max-width: 767px) {
     .chat-container {
       min-height: 85vh;
       max-height: 86vh;
     }
-  }
+  } */
   
   .sidebar {
     position: relative;
