@@ -219,9 +219,9 @@ function ChatPage({
 
   const iconStyles = { color: "green", marginRight: "5px" };
   const startingQuestions = [
-    "Summarize the document.",
-    "Explain any point from the document.",
-    "Brief me about the first page of the document.",
+    "Summarise the document.",
+    "Give me any five silent issues highlighted in the document.",
+    "Explain one feature mentioned in the document.",
   ];
 
   return (
@@ -251,8 +251,8 @@ function ChatPage({
               <span className="message-text">
                 <b>Welcome to Qdoc! </b>
                 <p>
-                  Qdoc allows you to chat with multiple documents and can answer
-                  any query related to the document.
+                  Qdoc allows you to chat with multiple documents using multiple
+                  languages, and also view the knowledge graph.
                 </p>
                 <ul className="custom-list">
                   {startingQuestions.map((question) => (
