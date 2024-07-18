@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Sidebar from "./Sidebar";
 import { Button, Container, Form } from "react-bootstrap";
+import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ReactMarkdown from "react-markdown";
 import {
@@ -216,6 +217,13 @@ function ChatPage({
     setSubmittedData({ ...submittedData, urls: newUrls });
   };
 
+  const iconStyles = { color: "green", marginRight: "5px" };
+  const startingQuestions = [
+    "Summarize the document.",
+    "Explain any point from the document.",
+    "Brief me about the first page of the document.",
+  ];
+
   return (
     <Container fluid className="chat-container">
       <div className={`sidebar ${sidebarCollapsed ? "collapsed" : ""}`}>
@@ -238,6 +246,28 @@ function ChatPage({
       <FileViewer files={submittedData.files} />
       <div className="chat-content">
         <div className="chat-history" ref={chatHistoryRef}>
+          <div className="message bot">
+            <div className="message-box">
+              <span className="message-text">
+                <b>Welcome to Qdoc! </b>
+                <p>
+                  Qdoc allows you to chat with multiple documents and can answer
+                  any query related to the document.
+                </p>
+                <ul className="custom-list">
+                  {startingQuestions.map((question) => (
+                    <li>
+                      <FontAwesomeIcon
+                        icon={faCheckCircle}
+                        style={iconStyles}
+                      />
+                      {question}
+                    </li>
+                  ))}
+                </ul>
+              </span>
+            </div>
+          </div>
           {chatHistory.map((chat, index) => (
             <div key={index} className="message-wrapper">
               <div className="message user">
