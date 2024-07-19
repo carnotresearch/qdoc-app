@@ -8,80 +8,47 @@ function FileViewer({ files }) {
 
   useEffect(() => {
     const loadFiles = async () => {
-      const txtFiles = files.filter((file) => file.type === "text/plain");
-      const docxFiles = files.filter(
-        (file) =>
-          file.type ===
-          "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+      const contents = await Promise.all(
+        files.map(async (file) => {
+          if (file.type === "application/pdf") {
+            // For PDFs, we only create a URL
+            const url = URL.createObjectURL(file);
+            return { name: file.name, content: url, type: "pdf" };
+          } else if (file.type === "text/plain") {
+            const text = await readTextFile(file);
+            return { name: file.name, content: text, type: "text" };
+          } else if (file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
+            const html = await readDocxFile(file);
+            return { name: file.name, content: html, type: "docx" };
+          }
+          return null;
+        })
       );
-      const pdfFiles = files.filter((file) => file.type === "application/pdf");
-
-      const txtContents = await Promise.all(
-        txtFiles.map((file) => readFile(file, "text"))
-      );
-      const docxContents = await Promise.all(
-        docxFiles.map((file) => readDocxFile(file))
-      );
-      const pdfContents = await Promise.all(
-        pdfFiles.map((file) => readPdfFile(file))
-      );
-
-      setFileContents([...txtContents, ...docxContents, ...pdfContents]);
+      setFileContents(contents.filter(content => content !== null));
     };
 
     loadFiles();
   }, [files]);
 
-  const readFile = (file, fileType) => {
-    return new Promise((resolve, reject) => {
+  const readTextFile = (file) => {
+    return new Promise((resolve) => {
       const reader = new FileReader();
-
-      reader.onload = async (e) => {
-        const content = e.target.result;
-        if (fileType === "text") {
-          resolve({ name: file.name, content: [content], type: file.type });
-        }
-      };
-
-      reader.onerror = reject;
-      if (fileType === "text") {
-        reader.readAsText(file);
-      }
+      reader.onload = (e) => resolve(e.target.result);
+      reader.readAsText(file);
     });
   };
 
   const readDocxFile = (file) => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
-
       reader.onload = async (e) => {
-        const arrayBuffer = e.target.result;
         try {
-          const result = await mammoth.convertToHtml({ arrayBuffer });
-          const htmlContent = result.value;
-          resolve({ name: file.name, content: [htmlContent], type: file.type });
+          const result = await mammoth.convertToHtml({ arrayBuffer: e.target.result });
+          resolve(result.value);
         } catch (error) {
           reject(error);
         }
       };
-
-      reader.onerror = reject;
-      reader.readAsArrayBuffer(file);
-    });
-  };
-
-  const readPdfFile = (file) => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-
-      reader.onload = async (e) => {
-        const arrayBuffer = e.target.result;
-        const blob = new Blob([arrayBuffer], { type: file.type });
-        const url = URL.createObjectURL(blob);
-        resolve({ name: file.name, content: url, type: file.type });
-      };
-
-      reader.onerror = reject;
       reader.readAsArrayBuffer(file);
     });
   };
@@ -91,14 +58,12 @@ function FileViewer({ files }) {
       {fileContents.map((file, index) => (
         <div key={index} className="file-page">
           <h4>{file.name}</h4>
-          {file.type === "application/pdf" ? (
+          {file.type === "pdf" ? (
             <PdfViewer pdfUrl={file.content} />
           ) : (
-            file.content.map((page, pageIndex) => (
-              <div key={pageIndex} className="doc-page">
-                <div dangerouslySetInnerHTML={{ __html: page }} />
-              </div>
-            ))
+            <div className="doc-page">
+              <div dangerouslySetInnerHTML={{ __html: file.content }} />
+            </div>
           )}
         </div>
       ))}

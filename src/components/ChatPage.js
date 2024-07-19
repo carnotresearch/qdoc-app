@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Sidebar from "./Sidebar";
 import { Button, Container, Form } from "react-bootstrap";
+import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ReactMarkdown from "react-markdown";
 import {
@@ -46,8 +47,13 @@ function ChatPage({
   const navigate = useNavigate();
   const chatHistoryRef = useRef(null);
   const recognition = useRef(null);
+  const inputRef = useRef(null);
   const sttSupportedLanguagesRef = useRef(sttSupportedLanguages);
   const ttsSupportedLanguages = ["1", "23"];
+
+  useEffect(() => {
+    inputRef.current.focus();
+  }, []);
 
   useEffect(() => {
     setShowMicrophone(
@@ -209,6 +215,13 @@ function ChatPage({
     setSubmittedData({ ...submittedData, urls: newUrls });
   };
 
+  const iconStyles = { color: "green", marginRight: "5px" };
+  const startingQuestions = [
+    "Summarise the document.",
+    "Give me any five silent issues highlighted in the document.",
+    "Explain one feature mentioned in the document.",
+  ];
+
   return (
     <Container fluid className="chat-container">
       <div className={`sidebar ${sidebarCollapsed ? "collapsed" : ""}`}>
@@ -231,6 +244,28 @@ function ChatPage({
       <FileViewer files={submittedData.files} />
       <div className="chat-content">
         <div className="chat-history" ref={chatHistoryRef}>
+          <div className="message bot">
+            <div className="message-box">
+              <span className="message-text">
+                <b>Welcome to Qdoc! </b>
+                <p>
+                  Qdoc allows you to chat with multiple documents using multiple
+                  languages, and also view the knowledge graph.
+                </p>
+                <ul className="custom-list">
+                  {startingQuestions.map((question) => (
+                    <li>
+                      <FontAwesomeIcon
+                        icon={faCheckCircle}
+                        style={iconStyles}
+                      />
+                      {question}
+                    </li>
+                  ))}
+                </ul>
+              </span>
+            </div>
+          </div>
           {chatHistory.map((chat, index) => (
             <div key={index} className="message-wrapper">
               <div className="message user">
@@ -300,6 +335,7 @@ function ChatPage({
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             placeholder="Type your message"
+            ref={inputRef}
           />
           {showMicrophone && (
             <Button

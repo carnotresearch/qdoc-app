@@ -1,13 +1,12 @@
 .chat-container {
     display: flex;
-    min-height: 92vh;
+    height: calc(100vh - 60px);
   }
 
   /* for mobile devices */
   @media (max-width: 767px) {
     .chat-container {
-      min-height: 85vh;
-      max-height: 86vh;
+      height: 80vh;
     }
   }
   
@@ -85,7 +84,6 @@
   }
   
   .message-box {
-    background-color: #f1f1f1;
     padding: 10px;
     border-radius: 10px;
     position: relative;
@@ -121,5 +119,16 @@
   @keyframes typing {
     from { width: 0 }
     to { width: 100% }
+  }
+  
+  .custom-list {
+    list-style-type: none;
+    padding-left: 0;
+  }
+  
+  .custom-list li {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
   }
   

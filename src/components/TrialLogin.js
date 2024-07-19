@@ -21,8 +21,8 @@ const TrialLogin = () => {
             <img src="/logo.png" alt="" />
           </div>
           <div className="login-center">
-            <h2>Welcome back!</h2>
-            <p>Please enter your details</p>
+            <h2>Carnot Research</h2>
+            <p>Welcome back!</p>
             <form>
               <input type="email" placeholder="Email" />
               <div className="pass-input-div">

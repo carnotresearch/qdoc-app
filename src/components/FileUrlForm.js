@@ -116,6 +116,7 @@ function FileUrlForm({ setSubmittedData }) {
                 <Form.Label>Upload Files</Form.Label>
                 <Form.Control
                   type="file"
+                  accept=".txt,.pdf,.docx"
                   multiple
                   onChange={handleFileChange}
                 />
