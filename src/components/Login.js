@@ -13,7 +13,6 @@ import { Spinner } from "react-bootstrap";
 import "./styles.css";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { GoogleLogin } from "@react-oauth/google";
-import { jwtDecode } from "jwt-decode";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -69,11 +68,19 @@ const Login = () => {
   const handlegoogleSubmit = async (googleToken) => {
     try {
       setIsLoading(true);
-      console.log(jwtDecode(googleToken));
+      console.log(googleToken);
+
+      const response = await axios.post(
+        `${process.env.REACT_APP_GOOGLE_LOGIN_URL}`,
+        { googleToken }
+      );
       const expiryTime = Date.now() + 3600 * 1000;
-      sessionStorage.setItem("token", googleToken);
+      sessionStorage.setItem("token", response.data.token);
+      if (response.data.expiryDate) {
+        sessionStorage.setItem("expiryDate", response.data.expiryDate);
+      }
       sessionStorage.setItem("expiryTime", expiryTime.toString());
-      sessionStorage.setItem("googleauth", 1);
+      sessionStorage.setItem("googleauth", 0);
       setIsLoading(false);
       navigate("/");
     } catch (error) {
