@@ -92,8 +92,22 @@ const Login = () => {
     padding: "10px",
   };
 
+  const noticeStyles = {
+    backgroundColor: "red",
+    color: "white",
+    textAlign: "center",
+    fontWeight: "bold",
+    marginBottom: "20px",
+  };
+
   return (
     <GoogleOAuthProvider clientId="936119028466-gbbi3ejafmef3o0u2ebo2j8v8me98qbi.apps.googleusercontent.com">
+      <div style={noticeStyles}>
+        <p>
+          This is beta testing. The website will be available from 11am to 7pm
+          IST only.
+        </p>
+      </div>
       <MDBContainer className="my-5 gradient-form align-items-center justify-content-center">
         <MDBRow>
           <MDBCol lg="6" md="12" sm="12" className="mb-5">
