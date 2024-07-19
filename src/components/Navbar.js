@@ -25,7 +25,6 @@ const Navbar = ({
     sessionStorage.removeItem("token");
     sessionStorage.removeItem("expiryTime");
     sessionStorage.removeItem("paymentStatus");
-    sessionStorage.removeItem("googleauth");
     navigate("/login");
   };
 
@@ -44,8 +43,6 @@ const Navbar = ({
       urls.forEach((url, index) => formData.append(`urls[${index}]`, url));
       const token = sessionStorage.getItem("token");
       formData.append("token", token);
-      const googleauth = sessionStorage.getItem("googleauth");
-      formData.append("googleauth", googleauth);
 
       // API call
       const response = await axios.post(

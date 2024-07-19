@@ -55,7 +55,6 @@ const Login = () => {
         sessionStorage.setItem("expiryDate", response.data.expiryDate);
       }
       sessionStorage.setItem("expiryTime", expiryTime.toString());
-      sessionStorage.setItem("googleauth", 0);
       setIsLoading(false);
       navigate("/");
     } catch (error) {
@@ -80,7 +79,6 @@ const Login = () => {
         sessionStorage.setItem("expiryDate", response.data.expiryDate);
       }
       sessionStorage.setItem("expiryTime", expiryTime.toString());
-      sessionStorage.setItem("googleauth", 0);
       setIsLoading(false);
       navigate("/");
     } catch (error) {

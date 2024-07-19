@@ -50,8 +50,6 @@ function FileUrlForm({ setSubmittedData }) {
     urls.forEach((url, index) => formData.append(`urls[${index}]`, url));
     const token = sessionStorage.getItem("token");
     formData.append("token", token);
-    const googleauth = sessionStorage.getItem("googleauth");
-    formData.append("googleauth", googleauth);
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_BACKEND_URL}/upload`,
