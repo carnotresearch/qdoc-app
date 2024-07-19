@@ -253,8 +253,8 @@ function ChatPage({
                   languages, and also view the knowledge graph.
                 </p>
                 <ul className="custom-list">
-                  {startingQuestions.map((question) => (
-                    <li>
+                  {startingQuestions.map((question, index) => (
+                    <li key={index}>
                       <FontAwesomeIcon
                         icon={faCheckCircle}
                         style={iconStyles}
@@ -332,6 +332,7 @@ function ChatPage({
         <Form className="d-flex" onSubmit={handleSubmit}>
           <Form.Control
             type="text"
+            id="query"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             placeholder="Type your message"

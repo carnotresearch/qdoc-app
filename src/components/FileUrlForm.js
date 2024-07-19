@@ -116,6 +116,7 @@ function FileUrlForm({ setSubmittedData }) {
                 <Form.Label>Upload Files</Form.Label>
                 <Form.Control
                   type="file"
+                  id="file"
                   accept=".txt,.pdf,.docx"
                   multiple
                   onChange={handleFileChange}
@@ -125,6 +126,7 @@ function FileUrlForm({ setSubmittedData }) {
                 <Form.Label>Enter URL</Form.Label>
                 <Form.Control
                   type="text"
+                  id="url"
                   value={newUrl}
                   onChange={handleUrlChange}
                   placeholder="Enter URL"
