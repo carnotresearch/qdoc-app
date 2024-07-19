@@ -135,7 +135,7 @@ const Navbar = ({
                   <b style={{ color: "white" }}>About Us ↗</b>
                 </a>
               </li>
-              {location.pathname === "/chat" && (
+              {location.pathname === "/" && (
                 <>
                   <li className="nav-item">
                     {isGenerated ? (

@@ -15,7 +15,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import FileViewer from "./FileViewer";
 import "../styles/chatPage.css";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const sttSupportedLanguages = {
@@ -44,7 +44,7 @@ function ChatPage({
   const [playingIndex, setPlayingIndex] = useState(null); // Index of currently playing response
   const [pausedIndex, setPausedIndex] = useState(null); // Index of currently paused response
   const [showMicrophone, setShowMicrophone] = useState(true);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const chatHistoryRef = useRef(null);
   const recognition = useRef(null);
   const inputRef = useRef(null);
@@ -61,11 +61,11 @@ function ChatPage({
     );
   }, [inputLanguage]);
 
-  useEffect(() => {
-    if (!submittedData.files.length && !submittedData.urls.length) {
-      navigate("/");
-    }
-  }, [submittedData, navigate]);
+  // useEffect(() => {
+  //   if (!submittedData.files.length && !submittedData.urls.length) {
+  //     navigate("/");
+  //   }
+  // }, [submittedData, navigate]);
 
   useEffect(() => {
     if (chatHistoryRef.current) {
@@ -234,8 +234,8 @@ function ChatPage({
         </Button>
         {!sidebarCollapsed && (
           <Sidebar
-            files={submittedData.files}
-            urls={submittedData.urls}
+            submittedData={submittedData}
+            setSubmittedData={setSubmittedData}
             removeFile={removeFile}
             removeUrl={removeUrl}
           />
