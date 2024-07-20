@@ -1,16 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { ListGroup, Form, Button } from "react-bootstrap";
 
 function Sidebar({ prevfiles, urls = [], removeFile, removeUrl }) {
   const [files, setFiles] = useState([]);
   const [uploads, setUploads] = useState([]);
+  const fileInputRef = useRef(null);
+
   const handleFileChange = (event) => {
     setUploads([...event.target.files]);
   };
 
   const handleSubmit = () => {
     setFiles([...uploads]);
-    console.log("uploads: ", uploads);
+    fileInputRef.current.value = "";
+    setUploads([]);
   };
 
   const marginStyle = { marginTop: "1.5cm" };
@@ -32,6 +35,7 @@ function Sidebar({ prevfiles, urls = [], removeFile, removeUrl }) {
             accept=".txt,.pdf,.docx"
             multiple
             onChange={handleFileChange}
+            ref={fileInputRef}
           />
         </Form.Group>
         {uploads.length > 0 && (
