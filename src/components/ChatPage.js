@@ -33,7 +33,7 @@ const sttSupportedLanguages = {
 function ChatPage({ inputLanguage, outputLanguage }) {
   const [chatHistory, setChatHistory] = useState([]);
   const [message, setMessage] = useState("");
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [recognizing, setRecognizing] = useState(false);
   const [currentUtterance, setCurrentUtterance] = useState(null);
   const [playingIndex, setPlayingIndex] = useState(null); // Index of currently playing response
@@ -45,7 +45,6 @@ function ChatPage({ inputLanguage, outputLanguage }) {
   const sttSupportedLanguagesRef = useRef(sttSupportedLanguages);
   const ttsSupportedLanguages = ["1", "23"];
   const { files } = useContext(FileContext);
-  console.log("initial files, here: ", files);
 
   useEffect(() => {
     setChatHistory([]);
