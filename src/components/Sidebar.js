@@ -77,6 +77,8 @@ function Sidebar({ files = [] }) {
     whiteSpace: "normal",
     wordWrap: "break-word",
     overflow: "hidden",
+    color: "white",
+    backgroundColor: "#4e749c",
   };
 
   return (
@@ -103,25 +105,21 @@ function Sidebar({ files = [] }) {
               className="p-1"
               style={{ border: "2px dashed #ccc", textAlign: "center" }}
             >
-              <Card.Text>
-                {"+ New Chat\nDrop files here"
-                  .split("\n")
-                  .map((text, index) => (
-                    <div
-                      key={index}
-                      style={{ fontWeight: index === 0 ? "bold" : "normal" }}
-                    >
-                      {text}
-                    </div>
-                  ))}
-              </Card.Text>
+              {"+ New Chat\nDrop files here".split("\n").map((text, index) => (
+                <div
+                  key={index}
+                  style={{ fontWeight: index === 0 ? "bold" : "normal" }}
+                >
+                  {text}
+                </div>
+              ))}
             </Card>
           </div>
         </Form.Group>
         {uploads.length > 0 && (
           <div className="mt-3">
             <ListGroup>{renderFileDetails()}</ListGroup>
-            <Button className="mt-3 w-100" onClick={handleSubmit}>
+            <Button className="mt-2 mb-4 w-100" onClick={handleSubmit}>
               Submit
             </Button>
           </div>

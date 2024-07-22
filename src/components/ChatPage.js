@@ -6,8 +6,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ReactMarkdown from "react-markdown";
 import {
   faBars,
-  faUser,
-  faRobot,
   faMicrophone,
   faPause,
   faPlay,
@@ -240,9 +238,6 @@ function ChatPage({ inputLanguage, outputLanguage }) {
           {chatHistory.map((chat, index) => (
             <div key={index} className="message-wrapper">
               <div className="message user">
-                <div className="icon-wrapper">
-                  <FontAwesomeIcon icon={faUser} className="icon" />
-                </div>
                 <div className="message-box">
                   <span className="message-text">
                     <b>Your Query: </b>
@@ -252,9 +247,6 @@ function ChatPage({ inputLanguage, outputLanguage }) {
                 </div>
               </div>
               <div className="message bot">
-                <div className="icon-wrapper">
-                  <FontAwesomeIcon icon={faRobot} className="icon" />
-                </div>
                 <div className="message-box">
                   <span className={"message-text"}>
                     <b className="text-success">Qdoc response: </b>

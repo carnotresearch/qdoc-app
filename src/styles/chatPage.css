@@ -1,6 +1,7 @@
 .chat-container {
     display: flex;
     height: calc(100vh - 60px);
+    padding: 0;
   }
 
   /* for mobile devices */
@@ -59,25 +60,9 @@
     display: flex;
     align-items: center;
     margin-bottom: 10px;
+    flex-direction: row;
+    justify-content: flex-start;
   }
-  
-  .icon-wrapper {
-    display: none;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background-color: #ffffff;
-    margin-right: 10px;
-  }
-
-  /* Show the icon-wrapper on large screens */
-  /* @media (min-width: 992px) {
-    .icon-wrapper {
-      display: flex;
-    }
-  } */
   
   .icon {
     font-size: 1.5rem;
@@ -88,13 +73,20 @@
     border-radius: 10px;
     position: relative;
   }
+
+  .message.user {
+    justify-content: flex-end; /* Align user messages to the right */
+  }
   
   .message.user .message-box {
     background-color: #e0f7fa;
+    align-self: flex-end;
+    max-width: 70%;
   }
   
   .message.bot .message-box {
     background-color: #e8eaf6;
+    max-width: 95%;
   }
   
   .message-text {
