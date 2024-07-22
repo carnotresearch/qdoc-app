@@ -1,14 +1,14 @@
-import React, { useState, useRef } from "react";
-// import { useNavigate } from "react-router-dom";
+import React, { useState, useRef, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { ListGroup, Form, Button } from "react-bootstrap";
 import axios from "axios";
+import { FileContext } from "./FileContext";
 
-function Sidebar({ prevfiles, urls = [], removeFile, removeUrl }) {
-  const [files, setFiles] = useState([]);
+function Sidebar({ files = [] }) {
+  const { setFiles } = useContext(FileContext);
   const [uploads, setUploads] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
   const fileInputRef = useRef(null);
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const handleFileChange = (event) => {
     setUploads([...event.target.files]);
@@ -16,15 +16,14 @@ function Sidebar({ prevfiles, urls = [], removeFile, removeUrl }) {
 
   const handleSubmit = async () => {
     if (uploads.length > 0) {
-      setIsLoading(true);
+      console.log("processing files");
     } else {
-      alert("Please upload at least one file or URL");
+      alert("Please upload at least one file");
       return;
     }
 
     const formData = new FormData();
     uploads.forEach((file) => formData.append("files", file));
-    // urls.forEach((url, index) => formData.append(`urls[${index}]`, url));
     const token = sessionStorage.getItem("token");
     formData.append("token", token);
     try {
@@ -39,12 +38,11 @@ function Sidebar({ prevfiles, urls = [], removeFile, removeUrl }) {
       );
       console.log(response.data);
 
-      setFiles([...uploads]);
-      setIsLoading(false);
+      setFiles(uploads);
+      navigate("/");
     } catch (error) {
       console.error("Error uploading files: ", error);
       alert("Error getting the the response, please try again");
-      setIsLoading(false);
     }
 
     fileInputRef.current.value = "";
@@ -97,21 +95,6 @@ function Sidebar({ prevfiles, urls = [], removeFile, removeUrl }) {
             </Button> */}
             </ListGroup.Item>
           </a>
-        ))}
-      </ListGroup>
-      {urls.length > 0 && <h2 style={marginStyle}>URLs</h2>}
-      <ListGroup>
-        {urls.map((url, index) => (
-          <ListGroup.Item
-            key={index}
-            className="d-flex justify-content-between align-items-center"
-            style={listStyle}
-          >
-            {url}
-            {/* <Button variant="danger" size="sm" onClick={() => removeUrl(index)}>
-              Remove
-            </Button> */}
-          </ListGroup.Item>
         ))}
       </ListGroup>
     </div>

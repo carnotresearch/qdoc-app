@@ -4,7 +4,7 @@ import LanguageDropdown from "./LanguageDropdown";
 import Profile from "./Profile";
 import { MDBBtn } from "mdb-react-ui-kit";
 import { Spinner } from "react-bootstrap";
-import axios from "axios";
+// import axios from "axios";
 import "../styles/navbar.css";
 
 const Navbar = ({
@@ -12,7 +12,6 @@ const Navbar = ({
   setInputLanguage,
   outputLanguage,
   setOutputLanguage,
-  submittedData,
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -34,36 +33,42 @@ const Navbar = ({
 
   const handleGenerateGraph = async () => {
     setIsLoading(true);
-    try {
-      // prepare request data
-      const formData = new FormData();
-      const files = submittedData.files;
-      const urls = submittedData.urls;
-      files.forEach((file) => formData.append("files", file));
-      urls.forEach((url, index) => formData.append(`urls[${index}]`, url));
-      const token = sessionStorage.getItem("token");
-      formData.append("token", token);
+    console.log("This feature is not live yet!");
+    setIsLoading(false);
+    setIsGenerated(true);
+    // TODO
+    // move to sidebar.js
+    // setIsLoading(true);
+    // try {
+    //   // prepare request data
+    //   const formData = new FormData();
+    //   const files = submittedData.files;
+    //   const urls = submittedData.urls;
+    //   files.forEach((file) => formData.append("files", file));
+    //   urls.forEach((url, index) => formData.append(`urls[${index}]`, url));
+    //   const token = sessionStorage.getItem("token");
+    //   formData.append("token", token);
 
-      // API call
-      const response = await axios.post(
-        `${process.env.REACT_APP_BACKEND_URL}/graph`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+    //   // API call
+    //   const response = await axios.post(
+    //     `${process.env.REACT_APP_BACKEND_URL}/graph`,
+    //     formData,
+    //     {
+    //       headers: {
+    //         "Content-Type": "multipart/form-data",
+    //       },
+    //     }
+    //   );
 
-      // store graph in session storage
-      sessionStorage.setItem("graphContent", response.data);
-      setIsLoading(false);
-      setIsGenerated(true);
-    } catch (error) {
-      setIsLoading(false);
-      console.error("There was an error!", error);
-      alert("Error generating graph, please try again");
-    }
+    //   // store graph in session storage
+    //   sessionStorage.setItem("graphContent", response.data);
+    //   setIsLoading(false);
+    //   setIsGenerated(true);
+    // } catch (error) {
+    //   setIsLoading(false);
+    //   console.error("There was an error!", error);
+    //   alert("Error generating graph, please try again");
+    // }
   };
 
   const handleOpenHtml = () => {

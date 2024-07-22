@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import Sidebar from "./Sidebar";
 import { Button, Container, Form } from "react-bootstrap";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
@@ -14,8 +14,8 @@ import {
   faRedo,
 } from "@fortawesome/free-solid-svg-icons";
 import FileViewer from "./FileViewer";
+import { FileContext } from "./FileContext";
 import "../styles/chatPage.css";
-// import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const sttSupportedLanguages = {
@@ -30,12 +30,7 @@ const sttSupportedLanguages = {
   15: "ml-IN", // Malayalam
 };
 
-function ChatPage({
-  submittedData,
-  setSubmittedData,
-  inputLanguage,
-  outputLanguage,
-}) {
+function ChatPage({ inputLanguage, outputLanguage }) {
   const [chatHistory, setChatHistory] = useState([]);
   const [message, setMessage] = useState("");
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
@@ -44,28 +39,24 @@ function ChatPage({
   const [playingIndex, setPlayingIndex] = useState(null); // Index of currently playing response
   const [pausedIndex, setPausedIndex] = useState(null); // Index of currently paused response
   const [showMicrophone, setShowMicrophone] = useState(true);
-  // const navigate = useNavigate();
   const chatHistoryRef = useRef(null);
   const recognition = useRef(null);
   const inputRef = useRef(null);
   const sttSupportedLanguagesRef = useRef(sttSupportedLanguages);
   const ttsSupportedLanguages = ["1", "23"];
+  const { files } = useContext(FileContext);
+  console.log("initial files, here: ", files);
 
   useEffect(() => {
+    setChatHistory([]);
     inputRef.current.focus();
-  }, []);
+  }, [files]);
 
   useEffect(() => {
     setShowMicrophone(
       sttSupportedLanguagesRef.current.hasOwnProperty(inputLanguage)
     );
   }, [inputLanguage]);
-
-  // useEffect(() => {
-  //   if (!submittedData.files.length && !submittedData.urls.length) {
-  //     navigate("/");
-  //   }
-  // }, [submittedData, navigate]);
 
   useEffect(() => {
     if (chatHistoryRef.current) {
@@ -203,18 +194,6 @@ function ChatPage({
     }
   };
 
-  const removeFile = (index) => {
-    const newFiles = [...submittedData.files];
-    newFiles.splice(index, 1);
-    setSubmittedData({ ...submittedData, files: newFiles });
-  };
-
-  const removeUrl = (index) => {
-    const newUrls = [...submittedData.urls];
-    newUrls.splice(index, 1);
-    setSubmittedData({ ...submittedData, urls: newUrls });
-  };
-
   const iconStyles = { color: "green", marginRight: "5px" };
   const startingQuestions = [
     "Summarise the document.",
@@ -232,16 +211,9 @@ function ChatPage({
         >
           <FontAwesomeIcon icon={faBars} />
         </Button>
-        {!sidebarCollapsed && (
-          <Sidebar
-            submittedData={submittedData}
-            setSubmittedData={setSubmittedData}
-            removeFile={removeFile}
-            removeUrl={removeUrl}
-          />
-        )}
+        {!sidebarCollapsed && <Sidebar files={files} />}
       </div>
-      <FileViewer files={submittedData.files} />
+      <FileViewer files={files} />
       <div className="chat-content">
         <div className="chat-history" ref={chatHistoryRef}>
           <div className="message bot">
