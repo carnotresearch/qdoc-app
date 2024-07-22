@@ -1,17 +1,52 @@
 import React, { useState, useRef } from "react";
+// import { useNavigate } from "react-router-dom";
 import { ListGroup, Form, Button } from "react-bootstrap";
+import axios from "axios";
 
 function Sidebar({ prevfiles, urls = [], removeFile, removeUrl }) {
   const [files, setFiles] = useState([]);
   const [uploads, setUploads] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const fileInputRef = useRef(null);
+  // const navigate = useNavigate();
 
   const handleFileChange = (event) => {
     setUploads([...event.target.files]);
   };
 
-  const handleSubmit = () => {
-    setFiles([...uploads]);
+  const handleSubmit = async () => {
+    if (uploads.length > 0) {
+      setIsLoading(true);
+    } else {
+      alert("Please upload at least one file or URL");
+      return;
+    }
+
+    const formData = new FormData();
+    uploads.forEach((file) => formData.append("files", file));
+    // urls.forEach((url, index) => formData.append(`urls[${index}]`, url));
+    const token = sessionStorage.getItem("token");
+    formData.append("token", token);
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_BACKEND_URL}/upload`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      console.log(response.data);
+
+      setFiles([...uploads]);
+      setIsLoading(false);
+    } catch (error) {
+      console.error("Error uploading files: ", error);
+      alert("Error getting the the response, please try again");
+      setIsLoading(false);
+    }
+
     fileInputRef.current.value = "";
     setUploads([]);
   };
