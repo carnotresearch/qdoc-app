@@ -47,7 +47,9 @@ function ChatPage({ inputLanguage, outputLanguage }) {
   useEffect(() => {
     setChatHistory([]);
     inputRef.current.focus();
-    setSidebarCollapsed(true);
+    if (files.length > 0) {
+      setSidebarCollapsed(true);
+    }
   }, [files]);
 
   useEffect(() => {
