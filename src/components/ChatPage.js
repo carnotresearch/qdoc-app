@@ -113,6 +113,7 @@ function ChatPage({ inputLanguage, outputLanguage }) {
       setChatHistory(newChatHistory);
       setMessage("");
       const token = sessionStorage.getItem("token");
+      const context = files.length > 0 ? "files" : "";
       try {
         const response = await axios.post(
           `${process.env.REACT_APP_BACKEND_URL}/ask`,
@@ -121,6 +122,7 @@ function ChatPage({ inputLanguage, outputLanguage }) {
             token,
             inputLanguage,
             outputLanguage,
+            context,
           }
         );
 
