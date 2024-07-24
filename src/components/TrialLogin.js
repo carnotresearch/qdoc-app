@@ -5,18 +5,15 @@ import { FaEyeSlash } from "react-icons/fa6";
 import { Spinner } from "react-bootstrap";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { GoogleLogin } from "@react-oauth/google";
-// import ReCAPTCHA from "react-google-recaptcha";
 import axios from "axios";
 import "../styles/trialLogin.css";
 
-const clientId =
-  "936119028466-gbbi3ejafmef3o0u2ebo2j8v8me98qbi.apps.googleusercontent.com";
+const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
 const TrialLogin = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  // const [recaptchaToken, setRecaptchaToken] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const emailRef = useRef(null);
   // const handleGoogleSubmitRef = useRef(null);
@@ -29,11 +26,9 @@ const TrialLogin = () => {
     }
   }, [location]);
 
-  const handleGoogleSubmit = async (googleResponse) => {
+  const handleGoogleSubmit = async (googleToken) => {
     try {
       setIsLoading(true);
-      const googleToken = googleResponse.credential;
-      console.log(googleToken);
 
       const response = await axios.post(
         `${process.env.REACT_APP_GOOGLE_LOGIN_URL}`,
@@ -79,10 +74,6 @@ const TrialLogin = () => {
         alert("Password is required");
         return;
       }
-      // if (!recaptchaToken) {
-      //   alert("ReCaptcha not validated");
-      //   return;
-      // }
       setIsLoading(true);
       console.log(email, password);
       const response = await axios.post(`${process.env.REACT_APP_LOGIN_URL}`, {
@@ -103,10 +94,6 @@ const TrialLogin = () => {
       alert(error.response.data.message);
     }
   };
-
-  // const onReCAPTCHAChange = (token) => {
-  //   setRecaptchaToken(token);
-  // };
 
   return (
     <div className="login-main">
@@ -162,10 +149,6 @@ const TrialLogin = () => {
                   Forgot password?
                 </a>
               </div>
-              {/* <ReCAPTCHA
-                sitekey={process.env.REACT_APP_RECAPTCHA_SITE_KEY}
-                onChange={onReCAPTCHAChange}
-              /> */}
               <div className="login-center-buttons">
                 <button type="submit" disabled={isLoading}>
                   {isLoading ? (
