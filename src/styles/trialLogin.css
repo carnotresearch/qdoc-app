@@ -8,7 +8,7 @@
   margin: 0px;
 }
 
-body{
+.login-main body{
   font-family: "Poppins", sans-serif;
   height: 100vh;
 }
@@ -95,9 +95,9 @@ body{
   margin-bottom: 40px;
 }
 
-form input[type='email'],
-form input[type='password'],
-form input[type='text']
+.login-form input[type='email'],
+.login-form input[type='password'],
+.login-form input[type='text']
  {
   font-size: 1.2rem;
   width: 100%;
@@ -122,7 +122,7 @@ form input[type='text']
   outline: none;
 }
 
-form button[type='button'] {
+.login-form button {
   width: 100%;
   padding: 16px;
   border: none;
@@ -132,7 +132,6 @@ form button[type='button'] {
   border-radius: 30px;
   font-weight: 600;
 }
-
 
 .login-center-options{
   display: flex;
@@ -186,6 +185,7 @@ form button[type='button'] {
   text-align: center;
   font-size: 1rem;
   padding-bottom: 40px;
+  margin-top: 10px;
 }
 
 .login-bottom-p a{
