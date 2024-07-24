@@ -1,18 +1,28 @@
-import React, { useState, useRef, useContext } from "react";
-import { useNavigate } from "react-router-dom";
-import { ListGroup, Form, Button, Card } from "react-bootstrap";
+import React, { useState, useRef, useContext, useEffect } from "react";
+import { ListGroup, Form, Button, Card, CloseButton, Spinner } from "react-bootstrap";
 import axios from "axios";
 import { FileContext } from "./FileContext";
-// import "../styles/sidebar.css";
 
 function Sidebar({ files = [] }) {
   const { setFiles } = useContext(FileContext);
-  const [uploads, setUploads] = useState([]);
-  const fileInputRef = useRef(null);
-  const navigate = useNavigate();
 
-  const handleFileChange = (event) => {
-    setUploads([...event.target.files]);
+  const fileInputRef = useRef(null);
+  const additionalFileInputRef = useRef(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [setIsFirstUpload] = useState(true);
+
+  useEffect(() => {
+    if (files.length > 0) {
+      setIsFirstUpload(false);
+    }
+  }, [files, setIsFirstUpload]);
+
+  const handleFileChange = (event, isAdditionalUpload = false) => {
+    if (isAdditionalUpload) {
+      handleAdditionalFileUpload(event.target.files);
+    } else {
+      handleFileUpload(event.target.files, false);
+    }
   };
 
   const handleDragOver = (event) => {
@@ -25,61 +35,125 @@ function Sidebar({ files = [] }) {
     event.preventDefault();
     event.stopPropagation();
     const files = event.dataTransfer.files;
-    setUploads([...files]);
+    handleFileUpload(files, false);
   };
 
-  const handleSubmit = async () => {
-    if (uploads.length > 0) {
-      console.log("processing files");
-    } else {
-      alert("Please upload at least one file");
-      return;
-    }
-
-    const formData = new FormData();
-    uploads.forEach((file) => formData.append("files", file));
-    const token = sessionStorage.getItem("token");
-    formData.append("token", token);
-    try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_BACKEND_URL}/upload`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      console.log(response.data);
-
-      setFiles(uploads);
-      navigate("/");
-    } catch (error) {
-      console.error("Error uploading files: ", error);
-      alert("Error getting the the response, please try again");
-    }
-
-    fileInputRef.current.value = "";
-    setUploads([]);
-  };
-
-  const renderFileDetails = () => {
-    return uploads.map((file, index) => (
-      <ListGroup.Item key={index}>
-        {file.name} - {(file.size / 1024).toFixed(2)} KB
-      </ListGroup.Item>
-    ));
-  };
-
-  const marginStyle = { marginTop: "1.5cm" };
   const listStyle = {
     padding: "0.5rem",
-    whiteSpace: "normal",
     wordWrap: "break-word",
     overflow: "hidden",
     color: "white",
     backgroundColor: "#4e749c",
+    display: "flex",
+    alignItems: "center",
   };
+
+  const addButtonStyle = {
+    width: "auto",
+    padding: "0.375rem 0.75rem",
+    fontSize: "0.875rem",
+  };
+
+  const listItemStyle = {
+    flexGrow: 1,
+    marginRight: "1rem",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+  };
+
+  const handleFileUpload = async (files, isFirstTime) => {
+    const filesArray = Array.from(files);
+    const formData = new FormData();
+    filesArray.forEach((file) => formData.append("files", file));
+    const token = sessionStorage.getItem("token");
+    formData.append("token", token);
+    formData.append("firstTime", isFirstTime ? "true" : "false");
+
+    setIsUploading(true);
+
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_BACKEND_URL}/upload`,
+        formData,
+        { headers: { "Content-Type": "multipart/form-data" } }
+      );
+      console.log(response.data);
+      setFiles((prevFiles) => [...prevFiles, ...filesArray]);
+    } catch (error) {
+      console.error("Error uploading files:", error);
+      alert("Error uploading files, please try again.");
+    } finally {
+      setIsUploading(false);
+      if (isFirstTime) {
+        setIsFirstUpload(false);
+      }
+    }
+  };
+
+  const handleAdditionalFileUpload = async (files) => {
+    const filesArray = Array.from(files);
+    const formData = new FormData();
+    filesArray.forEach((file) => formData.append("files", file));
+    const token = sessionStorage.getItem("token");
+    formData.append("token", token);
+
+    setIsUploading(true);
+
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_BACKEND_URL}/add-upload`,
+        formData,
+        { headers: { "Content-Type": "multipart/form-data" } }
+      );
+      console.log(response.data);
+      setFiles((prevFiles) => [...prevFiles, ...filesArray]);
+    } catch (error) {
+      console.error("Error uploading additional files:", error);
+      alert("Error uploading additional files, please try again.");
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleRemoveFile = async (index) => {
+    const newFiles = [...files];
+    newFiles.splice(index, 1);
+    setFiles(newFiles);
+
+    if (newFiles.length > 0) {
+      await reuploadFiles(newFiles);
+    } else {
+      setIsFirstUpload(true);
+    }
+  };
+
+  const reuploadFiles = async (files) => {
+    const formData = new FormData();
+    files.forEach((file) => formData.append("files", file));
+    const token = sessionStorage.getItem("token");
+    formData.append("token", token);
+    formData.append("firstTime", "true"); // Set to true when re-uploading after removing a file
+
+    setIsUploading(true);
+
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_BACKEND_URL}/upload`,
+        formData,
+        { headers: { "Content-Type": "multipart/form-data" } }
+      );
+      console.log(response.data);
+      setFiles(files);
+    } catch (error) {
+      console.error("Error re-uploading files:", error);
+      alert("Error re-uploading files, please try again.");
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const marginStyle = { marginTop: "1.5cm" };
 
   return (
     <div>
@@ -97,7 +171,7 @@ function Sidebar({ files = [] }) {
               id="file"
               accept=".txt,.pdf,.docx"
               multiple
-              onChange={handleFileChange}
+              onChange={(event) => handleFileChange(event, false)}
               ref={fileInputRef}
               style={{ display: "none" }}
             />
@@ -116,34 +190,46 @@ function Sidebar({ files = [] }) {
             </Card>
           </div>
         </Form.Group>
-        {uploads.length > 0 && (
-          <div className="mt-3">
-            <ListGroup>{renderFileDetails()}</ListGroup>
-            <Button className="mt-2 mb-4 w-100" onClick={handleSubmit}>
-              Submit
-            </Button>
-          </div>
-        )}
       </Form>
-      {/* {files.length > 0 && <h2 style={marginStyle}>Files</h2>} */}
       <ListGroup>
         {files.map((file, index) => (
           <ListGroup.Item
+            key={index}
             className="d-flex justify-content-between align-items-center"
             style={listStyle}
-            key={index}
           >
-            {file.name}
-            {/* <Button
-              variant="danger"
-              size="sm"
-              onClick={() => removeFile(index)}
-            >
-              Remove
-            </Button> */}
+            <span style={listItemStyle}>
+              {file.name} - {(file.size / 1024).toFixed(2)} KB
+            </span>
+            <div>
+              {isUploading && index === files.length - 1 ? (
+                <Spinner animation="border" size="sm" />
+              ) : (
+                <CloseButton onClick={() => handleRemoveFile(index)} />
+              )}
+            </div>
           </ListGroup.Item>
         ))}
       </ListGroup>
+      {!isUploading && files.length > 0 && (
+        <Button
+          className="mt-2"
+          variant="secondary"
+          onClick={() => additionalFileInputRef.current.click()}
+          style={addButtonStyle}
+        >
+          + Add More
+        </Button>
+      )}
+      <input
+        type="file"
+        id="additional-file"
+        accept=".txt,.pdf,.docx"
+        multiple
+        onChange={(event) => handleFileChange(event, true)}
+        ref={additionalFileInputRef}
+        style={{ display: "none" }}
+      />
     </div>
   );
 }
