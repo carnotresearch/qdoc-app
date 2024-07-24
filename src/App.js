@@ -3,12 +3,12 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import { FileProvider } from "./components/FileContext";
 import ChatPage from "./components/ChatPage";
-import Login from "./components/Login";
 import Register from "./components/Register";
 import ForgotPassword from "./components/ForgotPassword";
 import ResetPassword from "./components/ResetPassword";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PaymentForm from "./components/PaymentForm";
+import TrialLogin from "./components/TrialLogin";
 
 function App() {
   const [inputLanguage, setInputLanguage] = useState("23");
@@ -25,7 +25,7 @@ function App() {
             setOutputLanguage={setOutputLanguage}
           />
           <Routes>
-            <Route path="/login" element={<Login />} />
+            <Route path="/login" element={<TrialLogin />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/register" element={<Register />} />
