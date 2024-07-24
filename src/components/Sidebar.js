@@ -1,4 +1,4 @@
-import React, { useState, useRef, useContext, useEffect } from "react";
+import React, { useState, useRef, useContext} from "react";
 import { ListGroup, Form, Button, Card, CloseButton, Spinner } from "react-bootstrap";
 import axios from "axios";
 import { FileContext } from "./FileContext";
@@ -9,14 +9,6 @@ function Sidebar({ files = [] }) {
   const fileInputRef = useRef(null);
   const additionalFileInputRef = useRef(null);
   const [isUploading, setIsUploading] = useState(false);
-  const [setIsFirstUpload] = useState(true);
-
-  useEffect(() => {
-    if (files.length > 0) {
-      setIsFirstUpload(false);
-    }
-  }, [files, setIsFirstUpload]);
-
   const handleFileChange = (event, isAdditionalUpload = false) => {
     if (isAdditionalUpload) {
       handleAdditionalFileUpload(event.target.files);
@@ -62,13 +54,12 @@ function Sidebar({ files = [] }) {
     whiteSpace: "nowrap",
   };
 
-  const handleFileUpload = async (files, isFirstTime) => {
+  const handleFileUpload = async (files) => {
     const filesArray = Array.from(files);
     const formData = new FormData();
     filesArray.forEach((file) => formData.append("files", file));
     const token = sessionStorage.getItem("token");
     formData.append("token", token);
-    formData.append("firstTime", isFirstTime ? "true" : "false");
 
     setIsUploading(true);
 
@@ -85,9 +76,6 @@ function Sidebar({ files = [] }) {
       alert("Error uploading files, please try again.");
     } finally {
       setIsUploading(false);
-      if (isFirstTime) {
-        setIsFirstUpload(false);
-      }
     }
   };
 
@@ -117,41 +105,30 @@ function Sidebar({ files = [] }) {
   };
 
   const handleRemoveFile = async (index) => {
+    const removedFile = files[index];
     const newFiles = [...files];
     newFiles.splice(index, 1);
     setFiles(newFiles);
 
-    if (newFiles.length > 0) {
-      await reuploadFiles(newFiles);
-    } else {
-      setIsFirstUpload(true);
-    }
-  };
-
-  const reuploadFiles = async (files) => {
     const formData = new FormData();
-    files.forEach((file) => formData.append("files", file));
+    newFiles.forEach((file) => formData.append("files", file)); // Send remaining files
+    formData.append("fileName", removedFile.name); 
     const token = sessionStorage.getItem("token");
     formData.append("token", token);
-    formData.append("firstTime", "true"); // Set to true when re-uploading after removing a file
-
-    setIsUploading(true);
 
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_BACKEND_URL}/upload`,
+        `${process.env.REACT_APP_BACKEND_URL}/upload`, 
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
       console.log(response.data);
-      setFiles(files);
     } catch (error) {
-      console.error("Error re-uploading files:", error);
-      alert("Error re-uploading files, please try again.");
-    } finally {
-      setIsUploading(false);
+      console.error("Error removing file:", error);
+      // Handle the error (e.g., show an error message to the user)
     }
   };
+
 
   const marginStyle = { marginTop: "1.5cm" };
 
