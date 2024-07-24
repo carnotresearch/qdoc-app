@@ -75,7 +75,6 @@ const TrialLogin = () => {
         return;
       }
       setIsLoading(true);
-      console.log(email, password);
       const response = await axios.post(`${process.env.REACT_APP_LOGIN_URL}`, {
         email,
         password,
