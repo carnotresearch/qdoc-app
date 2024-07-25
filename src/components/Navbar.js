@@ -142,7 +142,7 @@ const Navbar = ({
               </li>
               {location.pathname === "/" && (
                 <>
-                  <li className="nav-item">
+                  {/* <li className="nav-item">
                     {isGenerated ? (
                       <button
                         className="btn btn-success"
@@ -165,7 +165,7 @@ const Navbar = ({
                         )}
                       </MDBBtn>
                     )}
-                  </li>
+                  </li> */}
                   <LanguageDropdown
                     label="Input"
                     selectedLanguage={

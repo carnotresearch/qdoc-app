@@ -234,7 +234,7 @@ function ChatPage({ inputLanguage, outputLanguage }) {
         </Button>
         {!sidebarCollapsed && <Sidebar files={files} />}
       </div>
-      <FileViewer files={files} />
+      {files.length > 0 && <FileViewer files={files} />}
       <div className="chat-content">
         <div className="chat-history" ref={chatHistoryRef}>
           <div className="message bot">
