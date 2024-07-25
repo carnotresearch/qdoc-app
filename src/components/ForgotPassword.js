@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import ReCAPTCHA from "react-google-recaptcha";
 import { useNavigate } from "react-router-dom";
+import { Spinner } from "react-bootstrap";
 import { validateEmail } from "./utils/validationUtils";
 
 const ForgotPassword = () => {
@@ -9,6 +10,7 @@ const ForgotPassword = () => {
   const [recaptchaToken, setRecaptchaToken] = useState(null);
   const [message, setMessage] = useState("");
   const [emailError, setEmailError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -22,6 +24,7 @@ const ForgotPassword = () => {
   const handleForgotPassword = async (e) => {
     e.preventDefault();
     try {
+      setIsLoading(true);
       if (emailError) {
         setMessage("Please fix the errors");
         return;
@@ -30,6 +33,7 @@ const ForgotPassword = () => {
         `${process.env.REACT_APP_SEND_OTP_URL}`,
         { email, recaptchaToken, action: "reset" }
       );
+      setIsLoading(false);
       setMessage(response.data.message);
       navigate("/reset-password", { state: { email } });
     } catch (error) {
@@ -43,6 +47,7 @@ const ForgotPassword = () => {
       } else {
         setMessage("Failed to send OTP");
       }
+      setIsLoading(false);
     }
   };
 
@@ -71,7 +76,13 @@ const ForgotPassword = () => {
           onChange={onReCAPTCHAChange}
         />
         <button type="submit" className="btn btn-primary">
-          Send OTP
+          {isLoading ? (
+            <div className="text-center">
+              <Spinner animation="border" size="sm" />
+            </div>
+          ) : (
+            "Send OTP"
+          )}
         </button>
       </form>
     </div>
