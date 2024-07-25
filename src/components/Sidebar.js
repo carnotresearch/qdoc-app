@@ -1,5 +1,13 @@
-import React, { useState, useRef, useContext} from "react";
-import { ListGroup, Form, Button, Card, CloseButton, Spinner } from "react-bootstrap";
+import React, { useState, useRef, useContext } from "react";
+import {
+  ListGroup,
+  Form,
+  Button,
+  Card,
+  CloseButton,
+  Spinner,
+} from "react-bootstrap";
+import { RiMessage2Fill } from "react-icons/ri";
 import axios from "axios";
 import { FileContext } from "./FileContext";
 
@@ -112,13 +120,13 @@ function Sidebar({ files = [] }) {
 
     const formData = new FormData();
     newFiles.forEach((file) => formData.append("files", file)); // Send remaining files
-    formData.append("fileName", removedFile.name); 
+    formData.append("fileName", removedFile.name);
     const token = sessionStorage.getItem("token");
     formData.append("token", token);
 
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_BACKEND_URL}/upload`, 
+        `${process.env.REACT_APP_BACKEND_URL}/upload`,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
@@ -128,7 +136,6 @@ function Sidebar({ files = [] }) {
       // Handle the error (e.g., show an error message to the user)
     }
   };
-
 
   const marginStyle = { marginTop: "1.5cm" };
 
@@ -154,16 +161,24 @@ function Sidebar({ files = [] }) {
             />
             <Card
               className="p-1"
-              style={{ border: "2px dashed #ccc", textAlign: "center" }}
+              style={{
+                border: "2px dashed #ccc",
+                textAlign: "center",
+                height: "50",
+              }}
             >
-              {"+ New Chat\nDrop files here".split("\n").map((text, index) => (
-                <div
-                  key={index}
-                  style={{ fontWeight: index === 0 ? "bold" : "normal" }}
-                >
-                  {text}
+              {isUploading ? (
+                <div className="text-center">
+                  <Spinner animation="border" size="sm" />
                 </div>
-              ))}
+              ) : (
+                <div>
+                  <p className="mb-0">
+                    <RiMessage2Fill /> <b>New Chat</b>
+                  </p>
+                  <p className="mb-0">Drop files here</p>
+                </div>
+              )}
             </Card>
           </div>
         </Form.Group>

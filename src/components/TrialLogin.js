@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { FaEye } from "react-icons/fa6";
-import { FaEyeSlash } from "react-icons/fa6";
+import { FaEye, FaEyeSlash } from "react-icons/fa6";
 import { Spinner } from "react-bootstrap";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { GoogleLogin } from "@react-oauth/google";
@@ -110,7 +109,7 @@ const TrialLogin = () => {
           </div>
           <div className="login-center">
             <h2>Carnot Research</h2>
-            <p>Welcome back!</p>
+            <p>Welcome!</p>
             <form className="login-form" onSubmit={handleSubmit}>
               <input
                 type="text"
