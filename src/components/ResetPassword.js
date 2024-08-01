@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
+import { Spinner } from "react-bootstrap";
 import { validatePassword } from "./utils/validationUtils";
 
 const ResetPassword = () => {
@@ -11,6 +12,7 @@ const ResetPassword = () => {
   const [otpError, serOtpError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const { email } = location.state || {};
@@ -40,6 +42,7 @@ const ResetPassword = () => {
   const handleResetPassword = async (e) => {
     e.preventDefault();
     try {
+      setIsLoading(true);
       if (otpError || passwordError || confirmPasswordError) {
         setMessage("Please fix the errors.");
         return;
@@ -48,8 +51,9 @@ const ResetPassword = () => {
         `${process.env.REACT_APP_RESET_PASSWORD_URL}`,
         { email, otp, newPassword }
       );
+      setIsLoading(false);
       setMessage(response.data.message);
-      if (response.data.message === "Password reset successfully") {
+      if (response.data.message === "Password reset successfull!") {
         navigate("/login");
       }
     } catch (error) {
@@ -63,6 +67,7 @@ const ResetPassword = () => {
       } else {
         setMessage("Failed to reset password");
       }
+      setIsLoading(false);
     }
   };
 
@@ -109,7 +114,13 @@ const ResetPassword = () => {
           )}
         </div>
         <button type="submit" className="btn btn-primary">
-          Reset Password
+          {isLoading ? (
+            <div className="text-center">
+              <Spinner animation="border" size="sm" />
+            </div>
+          ) : (
+            "Reset Password"
+          )}
         </button>
       </form>
     </div>

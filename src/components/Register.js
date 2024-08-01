@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import ReCAPTCHA from "react-google-recaptcha";
 import { useNavigate } from "react-router-dom";
+import { Spinner } from "react-bootstrap";
 import { validateEmail, validatePassword } from "./utils/validationUtils";
 
 const Register = () => {
@@ -16,6 +17,7 @@ const Register = () => {
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [otpError, setOtpError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -54,6 +56,11 @@ const Register = () => {
           setErrorMessage("Please fix the errors before submitting.");
           return;
         }
+        if (!recaptchaToken) {
+          setErrorMessage("Kindly verify recaptcha first!");
+          return;
+        }
+        setIsLoading(true);
         const response = await axios.post(
           `${process.env.REACT_APP_SEND_OTP_URL}`,
           { email, recaptchaToken, action: "register" }
@@ -61,18 +68,22 @@ const Register = () => {
         if (response.status === 200) {
           setStep(2);
         }
+        setIsLoading(false);
       } else if (step === 2) {
         if (otpError || passwordError || confirmPasswordError) {
           setErrorMessage("Please fix the errors before submitting.");
           return;
         }
+        setIsLoading(true);
         await axios.post(`${process.env.REACT_APP_REGISTER_URL}`, {
           email,
           otp,
           password,
         });
+        setIsLoading(false);
         navigate("/login");
       }
+      setErrorMessage("");
     } catch (error) {
       console.error("Registration error", error);
       // Check if error response is available and set the error message
@@ -85,6 +96,7 @@ const Register = () => {
       } else {
         setErrorMessage("Registration failed. Please try again.");
       }
+      setIsLoading(false);
     }
   };
 
@@ -160,7 +172,15 @@ const Register = () => {
           </>
         )}
         <button type="submit" className="btn btn-primary">
-          {step === 1 ? "Send OTP" : "Register"}
+          {isLoading ? (
+            <div className="text-center">
+              <Spinner animation="border" size="sm" />
+            </div>
+          ) : step === 1 ? (
+            "Send OTP"
+          ) : (
+            "Register"
+          )}
         </button>
       </form>
     </div>
