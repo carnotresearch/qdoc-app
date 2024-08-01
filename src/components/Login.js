@@ -1,25 +1,21 @@
 import React, { useState, useRef, useEffect } from "react";
-import axios from "axios";
-import ReCAPTCHA from "react-google-recaptcha";
 import { useNavigate, useLocation } from "react-router-dom";
-import {
-  MDBBtn,
-  MDBContainer,
-  MDBRow,
-  MDBCol,
-  MDBInput,
-} from "mdb-react-ui-kit";
+import { FaEye, FaEyeSlash } from "react-icons/fa6";
 import { Spinner } from "react-bootstrap";
-import "./styles.css";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { GoogleLogin } from "@react-oauth/google";
+import axios from "axios";
+import "../styles/login.css";
+
+const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
 const Login = () => {
+  const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [recaptchaToken, setRecaptchaToken] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const emailRef = useRef(null);
+  // const handleGoogleSubmitRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -28,6 +24,43 @@ const Login = () => {
       emailRef.current.focus();
     }
   }, [location]);
+
+  const handleGoogleSubmit = async (googleToken) => {
+    try {
+      setIsLoading(true);
+
+      const response = await axios.post(
+        `${process.env.REACT_APP_GOOGLE_LOGIN_URL}`,
+        { googleToken }
+      );
+      const expiryTime = Date.now() + 3600 * 1000;
+      sessionStorage.setItem("token", response.data.token);
+      if (response.data.expiryDate) {
+        sessionStorage.setItem("expiryDate", response.data.expiryDate);
+      }
+      sessionStorage.setItem("expiryTime", expiryTime.toString());
+      setIsLoading(false);
+      navigate("/");
+    } catch (error) {
+      console.error("Login error", error);
+      setIsLoading(false);
+      alert(error.response.data.message);
+    }
+  };
+
+  // Goolge login through script
+  // handleGoogleSubmitRef.current = handleGoogleSubmit;
+  // useEffect(() => {
+  //   // Initialize the Google Sign-In client
+  //   window.google.accounts.id.initialize({
+  //     client_id: clientId,
+  //     callback: (response) => handleGoogleSubmitRef.current(response),
+  //   });
+  // }, []);
+
+  // const handleGoogleLogin = () => {
+  //   window.google.accounts.id.prompt();
+  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -38,10 +71,6 @@ const Login = () => {
       }
       if (!password) {
         alert("Password is required");
-        return;
-      }
-      if (!recaptchaToken) {
-        alert("ReCaptcha not validated");
         return;
       }
       setIsLoading(true);
@@ -64,154 +93,94 @@ const Login = () => {
     }
   };
 
-  const handlegoogleSubmit = async (googleToken) => {
-    try {
-      setIsLoading(true);
-      console.log(googleToken);
-
-      const response = await axios.post(
-        `${process.env.REACT_APP_GOOGLE_LOGIN_URL}`,
-        { googleToken }
-      );
-      const expiryTime = Date.now() + 3600 * 1000;
-      sessionStorage.setItem("token", response.data.token);
-      if (response.data.expiryDate) {
-        sessionStorage.setItem("expiryDate", response.data.expiryDate);
-      }
-      sessionStorage.setItem("expiryTime", expiryTime.toString());
-      setIsLoading(false);
-      navigate("/");
-    } catch (error) {
-      console.error("Login error", error);
-      setIsLoading(false);
-      alert(error.response.data.message);
-    }
-  };
-
-  const onReCAPTCHAChange = (token) => {
-    setRecaptchaToken(token);
-  };
-
-  const textStyles = {
-    textShadow: "2px 2px 4px rgba(0, 0, 0, 0.7)",
-    boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.2)",
-    padding: "10px",
-  };
-
-  const noticeStyles = {
-    backgroundColor: "red",
-    color: "white",
-    textAlign: "center",
-    fontWeight: "bold",
-    marginBottom: "20px",
-  };
-
   return (
-    <GoogleOAuthProvider clientId="936119028466-gbbi3ejafmef3o0u2ebo2j8v8me98qbi.apps.googleusercontent.com">
-      <div style={noticeStyles}>
-        <p>
-          This is beta testing. The website will be available from 11am to 7pm
-          IST only.
-        </p>
+    <div className="login-main">
+      <div className="login-left">
+        <img
+          src="/computer-vision.png"
+          alt=""
+          style={{ borderRadius: "20px" }}
+        />
       </div>
-      <MDBContainer className="my-5 gradient-form align-items-center justify-content-center">
-        <MDBRow>
-          <MDBCol lg="6" md="12" sm="12" className="mb-5">
-            <div className="d-flex flex-column  justify-content-center gradient-custom-2 h-100 mb-4 background-image">
-              <div
-                className="text-white px-3 py-4 p-md-5 mx-md-4"
-                style={textStyles}
-              >
-                <h2 className="mb-4">Welcome to Carnot Research</h2>
-                <p className="large mb-0">
-                  Empowering individuals and organizations to leverage cutting
-                  edge research and enable innovation. Right Mix of academics
-                  and industry professionals. Key differentiator is our ability
-                  to provide managed research for serving your innovation needs.
-                  Active in wide variety of research areas with major focus on
-                  Computer Vision and NLP.
-                </p>
-                <p className="large mb-0">
-                  <b>
-                    This is a Multilingual Model to query documents with speech
-                    capabilities.
-                  </b>
-                </p>
-              </div>
-            </div>
-          </MDBCol>
-          <MDBCol lg="6" md="12" sm="12" className="mb-5">
-            <div className="d-flex flex-column">
-              <div className="text-center">
-                <img src="/logo.png" style={{ width: "185px" }} alt="logo" />
-                <h4 className="mt-1 mb-5 pb-1">We are Carnot Research</h4>
-              </div>
-
-              <p>Please login to your account</p>
-              <GoogleLogin
-                onSuccess={(credentialResponse) => {
-                  handlegoogleSubmit(credentialResponse.credential);
-                }}
-                onError={() => {
-                  console.log("Login Failed");
-                }}
-              />
-              <MDBInput
-                wrapperClass="mb-4"
-                label="Username"
-                id="form1"
-                type="email"
+      <div className="login-right">
+        <div className="login-right-container">
+          <div className="login-logo">
+            <img src="/logo.png" alt="" />
+          </div>
+          <div className="login-center">
+            <h2>Carnot Research</h2>
+            <p>Welcome!</p>
+            <form className="login-form" onSubmit={handleSubmit}>
+              <input
+                type="text"
+                id="email"
+                placeholder="Email"
+                ref={emailRef}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                ref={emailRef}
               />
-              <MDBInput
-                wrapperClass="mb-4"
-                label="Password"
-                id="form2"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
+              <div className="pass-input-div">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Password"
+                  id="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                {showPassword ? (
+                  <FaEyeSlash
+                    onClick={() => {
+                      setShowPassword(!showPassword);
+                    }}
+                  />
+                ) : (
+                  <FaEye
+                    onClick={() => {
+                      setShowPassword(!showPassword);
+                    }}
+                  />
+                )}
+              </div>
 
-              <ReCAPTCHA
-                sitekey={process.env.REACT_APP_RECAPTCHA_SITE_KEY}
-                onChange={onReCAPTCHAChange}
-              />
-
-              <div className="text-center pt-1 mb-5 pb-1">
-                <MDBBtn
-                  className="mb-4 w-100 gradient-custom-2"
-                  onClick={handleSubmit}
-                  disabled={isLoading}
-                >
-                  {isLoading ? (
-                    <Spinner animation="border" size="sm" />
-                  ) : (
-                    "Sign-in"
-                  )}
-                </MDBBtn>
-                <a className="text-muted" href="/forgot-password">
+              <div className="login-center-options">
+                <a href="/forgot-password" className="forgot-pass-link">
                   Forgot password?
                 </a>
               </div>
-
-              <div className="d-flex flex-row align-items-center justify-content-center pb-4 mb-4">
-                <p className="mb-0">Don't have an account?</p>
-                <MDBBtn
-                  outline
-                  className="mx-2"
-                  color="danger"
-                  onClick={() => navigate("/register")}
-                >
-                  Register
-                </MDBBtn>
+              <div className="login-center-buttons">
+                <button type="submit" disabled={isLoading}>
+                  {isLoading ? (
+                    <Spinner animation="border" size="sm" />
+                  ) : (
+                    "Log In"
+                  )}
+                </button>
+                {/* <button type="button" onClick={handleGoogleLogin}>
+                  <img src="/icons8-google.svg" alt="" />
+                  Log In with Google
+                </button> */}
+                <div style={{ margin: "auto" }}>
+                  <GoogleOAuthProvider clientId={clientId}>
+                    <GoogleLogin
+                      onSuccess={(credentialResponse) => {
+                        handleGoogleSubmit(credentialResponse.credential);
+                      }}
+                      onError={() => {
+                        console.log("Login Failed");
+                      }}
+                    />
+                  </GoogleOAuthProvider>
+                </div>
               </div>
-            </div>
-          </MDBCol>
-        </MDBRow>
-      </MDBContainer>
-    </GoogleOAuthProvider>
+            </form>
+          </div>
+
+          <p className="login-bottom-p">
+            Don't have an account? <a href="/register">Sign Up</a>
+          </p>
+        </div>
+      </div>
+    </div>
   );
 };
 
