@@ -11,6 +11,8 @@ import {
   faPause,
   faPlay,
   faRedo,
+  faCopy,
+  faCheck,
 } from "@fortawesome/free-solid-svg-icons";
 import FileViewer from "./FileViewer";
 import { FileContext } from "./FileContext";
@@ -44,6 +46,15 @@ function ChatPage({ inputLanguage, outputLanguage }) {
   const sttSupportedLanguagesRef = useRef(sttSupportedLanguages);
   const ttsSupportedLanguages = ["1", "23"];
   const { files } = useContext(FileContext);
+  const [copiedIndex, setCopiedIndex] = useState(null);
+  const [isFileUpdated, setIsFileUpdated] = useState(false);
+
+  const handleCopy = (text, index) => {
+    navigator.clipboard.writeText(text).then(() => {
+      setCopiedIndex(index);
+      setTimeout(() => setCopiedIndex(null), 2000); // Reset after 2 seconds
+    });
+  };
 
   useEffect(() => {
     // initial state based on the screen size
@@ -64,7 +75,7 @@ function ChatPage({ inputLanguage, outputLanguage }) {
   }, []);
 
   useEffect(() => {
-    setChatHistory([]);
+    setIsFileUpdated(true);
     inputRef.current.focus();
     if (files.length > 0) {
       setSidebarCollapsed(true);
@@ -112,6 +123,7 @@ function ChatPage({ inputLanguage, outputLanguage }) {
   }, [inputLanguage]);
 
   const handleSendMessage = async () => {
+    setIsFileUpdated(false);
     if (message.trim()) {
       const timestamp = new Date().toLocaleTimeString([], {
         hour: "2-digit",
@@ -240,12 +252,12 @@ function ChatPage({ inputLanguage, outputLanguage }) {
           <div className="message bot">
             <div className="message-box">
               <span className="message-text">
-                <b>Welcome to iCarKno-chat! </b>
+                <b>Welcome to iCarKno-chat</b>
                 <p>
-                  iCarKno-chat allows you to chat with multiple documents using
-                  multiple languages, and also view the knowledge graph.
+                  iCarKno-chat is a knowledge agent that allows you to query
+                  multiple documents in diverse languages.
                 </p>
-                {files.length > 0 ? (
+                {files.length > 0 && (
                   <ul className="custom-list">
                     {startingQuestions.map((question, index) => (
                       <li key={index}>
@@ -257,14 +269,6 @@ function ChatPage({ inputLanguage, outputLanguage }) {
                       </li>
                     ))}
                   </ul>
-                ) : (
-                  <p>
-                    Kindly upload files using sidebar.{" "}
-                    <FaChevronCircleLeft
-                      style={{ cursor: "pointer" }}
-                      onClick={() => setSidebarCollapsed(false)}
-                    />
-                  </p>
                 )}
               </span>
             </div>
@@ -283,7 +287,7 @@ function ChatPage({ inputLanguage, outputLanguage }) {
               <div className="message bot">
                 <div className="message-box">
                   <span className={"message-text"}>
-                    <b className="text-success">Qdoc response: </b>
+                    <b className="text-success">iCarKno: </b>
                     <ReactMarkdown>{chat.bot}</ReactMarkdown>
                   </span>
                   {chat.ttsSupport &&
@@ -320,11 +324,46 @@ function ChatPage({ inputLanguage, outputLanguage }) {
                         <FontAwesomeIcon icon={faPlay} />
                       </Button>
                     ))}
-                  <span className="message-time">{chat.timestamp}</span>
+                  <Button
+                    onClick={() => handleCopy(chat.bot, index)}
+                    variant="link"
+                    style={{ fontSize: "1" }}
+                  >
+                    {copiedIndex === index ? (
+                      <FontAwesomeIcon icon={faCheck} />
+                    ) : (
+                      <FontAwesomeIcon icon={faCopy} />
+                    )}
+                  </Button>
                 </div>
               </div>
             </div>
           ))}
+          {isFileUpdated &&
+            (files.length > 0 ? (
+              <div className="message bot">
+                <div className="message-box">
+                  <span className={"message-text"}>
+                    <b className="text-success">Qdoc response: </b>
+                    Your files have been updated!
+                  </span>
+                </div>
+              </div>
+            ) : (
+              <div className="message bot">
+                <div className="message-box">
+                  <span className={"message-text"}>
+                    <p>
+                      Kindly upload files using sidebar.{" "}
+                      <FaChevronCircleLeft
+                        style={{ cursor: "pointer" }}
+                        onClick={() => setSidebarCollapsed(false)}
+                      />
+                    </p>
+                  </span>
+                </div>
+              </div>
+            ))}
         </div>
         <Form className="d-flex" onSubmit={handleSubmit}>
           <Form.Control
