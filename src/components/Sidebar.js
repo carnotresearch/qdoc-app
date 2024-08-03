@@ -21,7 +21,7 @@ function Sidebar({ files = [] }) {
     if (isAdditionalUpload) {
       handleAdditionalFileUpload(event.target.files);
     } else {
-      handleFileUpload(event.target.files, false);
+      handleFileUpload(event.target.files);
     }
   };
 
@@ -35,7 +35,7 @@ function Sidebar({ files = [] }) {
     event.preventDefault();
     event.stopPropagation();
     const files = event.dataTransfer.files;
-    handleFileUpload(files, false);
+    handleFileUpload(files);
   };
 
   const listStyle = {
@@ -78,7 +78,7 @@ function Sidebar({ files = [] }) {
         { headers: { "Content-Type": "multipart/form-data" } }
       );
       console.log(response.data);
-      setFiles((prevFiles) => [...prevFiles, ...filesArray]);
+      setFiles([...filesArray]);
     } catch (error) {
       console.error("Error uploading files:", error);
       alert("Error uploading files, please try again.");
