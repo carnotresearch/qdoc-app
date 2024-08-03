@@ -133,7 +133,7 @@ function Sidebar({ files = [] }) {
       console.log(response.data);
     } catch (error) {
       console.error("Error removing file:", error);
-      // Handle the error (e.g., show an error message to the user)
+      alert("Couldn't uplaod file, kindly retry!");
     }
   };
 
@@ -153,7 +153,7 @@ function Sidebar({ files = [] }) {
             <input
               type="file"
               id="file"
-              accept=".txt,.pdf,.docx"
+              accept=".txt,.pdf,.docx,.doc"
               multiple
               onChange={(event) => handleFileChange(event, false)}
               ref={fileInputRef}

@@ -8,6 +8,7 @@
     width: 30%;
     display: flex;
     flex-direction: column;
+    gap: 20px;
   }
   
   .file-page {
@@ -30,6 +31,13 @@
     padding: 10px;
     margin-bottom: 20px;
     background-color: #f9f9f9;
+    overflow: auto;
+    max-width: 100%;
+  }
+
+  .doc-page canvas {
+    max-width: 100%;  /* Ensure the canvas element (if any) does not exceed the width of the container */
+    height: auto;    /* Maintain aspect ratio */
   }
 
   .pdf-viewer {
