@@ -240,10 +240,10 @@ function ChatPage({ inputLanguage, outputLanguage }) {
           <div className="message bot">
             <div className="message-box">
               <span className="message-text">
-                <b>Welcome to Qdoc! </b>
+                <b>Welcome to iCarKno-chat! </b>
                 <p>
-                  Qdoc allows you to chat with multiple documents using multiple
-                  languages, and also view the knowledge graph.
+                  iCarKno-chat allows you to chat with multiple documents using
+                  multiple languages, and also view the knowledge graph.
                 </p>
                 {files.length > 0 ? (
                   <ul className="custom-list">
