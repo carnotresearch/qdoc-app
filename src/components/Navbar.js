@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import LanguageDropdown from "./LanguageDropdown";
 import Profile from "./Profile";
-import { MDBBtn } from "mdb-react-ui-kit";
-import { Spinner } from "react-bootstrap";
+// import { MDBBtn } from "mdb-react-ui-kit";
+// import { Spinner } from "react-bootstrap";
 // import axios from "axios";
 import "../styles/navbar.css";
 
@@ -17,8 +17,8 @@ const Navbar = ({
   const location = useLocation();
   const token = sessionStorage.getItem("token");
   const paid = sessionStorage.getItem("paymentStatus");
-  const [isLoading, setIsLoading] = useState(false);
-  const [isGenerated, setIsGenerated] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false);
+  // const [isGenerated, setIsGenerated] = useState(false);
 
   const handleLogout = () => {
     sessionStorage.removeItem("token");
@@ -31,53 +31,53 @@ const Navbar = ({
     navigate("/login", { state: { focusEmail: true } });
   };
 
-  const handleGenerateGraph = async () => {
-    setIsLoading(true);
-    console.log("This feature is not live yet!");
-    setIsLoading(false);
-    setIsGenerated(true);
-    // TODO
-    // move to sidebar.js
-    // setIsLoading(true);
-    // try {
-    //   // prepare request data
-    //   const formData = new FormData();
-    //   const files = submittedData.files;
-    //   const urls = submittedData.urls;
-    //   files.forEach((file) => formData.append("files", file));
-    //   urls.forEach((url, index) => formData.append(`urls[${index}]`, url));
-    //   const token = sessionStorage.getItem("token");
-    //   formData.append("token", token);
+  // const handleGenerateGraph = async () => {
+  //   setIsLoading(true);
+  //   console.log("This feature is not live yet!");
+  //   setIsLoading(false);
+  //   setIsGenerated(true);
+  // TODO
+  // move to sidebar.js
+  // setIsLoading(true);
+  // try {
+  //   // prepare request data
+  //   const formData = new FormData();
+  //   const files = submittedData.files;
+  //   const urls = submittedData.urls;
+  //   files.forEach((file) => formData.append("files", file));
+  //   urls.forEach((url, index) => formData.append(`urls[${index}]`, url));
+  //   const token = sessionStorage.getItem("token");
+  //   formData.append("token", token);
 
-    //   // API call
-    //   const response = await axios.post(
-    //     `${process.env.REACT_APP_BACKEND_URL}/graph`,
-    //     formData,
-    //     {
-    //       headers: {
-    //         "Content-Type": "multipart/form-data",
-    //       },
-    //     }
-    //   );
+  //   // API call
+  //   const response = await axios.post(
+  //     `${process.env.REACT_APP_BACKEND_URL}/graph`,
+  //     formData,
+  //     {
+  //       headers: {
+  //         "Content-Type": "multipart/form-data",
+  //       },
+  //     }
+  //   );
 
-    //   // store graph in session storage
-    //   sessionStorage.setItem("graphContent", response.data);
-    //   setIsLoading(false);
-    //   setIsGenerated(true);
-    // } catch (error) {
-    //   setIsLoading(false);
-    //   console.error("There was an error!", error);
-    //   alert("Error generating graph, please try again");
-    // }
-  };
+  //   // store graph in session storage
+  //   sessionStorage.setItem("graphContent", response.data);
+  //   setIsLoading(false);
+  //   setIsGenerated(true);
+  // } catch (error) {
+  //   setIsLoading(false);
+  //   console.error("There was an error!", error);
+  //   alert("Error generating graph, please try again");
+  // }
+  // };
 
-  const handleOpenHtml = () => {
-    // open graph from session storage
-    const graphContent = sessionStorage.getItem("graphContent");
-    const newWindow = window.open();
-    newWindow.document.write(graphContent);
-    newWindow.document.close();
-  };
+  // const handleOpenHtml = () => {
+  //   // open graph from session storage
+  //   const graphContent = sessionStorage.getItem("graphContent");
+  //   const newWindow = window.open();
+  //   newWindow.document.write(graphContent);
+  //   newWindow.document.close();
+  // };
 
   const languages = [
     { value: "23", label: "English" },
@@ -113,7 +113,7 @@ const Navbar = ({
         style={{ marginLeft: "0.5cm", color: "white" }}
         to="/"
       >
-        QDoc Chat
+        iCarKno-chat
       </Link>
       <ul className="navbar-nav ms-auto">
         {token ? (

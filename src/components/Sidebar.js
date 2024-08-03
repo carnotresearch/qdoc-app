@@ -13,15 +13,16 @@ import { FileContext } from "./FileContext";
 
 function Sidebar({ files = [] }) {
   const { setFiles } = useContext(FileContext);
-
   const fileInputRef = useRef(null);
   const additionalFileInputRef = useRef(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [processTime, setProcessTime] = useState(10);
+
   const handleFileChange = (event, isAdditionalUpload = false) => {
     if (isAdditionalUpload) {
       handleAdditionalFileUpload(event.target.files);
     } else {
-      handleFileUpload(event.target.files, false);
+      handleFileUpload(event.target.files);
     }
   };
 
@@ -35,7 +36,7 @@ function Sidebar({ files = [] }) {
     event.preventDefault();
     event.stopPropagation();
     const files = event.dataTransfer.files;
-    handleFileUpload(files, false);
+    handleFileUpload(files);
   };
 
   const listStyle = {
@@ -63,6 +64,16 @@ function Sidebar({ files = [] }) {
   };
 
   const handleFileUpload = async (files) => {
+    let size = 0;
+    for (let i = 0; i < files.length; i++) {
+      size += files[i].size;
+    }
+    // Converting bytes to MB and mulitply by 20 for avg
+    const estimated_time = Math.floor(size / (1024 * 1024)) * 20;
+    if (estimated_time > 10) {
+      setProcessTime(estimated_time);
+    }
+
     const filesArray = Array.from(files);
     const formData = new FormData();
     filesArray.forEach((file) => formData.append("files", file));
@@ -78,7 +89,7 @@ function Sidebar({ files = [] }) {
         { headers: { "Content-Type": "multipart/form-data" } }
       );
       console.log(response.data);
-      setFiles((prevFiles) => [...prevFiles, ...filesArray]);
+      setFiles([...filesArray]);
     } catch (error) {
       console.error("Error uploading files:", error);
       alert("Error uploading files, please try again.");
@@ -133,7 +144,7 @@ function Sidebar({ files = [] }) {
       console.log(response.data);
     } catch (error) {
       console.error("Error removing file:", error);
-      // Handle the error (e.g., show an error message to the user)
+      alert("Couldn't uplaod file, kindly retry!");
     }
   };
 
@@ -153,7 +164,7 @@ function Sidebar({ files = [] }) {
             <input
               type="file"
               id="file"
-              accept=".txt,.pdf,.docx"
+              accept=".txt,.pdf,.docx,.doc"
               multiple
               onChange={(event) => handleFileChange(event, false)}
               ref={fileInputRef}
@@ -170,6 +181,9 @@ function Sidebar({ files = [] }) {
               {isUploading ? (
                 <div className="text-center">
                   <Spinner animation="border" size="sm" />
+                  <p className="mb-0">
+                    This may take upto {processTime} seconds...
+                  </p>
                 </div>
               ) : (
                 <div>

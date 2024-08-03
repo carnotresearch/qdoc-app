@@ -95,12 +95,23 @@ const Login = () => {
 
   return (
     <div className="login-main">
-      <div className="login-left">
-        <img
-          src="/computer-vision.png"
-          alt=""
-          style={{ borderRadius: "20px" }}
-        />
+      <div className="login-left text-center">
+        <figure className="figure">
+          <img
+            src="/computer-vision.png"
+            alt=""
+            className="figure-img img-fluid rounded"
+          />
+          <figcaption
+            className="figure-caption"
+            style={{ fontSize: "1rem", fontWeight: "bolder" }}
+          >
+            <p className="m-1">
+              iCarKno-chat is a knowledge agent that allows you
+            </p>
+            <p>to query multiple documents in diverse languages.</p>
+          </figcaption>
+        </figure>
       </div>
       <div className="login-right">
         <div className="login-right-container">
@@ -109,7 +120,7 @@ const Login = () => {
           </div>
           <div className="login-center">
             <h2>Carnot Research</h2>
-            <p>Welcome!</p>
+            <p>iCarKno-chat</p>
             <form className="login-form" onSubmit={handleSubmit}>
               <input
                 type="text"
