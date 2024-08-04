@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import { FileProvider } from "./components/FileContext";
@@ -13,6 +13,11 @@ import Login from "./components/Login";
 function App() {
   const [inputLanguage, setInputLanguage] = useState("23");
   const [outputLanguage, setOutputLanguage] = useState("23");
+  const [darkMode, setDarkMode] = useState(false);
+
+  useEffect(() => {
+    document.body.classList.toggle("dark-mode", darkMode);
+  }, [darkMode]);
 
   return (
     <FileProvider>
@@ -23,6 +28,8 @@ function App() {
             setInputLanguage={setInputLanguage}
             outputLanguage={outputLanguage}
             setOutputLanguage={setOutputLanguage}
+            darkMode={darkMode}
+            setDarkMode={setDarkMode}
           />
           <Routes>
             <Route path="/login" element={<Login />} />
