@@ -1,9 +1,14 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
 import Sidebar from "./Sidebar";
+import { FaChevronCircleLeft } from 'react-icons/fa';
 import { Button, Container, Form } from "react-bootstrap";
 import { faCheckCircle, faBars, faMicrophone, faPause, faPlay, faRedo } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ReactMarkdown from "react-markdown";
+import {
+  faCopy,
+  faCheck,
+} from "@fortawesome/free-solid-svg-icons";
 import FileViewer from "./FileViewer";
 import { FileContext } from "./FileContext";
 import "../styles/chatPage.css";
@@ -37,9 +42,37 @@ function ChatPage({ inputLanguage, outputLanguage }) {
   const sttSupportedLanguagesRef = useRef(sttSupportedLanguages);
   const ttsSupportedLanguages = ["1", "23"];
   const { files } = useContext(FileContext);
+  const [copiedIndex, setCopiedIndex] = useState(null);
+  const [isFileUpdated, setIsFileUpdated] = useState(false);
+
+  const handleCopy = (text, index) => {
+    navigator.clipboard.writeText(text).then(() => {
+      setCopiedIndex(index);
+      setTimeout(() => setCopiedIndex(null), 2000); // Reset after 2 seconds
+    });
+  };
 
   useEffect(() => {
     setChatHistory([]);
+    // initial state based on the screen size
+    const handleResize = () => {
+      if (window.innerWidth <= 768) {
+        setSidebarCollapsed(true);
+      } else {
+        setSidebarCollapsed(false);
+      }
+    };
+    handleResize();
+    // event listener to handle window resize
+    window.addEventListener("resize", handleResize);
+    // Clean up the event listener on component unmount
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  useEffect(() => {
+    setIsFileUpdated(true);
     inputRef.current.focus();
     if (files.length > 0) {
       setSidebarCollapsed(true);
@@ -87,6 +120,7 @@ function ChatPage({ inputLanguage, outputLanguage }) {
   }, [inputLanguage]);
 
   const handleSendMessage = async () => {
+    setIsFileUpdated(false);
     if (message.trim()) {
       const timestamp = new Date().toLocaleTimeString([], {
         hour: "2-digit",
@@ -217,22 +251,24 @@ function ChatPage({ inputLanguage, outputLanguage }) {
           <div className="message bot">
             <div className="message-box">
               <span className="message-text">
-                <b>Welcome to Qdoc! </b>
+                <b>Welcome to iCarKno-chat</b>
                 <p>
-                  Qdoc allows you to chat with multiple documents using multiple
-                  languages, and also view the knowledge graph.
+                  iCarKno-chat is a knowledge agent that allows you to query
+                  multiple documents in diverse languages.
                 </p>
-                <ul className="custom-list">
-                  {startingQuestions.map((question, index) => (
-                    <li key={index}>
-                      <FontAwesomeIcon
-                        icon={faCheckCircle}
-                        style={iconStyles}
-                      />
-                      {question}
-                    </li>
-                  ))}
-                </ul>
+                {files.length > 0 && (
+                  <ul className="custom-list">
+                    {startingQuestions.map((question, index) => (
+                      <li key={index}>
+                        <FontAwesomeIcon
+                          icon={faCheckCircle}
+                          style={iconStyles}
+                        />
+                        {question}
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </span>
             </div>
           </div>
@@ -250,12 +286,13 @@ function ChatPage({ inputLanguage, outputLanguage }) {
               <div className="message bot">
                 <div className="message-box">
                   <span className={"message-text"}>
-                    <b className="text-success">Qdoc response: </b>
+                    <b className="text-success">iCarKno: </b>
                     {chat.loading ? (
                       <LoadingDots />
                     ) : (
                       <ReactMarkdown>{chat.bot}</ReactMarkdown>
                     )}
+
                   </span>
                   {chat.ttsSupport &&
                     (playingIndex === index ? (
@@ -291,11 +328,46 @@ function ChatPage({ inputLanguage, outputLanguage }) {
                         <FontAwesomeIcon icon={faPlay} />
                       </Button>
                     ))}
-                  <span className="message-time">{chat.timestamp}</span>
+                  <Button
+                    onClick={() => handleCopy(chat.bot, index)}
+                    variant="link"
+                    style={{ fontSize: "1" }}
+                  >
+                    {copiedIndex === index ? (
+                      <FontAwesomeIcon icon={faCheck} />
+                    ) : (
+                      <FontAwesomeIcon icon={faCopy} />
+                    )}
+                  </Button>
                 </div>
               </div>
             </div>
           ))}
+          {isFileUpdated &&
+            (files.length > 0 ? (
+              <div className="message bot">
+                <div className="message-box">
+                  <span className={"message-text"}>
+                    <b className="text-success">Qdoc response: </b>
+                    Your files have been updated!
+                  </span>
+                </div>
+              </div>
+            ) : (
+              <div className="message bot">
+                <div className="message-box">
+                  <span className={"message-text"}>
+                    <p>
+                      Kindly upload files using sidebar.{" "}
+                      <FaChevronCircleLeft
+                        style={{ cursor: "pointer" }}
+                        onClick={() => setSidebarCollapsed(false)}
+                      />
+                    </p>
+                  </span>
+                </div>
+              </div>
+            ))}
         </div>
         <Form className="d-flex" onSubmit={handleSubmit}>
           <Form.Control
