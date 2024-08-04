@@ -6,6 +6,11 @@ import { faCheckCircle, faBars, faMicrophone, faPause, faPlay, faRedo } from "@f
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ReactMarkdown from "react-markdown";
 import {
+  faBars,
+  faMicrophone,
+  faPause,
+  faPlay,
+  faRedo,
   faCopy,
   faCheck,
 } from "@fortawesome/free-solid-svg-icons";
@@ -292,7 +297,7 @@ function ChatPage({ inputLanguage, outputLanguage }) {
                     ) : (
                       <ReactMarkdown>{chat.bot}</ReactMarkdown>
                     )}
-
+                    <ReactMarkdown>{chat.bot}</ReactMarkdown>
                   </span>
                   {chat.ttsSupport &&
                     (playingIndex === index ? (
@@ -392,5 +397,4 @@ function ChatPage({ inputLanguage, outputLanguage }) {
     </Container>
   );
 }
-
 export default ChatPage;
