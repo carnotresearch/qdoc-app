@@ -4,7 +4,8 @@ import LanguageDropdown from "./LanguageDropdown";
 import Profile from "./Profile";
 import { MDBBtn } from "mdb-react-ui-kit";
 import { Spinner } from "react-bootstrap";
-// import axios from "axios";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSun, faMoon } from "@fortawesome/free-solid-svg-icons";
 import "../styles/navbar.css";
 
 const Navbar = ({
@@ -12,6 +13,8 @@ const Navbar = ({
   setInputLanguage,
   outputLanguage,
   setOutputLanguage,
+  darkMode,
+  setDarkMode,
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -36,43 +39,9 @@ const Navbar = ({
     console.log("This feature is not live yet!");
     setIsLoading(false);
     setIsGenerated(true);
-    // TODO
-    // move to sidebar.js
-    // setIsLoading(true);
-    // try {
-    //   // prepare request data
-    //   const formData = new FormData();
-    //   const files = submittedData.files;
-    //   const urls = submittedData.urls;
-    //   files.forEach((file) => formData.append("files", file));
-    //   urls.forEach((url, index) => formData.append(`urls[${index}]`, url));
-    //   const token = sessionStorage.getItem("token");
-    //   formData.append("token", token);
-
-    //   // API call
-    //   const response = await axios.post(
-    //     `${process.env.REACT_APP_BACKEND_URL}/graph`,
-    //     formData,
-    //     {
-    //       headers: {
-    //         "Content-Type": "multipart/form-data",
-    //       },
-    //     }
-    //   );
-
-    //   // store graph in session storage
-    //   sessionStorage.setItem("graphContent", response.data);
-    //   setIsLoading(false);
-    //   setIsGenerated(true);
-    // } catch (error) {
-    //   setIsLoading(false);
-    //   console.error("There was an error!", error);
-    //   alert("Error generating graph, please try again");
-    // }
   };
 
   const handleOpenHtml = () => {
-    // open graph from session storage
     const graphContent = sessionStorage.getItem("graphContent");
     const newWindow = window.open();
     newWindow.document.write(graphContent);
@@ -106,121 +75,85 @@ const Navbar = ({
   ];
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-light">
+    <nav className={`navbar navbar-expand-lg ${darkMode ? "navbar-dark bg-dark" : "navbar-light bg-light"}`}>
       <Profile />
-      <Link
-        className="navbar-brand"
-        style={{ marginLeft: "0.5cm", color: "white" }}
-        to="/"
-      >
+      <Link className="navbar-brand" to="/">
         QDoc Chat
       </Link>
-      <ul className="navbar-nav ms-auto">
-        {token ? (
-          <>
-            <button
-              className="navbar-toggler btn btn-light"
-              type="button"
-              data-bs-toggle="collapse"
-              data-bs-target="#navbarNav"
-              aria-controls="navbarNav"
-              aria-expanded="false"
-              aria-label="Toggle navigation"
-            >
-              <span className="navbar-toggler-icon"></span>
-            </button>
-            <div className="collapse navbar-collapse ms-auto" id="navbarNav">
-              <li className="nav-item">
-                <a
-                  className="nav-link"
-                  href="https://carnotresearch.com/#section-about"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <b style={{ color: "white" }}>About Us ↗</b>
-                </a>
-              </li>
-              {location.pathname === "/" && (
-                <>
-                  {/* <li className="nav-item">
-                    {isGenerated ? (
-                      <button
-                        className="btn btn-success"
-                        onClick={handleOpenHtml}
-                        style={{ marginRight: "0.25cm" }}
-                      >
-                        Open ↗
-                      </button>
-                    ) : (
-                      <MDBBtn
-                        className="btn btn-success"
-                        onClick={handleGenerateGraph}
-                        style={{ marginRight: "0.25cm" }}
-                        disabled={isLoading}
-                      >
-                        {isLoading ? (
-                          <Spinner animation="border" size="sm" />
-                        ) : (
-                          "Graph"
-                        )}
-                      </MDBBtn>
-                    )}
-                  </li> */}
-                  <LanguageDropdown
-                    label="Input"
-                    selectedLanguage={
-                      languages.find((lang) => lang.value === inputLanguage)
-                        ?.label || "English"
-                    }
-                    languages={languages}
-                    onChange={setInputLanguage}
-                  />
-                  <LanguageDropdown
-                    label="Output"
-                    selectedLanguage={
-                      languages.find((lang) => lang.value === outputLanguage)
-                        ?.label || "English"
-                    }
-                    languages={languages}
-                    onChange={setOutputLanguage}
-                  />
-                </>
-              )}
-              {paid === "0" && (
-                <li className="nav-item">
-                  <Link to="/payment">
-                    <button
-                      className="btn btn-purple"
-                      style={{ marginRight: "0.25cm" }}
-                    >
-                      Upgrade
-                    </button>
-                  </Link>
-                </li>
-              )}
-              <li className="nav-item">
-                <button
-                  className="btn btn-danger"
-                  style={{ marginRight: "0.25cm", color: "white" }}
-                  onClick={handleLogout}
-                >
-                  Logout
-                </button>
-              </li>
-            </div>
-          </>
-        ) : (
+      <button
+        className="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span className="navbar-toggler-icon"></span>
+      </button>
+      <div className="collapse navbar-collapse" id="navbarNav">
+        <ul className="navbar-nav ms-auto">
           <li className="nav-item">
-            <button
-              style={{ marginRight: "0.5cm" }}
-              className="btn btn-primary"
-              onClick={handleLoginClick}
+            <a
+              className="nav-link"
+              href="https://carnotresearch.com/#section-about"
+              target="_blank"
+              rel="noopener noreferrer"
             >
-              Login
-            </button>
+              About Us
+            </a>
           </li>
-        )}
-      </ul>
+          {location.pathname === "/" && (
+            <>
+              <LanguageDropdown
+                label="Input"
+                selectedLanguage={
+                  languages.find((lang) => lang.value === inputLanguage)
+                    ?.label || "English"
+                }
+                languages={languages}
+                onChange={setInputLanguage}
+              />
+              <LanguageDropdown
+                label="Output"
+                selectedLanguage={
+                  languages.find((lang) => lang.value === outputLanguage)
+                    ?.label || "English"
+                }
+                languages={languages}
+                onChange={setOutputLanguage}
+              />
+            </>
+          )}
+          {paid === "0" && (
+            <li className="nav-item">
+              <Link to="/payment">
+                <button className="btn btn-purple">Upgrade</button>
+              </Link>
+            </li>
+          )}
+          <li className="nav-item">
+            {token ? (
+              <button className="btn btn-danger" onClick={handleLogout}>
+                Logout
+              </button>
+            ) : (
+              <button className="btn btn-primary" onClick={handleLoginClick}>
+                Login
+              </button>
+            )}
+          </li>
+          <li className="nav-item">
+            <MDBBtn
+              variant="outline-secondary"
+              className="dark-mode-toggle"
+              onClick={() => setDarkMode(!darkMode)}
+            >
+              <FontAwesomeIcon icon={darkMode ? faSun : faMoon} />
+            </MDBBtn>
+          </li>
+        </ul>
+      </div>
     </nav>
   );
 };

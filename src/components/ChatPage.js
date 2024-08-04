@@ -1,21 +1,14 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
 import Sidebar from "./Sidebar";
 import { Button, Container, Form } from "react-bootstrap";
-import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
+import { faCheckCircle, faBars, faMicrophone, faPause, faPlay, faRedo } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { FaChevronCircleLeft } from "react-icons/fa";
 import ReactMarkdown from "react-markdown";
-import {
-  faBars,
-  faMicrophone,
-  faPause,
-  faPlay,
-  faRedo,
-} from "@fortawesome/free-solid-svg-icons";
 import FileViewer from "./FileViewer";
 import { FileContext } from "./FileContext";
 import "../styles/chatPage.css";
 import axios from "axios";
+import LoadingDots from "./LoadingDots";
 
 const sttSupportedLanguages = {
   23: "", // English
@@ -44,24 +37,6 @@ function ChatPage({ inputLanguage, outputLanguage }) {
   const sttSupportedLanguagesRef = useRef(sttSupportedLanguages);
   const ttsSupportedLanguages = ["1", "23"];
   const { files } = useContext(FileContext);
-
-  useEffect(() => {
-    // initial state based on the screen size
-    const handleResize = () => {
-      if (window.innerWidth <= 768) {
-        setSidebarCollapsed(true);
-      } else {
-        setSidebarCollapsed(false);
-      }
-    };
-    handleResize();
-    // event listener to handle window resize
-    window.addEventListener("resize", handleResize);
-    // Clean up the event listener on component unmount
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
 
   useEffect(() => {
     setChatHistory([]);
@@ -123,12 +98,12 @@ function ChatPage({ inputLanguage, outputLanguage }) {
         ...chatHistory,
         {
           user: message,
-          bot: "Loading...",
+          bot: "",
+          loading: true,
           timestamp,
           ttsSupport,
         },
       ];
-
       setChatHistory(newChatHistory);
       setMessage("");
       const token = sessionStorage.getItem("token");
@@ -146,11 +121,13 @@ function ChatPage({ inputLanguage, outputLanguage }) {
         );
 
         newChatHistory[newChatHistory.length - 1].bot = response.data.answer;
+        newChatHistory[newChatHistory.length - 1].loading = false;
         setChatHistory([...newChatHistory]);
       } catch (error) {
         console.error("There was an error!", error);
         newChatHistory[newChatHistory.length - 1].bot =
           "Error! Kindly try again";
+        newChatHistory[newChatHistory.length - 1].loading = false;
         setChatHistory([...newChatHistory]);
       }
     }
@@ -234,7 +211,7 @@ function ChatPage({ inputLanguage, outputLanguage }) {
         </Button>
         {!sidebarCollapsed && <Sidebar files={files} />}
       </div>
-      {files.length > 0 && <FileViewer files={files} />}
+      <FileViewer files={files} />
       <div className="chat-content">
         <div className="chat-history" ref={chatHistoryRef}>
           <div className="message bot">
@@ -245,27 +222,17 @@ function ChatPage({ inputLanguage, outputLanguage }) {
                   Qdoc allows you to chat with multiple documents using multiple
                   languages, and also view the knowledge graph.
                 </p>
-                {files.length > 0 ? (
-                  <ul className="custom-list">
-                    {startingQuestions.map((question, index) => (
-                      <li key={index}>
-                        <FontAwesomeIcon
-                          icon={faCheckCircle}
-                          style={iconStyles}
-                        />
-                        {question}
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p>
-                    Kindly upload files using sidebar.{" "}
-                    <FaChevronCircleLeft
-                      style={{ cursor: "pointer" }}
-                      onClick={() => setSidebarCollapsed(false)}
-                    />
-                  </p>
-                )}
+                <ul className="custom-list">
+                  {startingQuestions.map((question, index) => (
+                    <li key={index}>
+                      <FontAwesomeIcon
+                        icon={faCheckCircle}
+                        style={iconStyles}
+                      />
+                      {question}
+                    </li>
+                  ))}
+                </ul>
               </span>
             </div>
           </div>
@@ -284,7 +251,11 @@ function ChatPage({ inputLanguage, outputLanguage }) {
                 <div className="message-box">
                   <span className={"message-text"}>
                     <b className="text-success">Qdoc response: </b>
-                    <ReactMarkdown>{chat.bot}</ReactMarkdown>
+                    {chat.loading ? (
+                      <LoadingDots />
+                    ) : (
+                      <ReactMarkdown>{chat.bot}</ReactMarkdown>
+                    )}
                   </span>
                   {chat.ttsSupport &&
                     (playingIndex === index ? (

@@ -2,7 +2,6 @@
     flex: 1;
     overflow-y: auto;
     padding: 10px;
-    border: 1px solid #dee2e6;
     max-height: 90vh;
     margin-bottom: 10px;
     width: 30%;
@@ -33,7 +32,6 @@
   }
 
   .pdf-viewer {
-    border: 1px solid #ddd;
     margin-bottom: 20px;
     background-color: #f9f9f9;
     overflow-y: auto;
