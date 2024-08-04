@@ -2,18 +2,9 @@ import React, { useState, useEffect, useRef, useContext } from "react";
 import Sidebar from "./Sidebar";
 import { FaChevronCircleLeft } from 'react-icons/fa';
 import { Button, Container, Form } from "react-bootstrap";
-import { faCheckCircle, faBars, faMicrophone, faPause, faPlay, faRedo } from "@fortawesome/free-solid-svg-icons";
+import { faCheckCircle, faBars, faMicrophone, faPause, faPlay, faRedo, faCopy, faCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ReactMarkdown from "react-markdown";
-import {
-  faBars,
-  faMicrophone,
-  faPause,
-  faPlay,
-  faRedo,
-  faCopy,
-  faCheck,
-} from "@fortawesome/free-solid-svg-icons";
 import FileViewer from "./FileViewer";
 import { FileContext } from "./FileContext";
 import "../styles/chatPage.css";
