@@ -13,16 +13,16 @@ import { FileContext } from "./FileContext";
 
 function Sidebar({ files = [] }) {
   const { setFiles } = useContext(FileContext);
+
   const fileInputRef = useRef(null);
   const additionalFileInputRef = useRef(null);
   const [isUploading, setIsUploading] = useState(false);
-  const [processTime, setProcessTime] = useState(10);
 
   const handleFileChange = (event, isAdditionalUpload = false) => {
     if (isAdditionalUpload) {
       handleAdditionalFileUpload(event.target.files);
     } else {
-      handleFileUpload(event.target.files);
+      handleFileUpload(event.target.files, false);
     }
   };
 
@@ -36,7 +36,7 @@ function Sidebar({ files = [] }) {
     event.preventDefault();
     event.stopPropagation();
     const files = event.dataTransfer.files;
-    handleFileUpload(files);
+    handleFileUpload(files, false);
   };
 
   const listStyle = {
@@ -64,16 +64,6 @@ function Sidebar({ files = [] }) {
   };
 
   const handleFileUpload = async (files) => {
-    let size = 0;
-    for (let i = 0; i < files.length; i++) {
-      size += files[i].size;
-    }
-    // Converting bytes to MB and mulitply by 20 for avg
-    const estimated_time = Math.floor(size / (1024 * 1024)) * 20;
-    if (estimated_time > 10) {
-      setProcessTime(estimated_time);
-    }
-
     const filesArray = Array.from(files);
     const formData = new FormData();
     filesArray.forEach((file) => formData.append("files", file));
@@ -84,12 +74,12 @@ function Sidebar({ files = [] }) {
 
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_BACKEND_URL}/upload`,
+        `${process.env.REACT_APP_SAVE_FILE}/upload`,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
       console.log(response.data);
-      setFiles([...filesArray]);
+      setFiles((prevFiles) => [...prevFiles, ...filesArray]);
     } catch (error) {
       console.error("Error uploading files:", error);
       alert("Error uploading files, please try again.");
@@ -106,10 +96,9 @@ function Sidebar({ files = [] }) {
     formData.append("token", token);
 
     setIsUploading(true);
-
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_BACKEND_URL}/add-upload`,
+        `${process.env.REACT_APP_SAVE_FILE}/add-upload`,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
@@ -130,21 +119,20 @@ function Sidebar({ files = [] }) {
     setFiles(newFiles);
 
     const formData = new FormData();
-    newFiles.forEach((file) => formData.append("files", file)); // Send remaining files
+    newFiles.forEach((file) => formData.append("files", file));
     formData.append("fileName", removedFile.name);
     const token = sessionStorage.getItem("token");
     formData.append("token", token);
 
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_BACKEND_URL}/upload`,
+        `${process.env.REACT_APP_SAVE_FILE}/remove-upload`,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
       console.log(response.data);
     } catch (error) {
       console.error("Error removing file:", error);
-      alert("Couldn't uplaod file, kindly retry!");
     }
   };
 
@@ -164,7 +152,7 @@ function Sidebar({ files = [] }) {
             <input
               type="file"
               id="file"
-              accept=".txt,.pdf,.docx,.doc"
+              accept=".txt,.pdf,.docx"
               multiple
               onChange={(event) => handleFileChange(event, false)}
               ref={fileInputRef}
@@ -181,9 +169,6 @@ function Sidebar({ files = [] }) {
               {isUploading ? (
                 <div className="text-center">
                   <Spinner animation="border" size="sm" />
-                  <p className="mb-0">
-                    This may take upto {processTime} seconds...
-                  </p>
                 </div>
               ) : (
                 <div>
