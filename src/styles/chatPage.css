@@ -50,7 +50,9 @@ body {
   transition: all 0.3s;
   background-color: var(--primary-color);
   padding: 10px;
-  border-right: 1px solid var(--border-color);
+  border-right: 3px solid var(--border-color);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Added shadow */
+  border: 1px solid var(--border-color); /* Added border */
 }
 
 .sidebar.collapsed {
