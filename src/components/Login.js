@@ -1,15 +1,17 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
 import { Spinner } from "react-bootstrap";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { GoogleLogin } from "@react-oauth/google";
 import axios from "axios";
+import { FileContext } from "./FileContext";
 import "../styles/login.css";
 
 const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
 const Login = () => {
+  const { setFiles } = useContext(FileContext);
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -40,11 +42,12 @@ const Login = () => {
       }
       sessionStorage.setItem("expiryTime", expiryTime.toString());
       setIsLoading(false);
+      setFiles([]);
       navigate("/");
     } catch (error) {
       console.error("Login error", error);
       setIsLoading(false);
-      alert(error.response.data.message);
+      alert("Error in login, kindly retry!");
     }
   };
 
@@ -85,6 +88,7 @@ const Login = () => {
       }
       sessionStorage.setItem("expiryTime", expiryTime.toString());
       setIsLoading(false);
+      setFiles([]);
       navigate("/");
     } catch (error) {
       console.error("Login error", error);
