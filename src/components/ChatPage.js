@@ -10,6 +10,7 @@ import { FileContext } from "./FileContext";
 import "../styles/chatPage.css";
 import axios from "axios";
 import LoadingDots from "./LoadingDots";
+import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 
 const sttSupportedLanguages = {
   23: "", // English
@@ -231,14 +232,14 @@ function ChatPage({ inputLanguage, outputLanguage }) {
 
   return (
     <Container fluid className="chat-container">
-      <div className={`sidebar ${sidebarCollapsed ? "collapsed" : ""}`}>
-        <Button
-          variant="secondary"
-          className="sidebar-toggle-btn"
-          onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-        >
-          <FontAwesomeIcon icon={faBars} />
-        </Button>
+    <div className={`sidebar ${sidebarCollapsed ? "collapsed" : ""}`}>
+      <Button
+        variant="secondary"
+        className="sidebar-toggle-btn"
+        onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+      >
+        <MenuOutlinedIcon className="menu-icon"  fontSize="large"/>
+      </Button>
         {!sidebarCollapsed && <Sidebar files={files} />}
       </div>
       <FileViewer files={files} />

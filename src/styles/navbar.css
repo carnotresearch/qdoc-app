@@ -20,6 +20,7 @@
     --background-color: var(--background-color-dark);
     --dropdown-background-color: var(--dropdown-background-color-dark);
     --btn-hover-border-color: var(--secondary-color);
+
   }
   
   body {
@@ -44,15 +45,15 @@
     --primary-color: var(--primary-color-dark);
     --text-color: var(--text-color-dark);
   }
-  
+ 
   .navbar-brand {
     font-weight: bold;
     color: var(--text-color);
-    transition: color 0.3s ease;
+   
   }
   
   .navbar-brand:hover {
-    color: #ffcc00;
+    color: rgba(54, 183, 183, 0.8);
   }
   
   .navbar-nav .nav-link {
@@ -61,12 +62,20 @@
   }
   
   .navbar-nav .nav-link:hover {
-    color: #ffcc00;
+    color:  rgba(54, 183, 183, 0.8);
   }
   
   .navbar-toggler {
     border-color: var(--text-color);
-  }
+      width: 40px; 
+      height: 40px;
+      border: none;
+    }
+    
+    .navbar-toggler:focus {
+      outline: none; /* Remove outline on focus */
+    }
+    
   
   .navbar-toggler-icon {
     background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'><path stroke='var(--text-color)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/></svg>");

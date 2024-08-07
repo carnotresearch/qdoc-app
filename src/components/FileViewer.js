@@ -31,7 +31,9 @@ function FileViewer({ files }) {
       setFileContents(contents.filter((content) => content !== null));
     };
 
-    loadFiles();
+    if (files.length > 0) {
+      loadFiles();
+    }
   }, [files]);
 
   const readTextFile = (file) => {
@@ -66,6 +68,10 @@ function FileViewer({ files }) {
       }
     });
   }, [fileContents]);
+
+  if (files.length === 0) {
+    return null; // Return null to render nothing if no files are uploaded
+  }
 
   return (
     <div className="file-viewer">
