@@ -100,7 +100,7 @@ const Login = () => {
   return (
     <div className="login-main">
       <div className="login-left text-center">
-        <figure className="figure">
+        <figure className="figure" style={{ color: "black" }}>
           <p className="m-1">
             iCarKno-chat is a knowledge agent that allows you
           </p>
