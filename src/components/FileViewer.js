@@ -76,7 +76,7 @@ function FileViewer({ files }) {
   return (
     <div className="file-viewer">
       {fileContents.map((file, index) => (
-        <div key={index} className="file-page">
+        <div key={index} className="file-page" style={{ color: "black" }}>
           <h4>{file.name}</h4>
           {file.type === "pdf" ? (
             <PdfViewer pdfUrl={file.content} />

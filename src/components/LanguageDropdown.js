@@ -2,7 +2,7 @@ import React from "react";
 
 const LanguageDropdown = ({ label, selectedLanguage, languages, onChange }) => {
   return (
-    <li className="nav-item dropdown" style={{ marginRight: "0.25cm" }}>
+    <li className="nav-item dropdown">
       <button
         className="btn btn-warning dropdown-toggle"
         id={`${label}LanguageDropdown`}

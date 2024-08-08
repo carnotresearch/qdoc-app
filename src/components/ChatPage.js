@@ -1,8 +1,16 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
 import Sidebar from "./Sidebar";
-import { FaChevronCircleLeft } from 'react-icons/fa';
+import { FaChevronCircleLeft } from "react-icons/fa";
 import { Button, Container, Form } from "react-bootstrap";
-import { faCheckCircle, faBars, faMicrophone, faPause, faPlay, faRedo, faCopy, faCheck } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCheckCircle,
+  faMicrophone,
+  faPause,
+  faPlay,
+  faRedo,
+  faCopy,
+  faCheck,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ReactMarkdown from "react-markdown";
 import FileViewer from "./FileViewer";
@@ -10,9 +18,9 @@ import { FileContext } from "./FileContext";
 import "../styles/chatPage.css";
 import axios from "axios";
 import LoadingDots from "./LoadingDots";
-import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
-import SendIcon from '@mui/icons-material/Send';
-import IconButton from '@mui/material/IconButton';
+import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
+import SendIcon from "@mui/icons-material/Send";
+import IconButton from "@mui/material/IconButton";
 
 const sttSupportedLanguages = {
   23: "", // English
@@ -234,14 +242,14 @@ function ChatPage({ inputLanguage, outputLanguage }) {
 
   return (
     <Container fluid className="chat-container">
-    <div className={`sidebar ${sidebarCollapsed ? "collapsed" : ""}`}>
-      <Button
-        variant="secondary"
-        className="sidebar-toggle-btn"
-        onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-      >
-        <MenuOutlinedIcon className="menu-icon"  fontSize="medium"/>
-      </Button>
+      <div className={`sidebar ${sidebarCollapsed ? "collapsed" : ""}`}>
+        <Button
+          variant="secondary"
+          className="sidebar-toggle-btn"
+          onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+        >
+          <MenuOutlinedIcon className="menu-icon" fontSize="medium" />
+        </Button>
         {!sidebarCollapsed && <Sidebar files={files} />}
       </div>
       <FileViewer files={files} />
@@ -291,7 +299,6 @@ function ChatPage({ inputLanguage, outputLanguage }) {
                     ) : (
                       <ReactMarkdown>{chat.bot}</ReactMarkdown>
                     )}
-                    <ReactMarkdown>{chat.bot}</ReactMarkdown>
                   </span>
                   {chat.ttsSupport &&
                     (playingIndex === index ? (
@@ -347,7 +354,7 @@ function ChatPage({ inputLanguage, outputLanguage }) {
               <div className="message bot">
                 <div className="message-box">
                   <span className={"message-text"}>
-                    <b className="text-success">Qdoc response: </b>
+                    <b className="text-success">iCarKno: </b>
                     Your files have been updated!
                   </span>
                 </div>
@@ -386,14 +393,12 @@ function ChatPage({ inputLanguage, outputLanguage }) {
             </Button>
           )}
           <IconButton
-       type="submit"
-
-       aria-label=""
-       style={{ color: 'rgba(54, 183, 183, 0.8)' }}
->
-   <SendIcon />
-  </IconButton>
-
+            type="submit"
+            aria-label=""
+            style={{ color: "rgba(54, 183, 183, 0.8)" }}
+          >
+            <SendIcon />
+          </IconButton>
         </Form>
       </div>
     </Container>
