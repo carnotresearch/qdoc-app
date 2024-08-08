@@ -1,13 +1,10 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "./Sidebar";
-import { Button, Container, Form } from "react-bootstrap";
-import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FaChevronCircleLeft } from "react-icons/fa";
-import ReactMarkdown from "react-markdown";
+import { Button, Container, Form } from "react-bootstrap";
 import {
-  faBars,
+  faCheckCircle,
   faMicrophone,
   faPause,
   faPlay,
@@ -15,10 +12,16 @@ import {
   faCopy,
   faCheck,
 } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import ReactMarkdown from "react-markdown";
 import FileViewer from "./FileViewer";
 import { FileContext } from "./FileContext";
 import "../styles/chatPage.css";
 import axios from "axios";
+import LoadingDots from "./LoadingDots";
+import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
+import SendIcon from "@mui/icons-material/Send";
+import IconButton from "@mui/material/IconButton";
 
 const sttSupportedLanguages = {
   23: "", // English
@@ -59,6 +62,7 @@ function ChatPage({ inputLanguage, outputLanguage }) {
   };
 
   useEffect(() => {
+    setChatHistory([]);
     // initial state based on the screen size
     const handleResize = () => {
       if (window.innerWidth <= 768) {
@@ -137,12 +141,12 @@ function ChatPage({ inputLanguage, outputLanguage }) {
         ...chatHistory,
         {
           user: message,
-          bot: "Loading...",
+          bot: "",
+          loading: true,
           timestamp,
           ttsSupport,
         },
       ];
-
       setChatHistory(newChatHistory);
       setMessage("");
       const token = sessionStorage.getItem("token");
@@ -160,6 +164,7 @@ function ChatPage({ inputLanguage, outputLanguage }) {
         );
 
         newChatHistory[newChatHistory.length - 1].bot = response.data.answer;
+        newChatHistory[newChatHistory.length - 1].loading = false;
         setChatHistory([...newChatHistory]);
       } catch (error) {
         console.error("There was an error!", error);
@@ -170,6 +175,7 @@ function ChatPage({ inputLanguage, outputLanguage }) {
         }
         newChatHistory[newChatHistory.length - 1].bot =
           "Error! Kindly try again";
+        newChatHistory[newChatHistory.length - 1].loading = false;
         setChatHistory([...newChatHistory]);
       }
     }
@@ -249,11 +255,11 @@ function ChatPage({ inputLanguage, outputLanguage }) {
           className="sidebar-toggle-btn"
           onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
         >
-          <FontAwesomeIcon icon={faBars} />
+          <MenuOutlinedIcon className="menu-icon" fontSize="medium" />
         </Button>
         {!sidebarCollapsed && <Sidebar files={files} />}
       </div>
-      {files.length > 0 && <FileViewer files={files} />}
+      <FileViewer files={files} />
       <div className="chat-content">
         <div className="chat-history" ref={chatHistoryRef}>
           <div className="message bot">
@@ -295,7 +301,11 @@ function ChatPage({ inputLanguage, outputLanguage }) {
                 <div className="message-box">
                   <span className={"message-text"}>
                     <b className="text-success">iCarKno: </b>
-                    <ReactMarkdown>{chat.bot}</ReactMarkdown>
+                    {chat.loading ? (
+                      <LoadingDots />
+                    ) : (
+                      <ReactMarkdown>{chat.bot}</ReactMarkdown>
+                    )}
                   </span>
                   {chat.ttsSupport &&
                     (playingIndex === index ? (
@@ -351,7 +361,7 @@ function ChatPage({ inputLanguage, outputLanguage }) {
               <div className="message bot">
                 <div className="message-box">
                   <span className={"message-text"}>
-                    <b className="text-success">Qdoc response: </b>
+                    <b className="text-success">iCarKno: </b>
                     Your files have been updated!
                   </span>
                 </div>
@@ -383,17 +393,22 @@ function ChatPage({ inputLanguage, outputLanguage }) {
           />
           {showMicrophone && (
             <Button
-              variant={recognizing ? "danger" : "primary"}
+              variant={recognizing ? "danger" : ""}
               onClick={handleSpeechInput}
             >
               <FontAwesomeIcon icon={faMicrophone} />
             </Button>
           )}
-          <Button type="submit">Send</Button>
+          <IconButton
+            type="submit"
+            aria-label=""
+            style={{ color: "rgba(54, 183, 183, 0.8)" }}
+          >
+            <SendIcon />
+          </IconButton>
         </Form>
       </div>
     </Container>
   );
 }
-
 export default ChatPage;
