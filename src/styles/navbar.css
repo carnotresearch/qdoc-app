@@ -1,115 +1,135 @@
 :root {
-    --primary-color-light: #ffffff; /* Light mode navbar color */
-    --primary-color-dark: #333333; /* Dark mode navbar color */
-    --secondary-color: #6f42c1; /* Purple color */
-    --hover-color: #5a32a3; /* Darker purple on hover */
-    --text-color-light: black;
-    --text-color-dark: white;
-    --background-color-light: #ffffff; /* White for light mode */
-    --background-color-dark: #121212; /* Dark background for dark mode */
-    --btn-background-color: transparent;
-    --btn-border-color: transparent;
-    --btn-hover-border-color: white;
-    --dropdown-background-color-light: #ffffff; /* Light mode dropdown */
-    --dropdown-background-color-dark: #333333; /* Dark mode dropdown */
-  }
-  
-  body.dark-mode {
-    --primary-color: var(--primary-color-dark);
-    --text-color: var(--text-color-dark);
-    --background-color: var(--background-color-dark);
-    --dropdown-background-color: var(--dropdown-background-color-dark);
-    --btn-hover-border-color: var(--secondary-color);
+  --primary-color-light: #ffffff;
+  --primary-color-dark: #333333;
+  --secondary-color: #6f42c1;
+  --hover-color: #5a32a3;
+  --text-color-light: black;
+  --text-color-dark: white;
+  --background-color-light: #ffffff;
+  --background-color-dark: #121212;
+  --btn-background-color: transparent;
+  --btn-border-color: transparent;
+  --btn-hover-border-color: white;
+  --dropdown-background-color-light: #ffffff;
+  --dropdown-background-color-dark: #333333;
+}
 
-  }
-  
-  body {
-    font-family: 'Roboto', sans-serif;
-    background-color: var(--background-color);
-    color: var(--text-color);
-  }
-  
-  .navbar {
-    background-color: var(--primary-color);
-    width: 100%;
-    z-index: 1000;
-    transition: background-color 0.3s ease;
-  }
-  
-  .navbar-light {
-    --primary-color: var(--primary-color-light);
-    --text-color: var(--text-color-light);
-  }
-  
-  .navbar-dark {
-    --primary-color: var(--primary-color-dark);
-    --text-color: var(--text-color-dark);
-  }
- 
-  .navbar-brand {
-    font-weight: bold;
-    color: var(--text-color);
-   
-  }
-  
-  .navbar-brand:hover {
-    color: rgba(54, 183, 183, 0.8);
-  }
-  
-  .navbar-nav .nav-link {
-    color: var(--text-color);
-    transition: color 0.3s ease;
-  }
-  
-  .navbar-nav .nav-link:hover {
-    color:  rgba(54, 183, 183, 0.8);
-  }
-  
-  .navbar-toggler {
-    border-color: var(--text-color);
-      width: 40px; 
-      height: 40px;
-      border: none;
-    }
-    
-    .navbar-toggler:focus {
-      outline: none; /* Remove outline on focus */
-    }
-    
-  
-  .navbar-toggler-icon {
-    background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'><path stroke='var(--text-color)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/></svg>");
-  }
-  
-  .btn {
-    background-color: var(--btn-background-color);
-    color: var(--text-color);
-    border: 2px solid var(--btn-border-color);
-    transition: all 0.3s ease;
-  }
-  
-  .btn:hover {
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-    transform: translateY(-2px);
-    border: 2px solid var(--btn-hover-border-color);
-  }
-  
-  .btn-purple {
-    background-color: var(--secondary-color);
-    border-color: var(--secondary-color);
-    color: var(--text-color-dark);
-  }
-  
-  .btn-purple:hover {
-    background-color: var(--hover-color);
-    border-color: var(--hover-color);
-  }
-  
-  .dropdown-menu {
-    background-color: var(--dropdown-background-color);
-  }
-  
-  .dropdown-item {
-    color: var(--text-color);
-  }
-  
+body.dark-mode {
+  --primary-color: var(--primary-color-dark);
+  --text-color: var(--text-color-dark);
+  --background-color: var(--background-color-dark);
+  --dropdown-background-color: var(--dropdown-background-color-dark);
+  --btn-hover-border-color: var(--secondary-color);
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+.navbar {
+  background-color: var(--primary-color);
+  width: 100%;
+  z-index: 1000;
+  transition: background-color 0.3s ease;
+}
+
+.navbar-light {
+  --primary-color: var(--primary-color-light);
+  --text-color: var(--text-color-light);
+}
+
+.navbar-dark {
+  --primary-color: var(--primary-color-dark);
+  --text-color: var(--text-color-dark);
+}
+
+.navbar-brand {
+  font-weight: bold;
+  color: var(--text-color);
+}
+
+.navbar-brand:hover {
+  color: rgba(54, 183, 183, 0.8);
+}
+
+.navbar-nav .nav-link {
+  color: var(--text-color);
+  transition: color 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover {
+  color: rgba(54, 183, 183, 0.8);
+}
+
+.navbar-toggler {
+  border-color: var(--text-color);
+  width: 40px;
+  height: 40px;
+  border: none;
+}
+
+.navbar-toggler:focus {
+  outline: none;
+}
+
+.navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'><path stroke='var(--text-color)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/></svg>");
+}
+
+.btn {
+  background-color: var(--btn-background-color);
+  color: var(--text-color);
+  border: 2px solid var(--btn-border-color);
+  transition: all 0.3s ease;
+}
+
+.btn:hover {
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
+  border: 2px solid var(--btn-hover-border-color);
+}
+
+.btn-purple {
+  background-color: var(--secondary-color);
+  border-color: var(--secondary-color);
+  color: var(--text-color-dark);
+}
+
+.btn-purple:hover {
+  background-color: var(--hover-color);
+  border-color: var(--hover-color);
+}
+
+.dropdown-menu {
+  background-color: var(--dropdown-background-color);
+}
+
+.dropdown-item {
+  color: var(--text-color);
+}
+.dark-mode-toggle {
+  background: none;
+  border: none;
+  padding: 0.25rem;
+  margin: 0;
+  margin-top: 0.3rem; 
+  cursor: pointer;
+  color: var(--text-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dark-mode-toggle:focus,
+.dark-mode-toggle:active {
+  outline: none;
+  box-shadow: none;
+}
+
+.dark-mode-toggle svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: inherit;
+}

@@ -7,7 +7,7 @@ function Profile() {
   const token = sessionStorage.getItem("token");
   const [showPopup, setShowPopup] = useState(false);
   const [username, setUsername] = useState("Not logged in");
-  const [paymentStatus, setPaymentStatus] = useState(null); // null means not checked yet
+  const [paymentStatus, setPaymentStatus] = useState(null); 
 
   useEffect(() => {
     // Decode the token and extract the username

@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import LanguageDropdown from "./LanguageDropdown";
 import Profile from "./Profile";
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import "../styles/navbar.css";
 
 const Navbar = ({
@@ -62,7 +62,7 @@ const Navbar = ({
       <Profile />
       <Link
         className="navbar-brand"
-        style={{ marginLeft: "0.5cm", color: "" }}
+        style={{ marginLeft: "0.5cm" }}
         to="/"
       >
         iCarKno-chat
@@ -132,20 +132,8 @@ const Navbar = ({
           </li>
           <li className="nav-item">
             <button
-              className="btn dark-mode-toggle"
+              className="dark-mode-toggle"
               onClick={() => setDarkMode(!darkMode)}
-              style={{
-                borderRadius: '10%',
-                padding: '10px',
-                fontSize: '2rem',
-                border: 'none',
-                backgroundColor: 'transparent',
-                cursor: 'pointer',
-                outline: 'none',
-                boxShadow: 'none', 
-                transform: 'translateY(-15px)' 
-              }}
-              onFocus={(e) => e.target.blur()} 
             >
               {darkMode ? <Brightness7Icon /> : <DarkModeIcon />}
             </button>

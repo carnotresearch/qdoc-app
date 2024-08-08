@@ -26,8 +26,9 @@ body.dark-mode {
 }
 .menu-icon {
   color:rgba(75, 75, 75, 0.8);
-  font-size: 40px;
   font-weight:bold ;
+  position: relative;
+
 }
 
 body {

@@ -238,7 +238,7 @@ function ChatPage({ inputLanguage, outputLanguage }) {
         className="sidebar-toggle-btn"
         onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
       >
-        <MenuOutlinedIcon className="menu-icon"  fontSize="large"/>
+        <MenuOutlinedIcon className="menu-icon"  fontSize="medium"/>
       </Button>
         {!sidebarCollapsed && <Sidebar files={files} />}
       </div>
