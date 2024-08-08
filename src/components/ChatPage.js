@@ -11,6 +11,8 @@ import "../styles/chatPage.css";
 import axios from "axios";
 import LoadingDots from "./LoadingDots";
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
+import SendIcon from '@mui/icons-material/Send';
+import IconButton from '@mui/material/IconButton';
 
 const sttSupportedLanguages = {
   23: "", // English
@@ -377,13 +379,21 @@ function ChatPage({ inputLanguage, outputLanguage }) {
           />
           {showMicrophone && (
             <Button
-              variant={recognizing ? "danger" : "primary"}
+              variant={recognizing ? "danger" : ""}
               onClick={handleSpeechInput}
             >
               <FontAwesomeIcon icon={faMicrophone} />
             </Button>
           )}
-          <Button type="submit">Send</Button>
+          <IconButton
+       type="submit"
+
+       aria-label=""
+       style={{ color: 'rgba(54, 183, 183, 0.8)' }}
+>
+   <SendIcon />
+  </IconButton>
+
         </Form>
       </div>
     </Container>

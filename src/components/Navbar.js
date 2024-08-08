@@ -6,6 +6,7 @@ import DarkModeIcon from '@mui/icons-material/DarkMode';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import "../styles/navbar.css";
+import Button from '@mui/material/Button';
 
 const Navbar = ({
   inputLanguage,
@@ -76,7 +77,9 @@ const Navbar = ({
         aria-expanded="false"
         aria-label="Toggle navigation"
       >
-        <ArrowDropDownIcon style={{ fontSize: '2rem' }} />
+       <ArrowDropDownIcon style={{ fontSize: '2rem', marginLeft: '-0.5rem' }} />
+
+
       </button>
       <div className="collapse navbar-collapse" id="navbarNav">
         <ul className="navbar-nav ms-auto">
@@ -120,16 +123,17 @@ const Navbar = ({
             </li>
           )}
           <li className="nav-item">
-            {token ? (
-              <button className="btn btn-danger" onClick={handleLogout}>
-                Logout
-              </button>
-            ) : (
-              <button className="btn btn-primary" onClick={handleLoginClick}>
-                Login
-              </button>
-            )}
-          </li>
+         {token ? (
+        <button className="btn login-logout-btn" onClick={handleLogout}>
+        Logout
+       </button>
+      ) : (
+       <button className="btn login-logout-btn" onClick={handleLoginClick}>
+      Login
+      </button>
+  )}
+</li>
+
           <li className="nav-item">
             <button
               className="dark-mode-toggle"
