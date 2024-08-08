@@ -1,11 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import LanguageDropdown from "./LanguageDropdown";
 import Profile from "./Profile";
-import { MDBBtn } from "mdb-react-ui-kit";
-import { Spinner } from "react-bootstrap";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSun, faMoon } from "@fortawesome/free-solid-svg-icons";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
+import Brightness7Icon from "@mui/icons-material/Brightness7";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import "../styles/navbar.css";
 
 const Navbar = ({
@@ -20,8 +19,6 @@ const Navbar = ({
   const location = useLocation();
   const token = sessionStorage.getItem("token");
   const paid = sessionStorage.getItem("paymentStatus");
-  // const [isLoading, setIsLoading] = useState(false);
-  // const [isGenerated, setIsGenerated] = useState(false);
 
   const handleLogout = () => {
     sessionStorage.removeItem("token");
@@ -33,54 +30,6 @@ const Navbar = ({
   const handleLoginClick = () => {
     navigate("/login", { state: { focusEmail: true } });
   };
-
-  // const handleGenerateGraph = async () => {
-  //   setIsLoading(true);
-  //   console.log("This feature is not live yet!");
-  //   setIsLoading(false);
-  //   setIsGenerated(true);
-  // TODO
-  // move to sidebar.js
-  // setIsLoading(true);
-  // try {
-  //   // prepare request data
-  //   const formData = new FormData();
-  //   const files = submittedData.files;
-  //   const urls = submittedData.urls;
-  //   files.forEach((file) => formData.append("files", file));
-  //   urls.forEach((url, index) => formData.append(`urls[${index}]`, url));
-  //   const token = sessionStorage.getItem("token");
-  //   formData.append("token", token);
-
-  //   // API call
-  //   const response = await axios.post(
-  //     `${process.env.REACT_APP_BACKEND_URL}/graph`,
-  //     formData,
-  //     {
-  //       headers: {
-  //         "Content-Type": "multipart/form-data",
-  //       },
-  //     }
-  //   );
-
-  //   // store graph in session storage
-  //   sessionStorage.setItem("graphContent", response.data);
-  //   setIsLoading(false);
-  //   setIsGenerated(true);
-  // } catch (error) {
-  //   setIsLoading(false);
-  //   console.error("There was an error!", error);
-  //   alert("Error generating graph, please try again");
-  // }
-  // };
-
-  // const handleOpenHtml = () => {
-  //   // open graph from session storage
-  //   const graphContent = sessionStorage.getItem("graphContent");
-  //   const newWindow = window.open();
-  //   newWindow.document.write(graphContent);
-  //   newWindow.document.close();
-  // };
 
   const languages = [
     { value: "23", label: "English" },
@@ -109,13 +58,13 @@ const Navbar = ({
   ];
 
   return (
-    <nav className={`navbar navbar-expand-lg ${darkMode ? "navbar-dark bg-dark" : "navbar-light bg-light"}`}>
+    <nav
+      className={`navbar navbar-expand-lg ${
+        darkMode ? "navbar-dark bg-dark" : "navbar-light bg-light"
+      }`}
+    >
       <Profile />
-      <Link
-        className="navbar-brand"
-        style={{ marginLeft: "0.5cm", color: "white" }}
-        to="/"
-      >
+      <Link className="navbar-brand" style={{ marginLeft: "0.5cm" }} to="/">
         iCarKno-chat
       </Link>
       <button
@@ -127,7 +76,9 @@ const Navbar = ({
         aria-expanded="false"
         aria-label="Toggle navigation"
       >
-        <span className="navbar-toggler-icon"></span>
+        <ArrowDropDownIcon
+          style={{ fontSize: "2rem", marginLeft: "-0.5rem" }}
+        />
       </button>
       <div className="collapse navbar-collapse" id="navbarNav">
         <ul className="navbar-nav ms-auto">
@@ -172,23 +123,26 @@ const Navbar = ({
           )}
           <li className="nav-item">
             {token ? (
-              <button className="btn btn-danger" onClick={handleLogout}>
+              <button className="btn login-logout-btn" onClick={handleLogout}>
                 Logout
               </button>
             ) : (
-              <button className="btn btn-primary" onClick={handleLoginClick}>
+              <button
+                className="btn login-logout-btn"
+                onClick={handleLoginClick}
+              >
                 Login
               </button>
             )}
           </li>
+
           <li className="nav-item">
-            <MDBBtn
-              variant="outline-secondary"
+            <button
               className="dark-mode-toggle"
               onClick={() => setDarkMode(!darkMode)}
             >
-              <FontAwesomeIcon icon={darkMode ? faSun : faMoon} />
-            </MDBBtn>
+              {darkMode ? <Brightness7Icon /> : <DarkModeIcon />}
+            </button>
           </li>
         </ul>
       </div>

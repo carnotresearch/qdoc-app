@@ -31,7 +31,9 @@ function FileViewer({ files }) {
       setFileContents(contents.filter((content) => content !== null));
     };
 
-    loadFiles();
+    if (files.length > 0) {
+      loadFiles();
+    }
   }, [files]);
 
   const readTextFile = (file) => {
@@ -67,10 +69,14 @@ function FileViewer({ files }) {
     });
   }, [fileContents]);
 
+  if (files.length === 0) {
+    return null; // Return null to render nothing if no files are uploaded
+  }
+
   return (
     <div className="file-viewer">
       {fileContents.map((file, index) => (
-        <div key={index} className="file-page">
+        <div key={index} className="file-page" style={{ color: "black" }}>
           <h4>{file.name}</h4>
           {file.type === "pdf" ? (
             <PdfViewer pdfUrl={file.content} />
