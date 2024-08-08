@@ -114,9 +114,13 @@ const Login = () => {
             className="figure-caption"
             style={{ fontSize: "1rem", fontWeight: "bolder" }}
           >
-            <p>Deployable as containerised, secure and 100% on-premise </p>
-            <p>solution for corporate data security; can be integrated</p>
-            <p> with earmarked standalone drive or network storage</p>
+            <p className="m-1">
+              Deployable as containerised, secure and 100% on-premise{" "}
+            </p>
+            <p className="m-1">
+              solution for corporate data security; can be integrated
+            </p>
+            <p>with earmarked standalone drive or network storage</p>
           </figcaption>
         </figure>
       </div>
