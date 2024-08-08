@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import { FaChevronCircleLeft } from "react-icons/fa";
 import { Button, Container, Form } from "react-bootstrap";
@@ -48,9 +49,10 @@ function ChatPage({ inputLanguage, outputLanguage }) {
   const inputRef = useRef(null);
   const sttSupportedLanguagesRef = useRef(sttSupportedLanguages);
   const ttsSupportedLanguages = ["1", "23"];
-  const { files } = useContext(FileContext);
+  const { files, setFiles } = useContext(FileContext);
   const [copiedIndex, setCopiedIndex] = useState(null);
   const [isFileUpdated, setIsFileUpdated] = useState(false);
+  const navigate = useNavigate();
 
   const handleCopy = (text, index) => {
     navigator.clipboard.writeText(text).then(() => {
@@ -166,6 +168,11 @@ function ChatPage({ inputLanguage, outputLanguage }) {
         setChatHistory([...newChatHistory]);
       } catch (error) {
         console.error("There was an error!", error);
+        if (error.response && error.response.status === 401) {
+          setFiles([]);
+          alert("User session is expired!");
+          navigate("/login");
+        }
         newChatHistory[newChatHistory.length - 1].bot =
           "Error! Kindly try again";
         newChatHistory[newChatHistory.length - 1].loading = false;

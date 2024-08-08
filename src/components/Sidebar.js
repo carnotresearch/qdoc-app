@@ -1,4 +1,5 @@
 import React, { useState, useRef, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   ListGroup,
   Form,
@@ -17,6 +18,7 @@ function Sidebar({ files = [] }) {
   const additionalFileInputRef = useRef(null);
   const [isUploading, setIsUploading] = useState(false);
   const [processTime, setProcessTime] = useState(10);
+  const navigate = useNavigate();
 
   const handleFileChange = (event, isAdditionalUpload = false) => {
     if (isAdditionalUpload) {
@@ -92,6 +94,11 @@ function Sidebar({ files = [] }) {
       setFiles([...filesArray]);
     } catch (error) {
       console.error("Error uploading files:", error);
+      if (error.response && error.response.status === 401) {
+        setFiles([]);
+        alert("User session is expired!");
+        navigate("/login");
+      }
       alert("Error uploading files, please try again.");
     } finally {
       setIsUploading(false);
