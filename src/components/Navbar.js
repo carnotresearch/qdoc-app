@@ -1,12 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import LanguageDropdown from "./LanguageDropdown";
 import Profile from "./Profile";
-import DarkModeIcon from '@mui/icons-material/DarkMode';
-import Brightness7Icon from '@mui/icons-material/Brightness7';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import DarkModeIcon from "@mui/icons-material/DarkMode";
+import Brightness7Icon from "@mui/icons-material/Brightness7";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import "../styles/navbar.css";
-import Button from '@mui/material/Button';
 
 const Navbar = ({
   inputLanguage,
@@ -59,13 +58,13 @@ const Navbar = ({
   ];
 
   return (
-    <nav className={`navbar navbar-expand-lg ${darkMode ? "navbar-dark bg-dark" : "navbar-light bg-light"}`}>
+    <nav
+      className={`navbar navbar-expand-lg ${
+        darkMode ? "navbar-dark bg-dark" : "navbar-light bg-light"
+      }`}
+    >
       <Profile />
-      <Link
-        className="navbar-brand"
-        style={{ marginLeft: "0.5cm" }}
-        to="/"
-      >
+      <Link className="navbar-brand" style={{ marginLeft: "0.5cm" }} to="/">
         iCarKno-chat
       </Link>
       <button
@@ -77,9 +76,9 @@ const Navbar = ({
         aria-expanded="false"
         aria-label="Toggle navigation"
       >
-       <ArrowDropDownIcon style={{ fontSize: '2rem', marginLeft: '-0.5rem' }} />
-
-
+        <ArrowDropDownIcon
+          style={{ fontSize: "2rem", marginLeft: "-0.5rem" }}
+        />
       </button>
       <div className="collapse navbar-collapse" id="navbarNav">
         <ul className="navbar-nav ms-auto">
@@ -123,16 +122,19 @@ const Navbar = ({
             </li>
           )}
           <li className="nav-item">
-         {token ? (
-        <button className="btn login-logout-btn" onClick={handleLogout}>
-        Logout
-       </button>
-      ) : (
-       <button className="btn login-logout-btn" onClick={handleLoginClick}>
-      Login
-      </button>
-  )}
-</li>
+            {token ? (
+              <button className="btn login-logout-btn" onClick={handleLogout}>
+                Logout
+              </button>
+            ) : (
+              <button
+                className="btn login-logout-btn"
+                onClick={handleLoginClick}
+              >
+                Login
+              </button>
+            )}
+          </li>
 
           <li className="nav-item">
             <button
