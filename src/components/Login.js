@@ -120,7 +120,7 @@ const Login = () => {
           </div>
           <div className="login-center">
             <h2>Carnot Research</h2>
-             <p>iCarKno-chat</p> 
+            <p>iCarKno-chat</p>
             <form className="login-form" onSubmit={handleSubmit}>
               <input
                 type="text"
@@ -187,7 +187,10 @@ const Login = () => {
           </div>
 
           <p className="login-bottom-p">
-          Don't have an account? <a href="/register" className="sign-up">Sign Up</a>
+            Don't have an account?{" "}
+            <a href="/register" className="sign-up">
+              Sign Up
+            </a>
           </p>
         </div>
       </div>
