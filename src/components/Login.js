@@ -101,6 +101,10 @@ const Login = () => {
     <div className="login-main">
       <div className="login-left text-center">
         <figure className="figure">
+          <p className="m-1">
+            iCarKno-chat is a knowledge agent that allows you
+          </p>
+          <p>to query multiple documents in diverse languages.</p>
           <img
             src="/computer-vision.png"
             alt=""
@@ -110,10 +114,9 @@ const Login = () => {
             className="figure-caption"
             style={{ fontSize: "1rem", fontWeight: "bolder" }}
           >
-            <p className="m-1">
-              iCarKno-chat is a knowledge agent that allows you
-            </p>
-            <p>to query multiple documents in diverse languages.</p>
+            <p>Deployable as containerised, secure and 100% on-premise </p>
+            <p>solution for corporate data security; can be integrated</p>
+            <p> with earmarked standalone drive or network storage</p>
           </figcaption>
         </figure>
       </div>
