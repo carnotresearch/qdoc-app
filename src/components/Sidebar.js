@@ -7,6 +7,7 @@ import {
   CloseButton,
   Spinner,
 } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import { RiMessage2Fill, RiArrowDropDownLine, RiArrowDropUpLine } from "react-icons/ri";
 import axios from "axios";
 import { FileContext } from "./FileContext";
@@ -21,11 +22,14 @@ function Sidebar({ files = [], username }) {
   const [sessions, setSessions] = useState([]);
   const [visibleFiles, setVisibleFiles] = useState({});
   const [selectedSessionFiles, setSelectedSessionFiles] = useState({});
+  const [currentSession, setCurrentSession] = useState([]);
   const token = sessionStorage.getItem("token");
-
+  const navigate = useNavigate();
   useEffect(() => {
     fetchSessions();
   }, []);
+
+
 
   const fetchSessions = async () => {
     try {
@@ -42,12 +46,11 @@ function Sidebar({ files = [], username }) {
       }
 
       const sessionsData = data.sessions;
-
-      // Sort sessions by timestamp descending
-      sessionsData.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+      sessionsData.reverse();
 
       const sessions = sessionsData.map((session) => ({
         id: session.session_id,
+        timestamp: session.timestamp,
         fileNames: session.file_names,
       }));
 
@@ -113,53 +116,77 @@ function Sidebar({ files = [], username }) {
   };
 
   const handleFileUpload = async (files) => {
-    let size = 0;
-    for (let i = 0; i < files.length; i++) {
-      size += files[i].size;
-    }
-    // Converting bytes to MB and multiply by 20 for avg
-    const estimated_time = Math.floor(size / (1024 * 1024)) * 20;
-    if (estimated_time > 10) {
-      setProcessTime(estimated_time);
-    }
-
-    const filesArray = Array.from(files);
-
     setIsUploading(true);
-
+  
     try {
-      const base64Files = await Promise.all(
-        filesArray.map((file) => {
-          return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => resolve({
-              filename: file.name,
-              content: reader.result.split(',')[1], // Extract base64 content
+      const filesArray = Array.from(files);
+      try {
+        const base64Files = await Promise.all(
+          filesArray.map((file) => {
+            return new Promise((resolve, reject) => {
+              const reader = new FileReader();
+              reader.readAsDataURL(file);
+              reader.onload = () => resolve({
+                filename: file.name,
+                content: reader.result.split(',')[1], 
+              });
+              reader.onerror = (error) => reject(error);
             });
-            reader.onerror = (error) => reject(error);
-          });
-        })
-      );
-
-      const response = await axios.post(
-        `https://ha9y51vhw2.execute-api.ap-south-1.amazonaws.com/default/uploadFile`,
-        {
-          token,
-          files: base64Files,
-        },
-        { headers: { "Content-Type": "application/json" } }
-      );
-
-      console.log(response.data);
-      setFiles((prevFiles) => [...prevFiles, ...filesArray]); // Update the files context with uploaded files
-    } catch (error) {
-      console.error("Error uploading files to AWS Lambda:", error);
-      alert("Error uploading files, please try again.");
+          })
+        );
+        const lambdaResponse = await axios.post(
+          `https://ha9y51vhw2.execute-api.ap-south-1.amazonaws.com/default/uploadFile`,
+          {
+            token,
+            files: base64Files,
+          },
+          { headers: { "Content-Type": "application/json" } }
+        );
+  
+        console.log("Lambda response:", lambdaResponse);
+  
+      } catch (lambdaError) {
+        console.error("Error uploading files to AWS Lambda:", lambdaError);
+        alert("Error uploading files to Lambda, but will attempt backend upload.");
+        // Continue to backend upload even if Lambda fails
+      }
+  
+      // 2. Upload to Backend URL (multipart/form-data)
+      try {
+        const formData = new FormData();
+        filesArray.forEach((file) => formData.append("files", file));
+        formData.append("token", token); 
+  
+        const backendResponse = await axios.post(
+          `${process.env.REACT_APP_BACKEND_URL}/upload`,
+          formData,
+          { headers: { "Content-Type": "multipart/form-data" } }
+        );
+  
+        console.log("Backend response:", backendResponse.data);
+        setFiles(filesArray); 
+        setCurrentSession(filesArray);
+  
+      } catch (backendError) {
+        console.error("Error uploading files to backend:", backendError);
+        if (backendError.response) {
+          if (backendError.response.status === 401) {
+            setFiles([]);
+            alert("User session is expired!");
+            navigate("/login");
+          } else {
+            alert(`Error uploading files to backend: ${backendError.response.data.message || 'Please try again'}`); 
+          }
+        } else {
+          alert("Error uploading files to backend, please check your network connection.");
+        }
+      }
+  
     } finally {
       setIsUploading(false);
     }
   };
+  
 
   const handleAdditionalFileUpload = async (files) => {
     const filesArray = Array.from(files);
@@ -192,6 +219,7 @@ function Sidebar({ files = [], username }) {
 
       console.log(response.data);
       setFiles((prevFiles) => [...prevFiles, ...filesArray]); // Append additional files
+      setCurrentSession((prevSession) => [...prevSession, ...filesArray]);
     } catch (error) {
       console.error("Error uploading additional files to AWS Lambda:", error);
       alert("Error uploading additional files, please try again.");
@@ -205,6 +233,7 @@ function Sidebar({ files = [], username }) {
     const newFiles = [...files];
     newFiles.splice(index, 1);
     setFiles(newFiles);
+    setCurrentSession(newFiles);
 
     const formData = new FormData();
     newFiles.forEach((file) => formData.append("files", file)); // Send remaining files
@@ -247,7 +276,7 @@ function Sidebar({ files = [], username }) {
     const byteArray = new Uint8Array(byteNumbers);
     return new Blob([byteArray], { type });
   };
-  
+
   const transformFetchedFiles = (fetchedFiles) => {
     return fetchedFiles.map(file => {
       const blob = base64ToBlob(file.content, 'application/pdf'); // Assuming the file type is PDF, adjust the type accordingly
@@ -257,8 +286,6 @@ function Sidebar({ files = [], username }) {
       });
     });
   };
-  
-  
 
   const fetchAndAppendSessionFiles = async (session) => {
     try {
@@ -268,35 +295,32 @@ function Sidebar({ files = [], username }) {
         { headers: { "Content-Type": "application/json" } }
       );
       console.log(response);
-  
+
       const fetchedFiles = response.data.files;
-      console.log("fetched files: " ,fetchedFiles);
+      console.log("fetched files: ", fetchedFiles);
 
       const fileObjects = transformFetchedFiles(fetchedFiles);
       console.log(fileObjects);
-      // const newFiles = fetchedFiles.map((file) => ({
-      //   name: file.key.split("/").pop(),
-      //   size: file.size,
-      //   content: file.content,
-      // }));
-  
-      // const fileObjects = newFiles.map((file) => {
-      //   const byteCharacters = atob(file.content);
-      //   const byteNumbers = new Array(byteCharacters.length);
-      //   for (let i = 0; i < byteCharacters.length; i++) {
-      //     byteNumbers[i] = byteCharacters.charCodeAt(i);
-      //   }
-      //   const byteArray = new Uint8Array(byteNumbers);
-      //   const blob = new Blob([byteArray], { type: "application/octet-stream" });
-      //   return new File([blob], file.name);
-      // });
-  
-      setFiles((prev) => [...prev, ...fileObjects]);
+
+      setFiles(fileObjects); // Replace the existing files with the new session files
+      setCurrentSession(fileObjects);
     } catch (error) {
       console.error("Error fetching and appending session files:", error);
       alert("Error fetching and appending session files, please try again.");
     }
+
   };
+
+  const formatSessionDate = (sessionId) => {
+    const date = new Date(
+      sessionId.slice(0, 4),
+      sessionId.slice(4, 6) - 1,
+      sessionId.slice(6, 8)
+    );
+    const options = { day: 'numeric', month: 'short' };
+    return date.toLocaleDateString(undefined, options);
+  };
+
   const marginStyle = { marginTop: "1.5cm" };
 
   return (
@@ -346,81 +370,77 @@ function Sidebar({ files = [], username }) {
           </div>
         </Form.Group>
       </Form>
-      <ListGroup>
-        {files.map((file, index) => (
+      <h3>Previous Files/Sessions</h3>
+    <ListGroup>
+      {sessions.map((session, index) => (
+        <div key={index}>
           <ListGroup.Item
-            key={index}
-            className="d-flex justify-content-between align-items-center"
-            style={listStyle}
+            className="d-flex justify-content-between align-items-center session-item"
+            // Apply a fixed background color to the Current Session
+            style={index === 0 ? { backgroundColor: '#f0f0f0' } : {}} 
+            onClick={() => fetchAndAppendSessionFiles(session)}
           >
             <span style={listItemStyle}>
-              {file.name} - {(file.size / 1024).toFixed(2)} KB
+              {index === 0 ? 'Current Session' : `${formatSessionDate(session.id)} - ${session.fileNames.join(', ')}`}
             </span>
-            <div>
-              {isUploading && index === files.length - 1 ? (
-                <Spinner animation="border" size="sm" />
-              ) : (
-                <CloseButton onClick={() => handleRemoveFile(index)} />
-              )}
-            </div>
-          </ListGroup.Item>
-        ))}
-      </ListGroup>
-      {!isUploading && files.length > 0 && (
-        <Button
-          className="mt-2"
-          variant="secondary"
-          onClick={() => additionalFileInputRef.current.click()}
-          style={addButtonStyle}
-        >
-          + Add More
-        </Button>
-      )}
-      <input
-        type="file"
-        id="additional-file"
-        accept=".txt,.pdf,.docx"
-        multiple
-        onChange={(event) => handleFileChange(event, true)}
-        ref={additionalFileInputRef}
-        style={{ display: "none" }}
-      />
-      <h3>Sessions</h3>
-      <ListGroup>
-        {sessions.map((session, index) => (
-          <div key={index}>
-            <ListGroup.Item
-              className="d-flex justify-content-between align-items-center session-item"
-              onClick={() => fetchAndAppendSessionFiles(session)}
-            >
-              <span style={listItemStyle}>{index === 0 ? 'Current Session' : session.fileNames.join(', ')}</span>
-              <Button
-                variant="link"
-                onClick={(e) => {
-                  e.stopPropagation();
+            <Button
+              variant="link"
+              onClick={(e) => {
+                e.stopPropagation();
+                // Only toggle visibility for non-current sessions
+                if (index !== 0) { 
                   toggleFileVisibility(session.id);
-                }}
-              >
-                {visibleFiles[session.id] ? <RiArrowDropUpLine /> : <RiArrowDropDownLine />}
-              </Button>
-            </ListGroup.Item>
-            {visibleFiles[session.id] && (
-              <ListGroup>
-                {selectedSessionFiles[session.id]?.map((file, idx) => (
-                  <ListGroup.Item
-                    key={idx}
-                    className="d-flex justify-content-between align-items-center file-item"
-                  >
-                    <span style={listItemStyle}>
-                      {file.name} - {(file.size / 1024).toFixed(2)} KB
-                    </span>
-                  </ListGroup.Item>
-                ))}
-              </ListGroup>
-            )}
-          </div>
-        ))}
-      </ListGroup>
+                }
+              }}
+            >
+              {/* Keep the Current Session always expanded */}
+              {index === 0 ? <RiArrowDropUpLine /> : (visibleFiles[session.id] ? <RiArrowDropUpLine /> : <RiArrowDropDownLine />)} 
+            </Button>
+          </ListGroup.Item>
+
+          {/* Conditionally render the 'files' ListGroup under the Current Session, which is always expanded */}
+          {index === 0 && (
+            <ListGroup>
+              {files.map((file, index) => (
+                <ListGroup.Item
+                  key={index}
+                  className="d-flex justify-content-between align-items-center"
+                  style={listStyle}
+                >
+                  <span style={listItemStyle}>
+                    {file.name}
+                  </span>
+                  <div>
+                    {isUploading && index === files.length - 1 ? (
+                      <Spinner animation="border" size="sm" />
+                    ) : (
+                      <CloseButton onClick={() => handleRemoveFile(index)} />
+                    )}
+                  </div>
+                </ListGroup.Item>
+              ))}
+            </ListGroup>
+            
+          )}
+
+          {/* Render the selected session files as before, but only if not the Current Session */}
+          {visibleFiles[session.id] && index !== 0 && ( 
+            <ListGroup>
+              {selectedSessionFiles[session.id]?.map((file, idx) => (
+                <ListGroup.Item
+                  key={idx}
+                  className="d-flex justify-content-between align-items-center file-item"
+                >
+                  <span style={listItemStyle}>
+                    {file.name} - {(file.size / 1024).toFixed(2)} KB
+                  </span>
+                </ListGroup.Item>
+              ))}
+            </ListGroup>
+          )}
+        </div>
+      ))}
+    </ListGroup>
     </div>
   );
 }
