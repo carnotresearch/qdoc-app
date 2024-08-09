@@ -17,7 +17,6 @@ const Navbar = ({
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const token = sessionStorage.getItem("token");
   const paid = sessionStorage.getItem("paymentStatus");
 
   const handleLogout = () => {
@@ -114,7 +113,7 @@ const Navbar = ({
               />
             </>
           )}
-          {paid === "0" && (
+          {location.pathname === "/" && paid === "0" && (
             <li className="nav-item">
               <Link to="/payment">
                 <button className="btn btn-purple">Upgrade</button>
@@ -122,7 +121,7 @@ const Navbar = ({
             </li>
           )}
           <li className="nav-item">
-            {token ? (
+            {location.pathname === "/" ? (
               <button className="btn login-logout-btn" onClick={handleLogout}>
                 Logout
               </button>
