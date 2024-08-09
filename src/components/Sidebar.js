@@ -16,20 +16,100 @@ import '../styles/Sidebar.css';
 function Sidebar({ files = [], username }) {
   const { setFiles } = useContext(FileContext);
   const fileInputRef = useRef(null);
-  const additionalFileInputRef = useRef(null);
   const [isUploading, setIsUploading] = useState(false);
   const [processTime, setProcessTime] = useState(10);
   const [sessions, setSessions] = useState([]);
   const [visibleFiles, setVisibleFiles] = useState({});
+  const [sessionId, setSessionId] = useState("");
   const [selectedSessionFiles, setSelectedSessionFiles] = useState({});
-  const [currentSession, setCurrentSession] = useState([]);
   const token = sessionStorage.getItem("token");
   const navigate = useNavigate();
   useEffect(() => {
     fetchSessions();
   }, []);
 
+  const uploadToS3 = async (files) => {
+  
+    try {
+      const filesArray = Array.from(files);
+        const base64Files = await Promise.all(
+          filesArray.map((file) => {
+            return new Promise((resolve, reject) => {
+              const reader = new FileReader();
+              reader.readAsDataURL(file);
+              reader.onload = () => resolve({
+                filename: file.name,
+                content: reader.result.split(',')[1], 
+              });
+              reader.onerror = (error) => reject(error);
+            });
+          })
+        );
+        const lambdaResponse = await axios.post(
+          `https://ha9y51vhw2.execute-api.ap-south-1.amazonaws.com/default/uploadFile`,
+          {
+            token,
+            files: base64Files,
+          },
+          { headers: { "Content-Type": "application/json" } }
+        );
+  
+        console.log("Lambda response:", lambdaResponse);
+        return lambdaResponse.data.sessionId;
+      } catch (lambdaError) {
+        console.error("Error uploading files to AWS Lambda:", lambdaError);
+        alert("Error uploading files to Lambda, but will attempt backend upload.");
+        // Continue to backend upload even if Lambda fails
+      }
+    
+    };
 
+    const uploadToBackend = async (files) => {
+    
+      try {
+        const filesArray = Array.from(files);
+          const base64Files = await Promise.all(
+            filesArray.map((file) => {
+              return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve({
+                  filename: file.name,
+                  content: reader.result.split(',')[1], 
+                });
+                reader.onerror = (error) => reject(error);
+              });
+            })
+          );
+            const formData = new FormData();
+            filesArray.forEach((file) => formData.append("files", file));
+            formData.append("token", token); 
+      
+            const backendResponse = await axios.post(
+              `${process.env.REACT_APP_BACKEND_URL}/upload`,
+              formData,
+              { headers: { "Content-Type": "multipart/form-data" } }
+            );
+      
+            console.log("Backend response:", backendResponse.data);
+            setFiles(filesArray); 
+      
+          } catch (backendError) {
+            console.error("Error uploading files to backend:", backendError);
+            if (backendError.response) {
+              if (backendError.response.status === 401) {
+                setFiles([]);
+                alert("User session is expired!");
+                navigate("/login");
+              } else {
+                alert(`Error uploading files to backend: ${backendError.response.data.message || 'Please try again'}`); 
+              }
+            } else {
+              alert("Error uploading files to backend, please check your network connection.");
+            }
+          }
+      };
+  
 
   const fetchSessions = async () => {
     try {
@@ -117,75 +197,10 @@ function Sidebar({ files = [], username }) {
 
   const handleFileUpload = async (files) => {
     setIsUploading(true);
-  
-    try {
-      const filesArray = Array.from(files);
-      try {
-        const base64Files = await Promise.all(
-          filesArray.map((file) => {
-            return new Promise((resolve, reject) => {
-              const reader = new FileReader();
-              reader.readAsDataURL(file);
-              reader.onload = () => resolve({
-                filename: file.name,
-                content: reader.result.split(',')[1], 
-              });
-              reader.onerror = (error) => reject(error);
-            });
-          })
-        );
-        const lambdaResponse = await axios.post(
-          `https://ha9y51vhw2.execute-api.ap-south-1.amazonaws.com/default/uploadFile`,
-          {
-            token,
-            files: base64Files,
-          },
-          { headers: { "Content-Type": "application/json" } }
-        );
-  
-        console.log("Lambda response:", lambdaResponse);
-  
-      } catch (lambdaError) {
-        console.error("Error uploading files to AWS Lambda:", lambdaError);
-        alert("Error uploading files to Lambda, but will attempt backend upload.");
-        // Continue to backend upload even if Lambda fails
-      }
-  
-      // 2. Upload to Backend URL (multipart/form-data)
-      try {
-        const formData = new FormData();
-        filesArray.forEach((file) => formData.append("files", file));
-        formData.append("token", token); 
-  
-        const backendResponse = await axios.post(
-          `${process.env.REACT_APP_BACKEND_URL}/upload`,
-          formData,
-          { headers: { "Content-Type": "multipart/form-data" } }
-        );
-  
-        console.log("Backend response:", backendResponse.data);
-        setFiles(filesArray); 
-        setCurrentSession(filesArray);
-  
-      } catch (backendError) {
-        console.error("Error uploading files to backend:", backendError);
-        if (backendError.response) {
-          if (backendError.response.status === 401) {
-            setFiles([]);
-            alert("User session is expired!");
-            navigate("/login");
-          } else {
-            alert(`Error uploading files to backend: ${backendError.response.data.message || 'Please try again'}`); 
-          }
-        } else {
-          alert("Error uploading files to backend, please check your network connection.");
-        }
-      }
-  
-    } finally {
+    setSessionId(uploadToS3(files)); //save to S3
+    uploadToBackend(files); //created vector index
       setIsUploading(false);
-    }
-  };
+    };
   
 
   const handleAdditionalFileUpload = async (files) => {
@@ -219,7 +234,6 @@ function Sidebar({ files = [], username }) {
 
       console.log(response.data);
       setFiles((prevFiles) => [...prevFiles, ...filesArray]); // Append additional files
-      setCurrentSession((prevSession) => [...prevSession, ...filesArray]);
     } catch (error) {
       console.error("Error uploading additional files to AWS Lambda:", error);
       alert("Error uploading additional files, please try again.");
@@ -233,7 +247,6 @@ function Sidebar({ files = [], username }) {
     const newFiles = [...files];
     newFiles.splice(index, 1);
     setFiles(newFiles);
-    setCurrentSession(newFiles);
 
     const formData = new FormData();
     newFiles.forEach((file) => formData.append("files", file)); // Send remaining files
@@ -288,6 +301,7 @@ function Sidebar({ files = [], username }) {
   };
 
   const fetchAndAppendSessionFiles = async (session) => {
+    setIsUploading(true);
     try {
       const response = await axios.post(
         `https://0b67ejrhq7.execute-api.ap-south-1.amazonaws.com/default/fetchFiles`,
@@ -302,13 +316,14 @@ function Sidebar({ files = [], username }) {
       const fileObjects = transformFetchedFiles(fetchedFiles);
       console.log(fileObjects);
 
-      setFiles(fileObjects); // Replace the existing files with the new session files
-      setCurrentSession(fileObjects);
+      setFiles(fileObjects);
+      uploadToBackend(fileObjects);
+      setSessionId(session.id);
     } catch (error) {
       console.error("Error fetching and appending session files:", error);
       alert("Error fetching and appending session files, please try again.");
     }
-
+    setIsUploading(false);
   };
 
   const formatSessionDate = (sessionId) => {
