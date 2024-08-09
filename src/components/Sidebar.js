@@ -1,4 +1,9 @@
+<<<<<<< HEAD
 import React, { useState, useRef, useContext, useEffect } from "react";
+=======
+import React, { useState, useRef, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+>>>>>>> origin/main
 import {
   ListGroup,
   Form,
@@ -18,6 +23,7 @@ function Sidebar({ files = [], username }) {
   const fileInputRef = useRef(null);
   const [isUploading, setIsUploading] = useState(false);
   const [processTime, setProcessTime] = useState(10);
+<<<<<<< HEAD
   const [sessions, setSessions] = useState([]);
   const [visibleFiles, setVisibleFiles] = useState({});
   const [sessionId, setSessionId] = useState("");
@@ -149,6 +155,9 @@ function Sidebar({ files = [], username }) {
       alert("Error fetching sessions, please try again.");
     }
   };
+=======
+  const navigate = useNavigate();
+>>>>>>> origin/main
 
   const handleFileChange = (event, isAdditionalUpload = false) => {
     if (isAdditionalUpload) {
@@ -197,8 +206,29 @@ function Sidebar({ files = [], username }) {
 
   const handleFileUpload = async (files) => {
     setIsUploading(true);
+<<<<<<< HEAD
     setSessionId(uploadToS3(files)); //save to S3
     uploadToBackend(files); //created vector index
+=======
+
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_BACKEND_URL}/upload`,
+        formData,
+        { headers: { "Content-Type": "multipart/form-data" } }
+      );
+      console.log(response.data);
+      setFiles([...filesArray]);
+    } catch (error) {
+      console.error("Error uploading files:", error);
+      if (error.response && error.response.status === 401) {
+        setFiles([]);
+        alert("User session is expired!");
+        navigate("/login");
+      }
+      alert("Error uploading files, please try again.");
+    } finally {
+>>>>>>> origin/main
       setIsUploading(false);
     };
   

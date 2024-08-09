@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from "react";
-import "./styles.css";
 import { jwtDecode } from "jwt-decode";
+import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
+import "./styles.css";
 
 function Profile() {
   const token = sessionStorage.getItem("token");
   const [showPopup, setShowPopup] = useState(false);
   const [username, setUsername] = useState("Not logged in");
-  const [paymentStatus, setPaymentStatus] = useState(null); // null means not checked yet
+  const [paymentStatus, setPaymentStatus] = useState(null); 
 
   useEffect(() => {
     // Decode the token and extract the username
-    const token = sessionStorage.getItem("token");
     if (token) {
       const { email } = jwtDecode(token);
       setUsername(email);
@@ -18,7 +18,6 @@ function Profile() {
       const expiryDate = sessionStorage.getItem("expiryDate");
       if (expiryDate) {
         sessionStorage.setItem("paymentStatus", 1);
-        // setPaymentStatus(`Premium Plan (Untill ${expiryDate})`);
         setPaymentStatus("Premium plan");
       } else {
         setPaymentStatus("Free Trial");
@@ -28,9 +27,9 @@ function Profile() {
   }, [token]);
 
   return (
-    <div className="App">
+    <div className="profile-container">
       <div className="icon" onClick={() => setShowPopup(!showPopup)}>
-        👤
+        <AssignmentIndIcon fontSize="large" />
       </div>
       {showPopup && (
         <div className="popup">
