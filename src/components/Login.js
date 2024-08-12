@@ -17,6 +17,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const emailRef = useRef(null);
+  // const handleGoogleSubmitRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -49,6 +50,20 @@ const Login = () => {
       alert("Error in login, kindly retry!");
     }
   };
+
+  // Goolge login through script
+  // handleGoogleSubmitRef.current = handleGoogleSubmit;
+  // useEffect(() => {
+  //   // Initialize the Google Sign-In client
+  //   window.google.accounts.id.initialize({
+  //     client_id: clientId,
+  //     callback: (response) => handleGoogleSubmitRef.current(response),
+  //   });
+  // }, []);
+
+  // const handleGoogleLogin = () => {
+  //   window.google.accounts.id.prompt();
+  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -162,6 +177,10 @@ const Login = () => {
                     "Log In"
                   )}
                 </button>
+                {/* <button type="button" onClick={handleGoogleLogin}>
+                  <img src="/icons8-google.svg" alt="" />
+                  Log In with Google
+                </button> */}
                 <div style={{ margin: "auto" }}>
                   <GoogleOAuthProvider clientId={clientId}>
                     <GoogleLogin
@@ -186,14 +205,6 @@ const Login = () => {
           </p>
         </div>
       </div>
-      {/* Footer */}
-      <footer className="login-footer">
-        <p>&copy; {new Date().getFullYear()} Carnot Research. All rights reserved.</p>
-        <p>
-          <a href="/terms-of-service" className="footer-link">Terms of Service</a> | 
-          <a href="/privacy-policy" className="footer-link"> Privacy Policy</a>
-        </p>
-      </footer>
     </div>
   );
 };
