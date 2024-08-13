@@ -46,7 +46,7 @@ function Sidebar({ files = [] }) {
         })
       );
       const lambdaResponse = await axios.post(
-        `https://ha9y51vhw2.execute-api.ap-south-1.amazonaws.com/default/uploadFile`,
+        `${process.env.REACT_APP_AWS_UPLOAD_URL}`,
         {
           token,
           files: base64Files,
@@ -54,14 +54,11 @@ function Sidebar({ files = [] }) {
         { headers: { "Content-Type": "application/json" } }
       );
 
-      console.log("Lambda response:", lambdaResponse);
-      console.log("Session ID:", lambdaResponse.data.sessionId);
       
       sessionStorage.setItem("sessionId", lambdaResponse.data.sessionId);
       
     } catch (lambdaError) {
-      console.error("Error uploading files to AWS Lambda:", lambdaError);
-      alert("Error uploading files to Lambda, but will attempt backend upload.");
+      console.error("Error uploading files to AWS:", lambdaError);
     }
   };
 
@@ -78,21 +75,19 @@ function Sidebar({ files = [] }) {
         { headers: { "Content-Type": "multipart/form-data" } }
       );
   
-      console.log("Backend response:", backendResponse.data);
       setFiles(filesArray); 
   
     } catch (backendError) {
-      console.error("Error uploading files to backend:", backendError);
       if (backendError.response) {
         if (backendError.response.status === 401) {
           setFiles([]);
           alert("User session is expired!");
           navigate("/login");
         } else {
-          alert(`Error uploading files to backend: ${backendError.response.data.message || 'Please try again'}`); 
+          console.log("Error uploading files to backend, please check your network connection.");
         }
       } else {
-        alert("Error uploading files to backend, please check your network connection.");
+        alert("Error uploading files, please check your network connection.");
       }
     }
   };
@@ -100,7 +95,7 @@ function Sidebar({ files = [] }) {
   const fetchSessions = async () => {
     try {
       const response = await axios.post(
-        `https://2n5j71807b.execute-api.ap-south-1.amazonaws.com/default/fetchSessions`,
+        `${process.env.REACT_APP_AWS_FETCH_SESSIONS}`,
         { token },
         { headers: { "Content-Type": "application/json" } }
       );
@@ -131,7 +126,7 @@ function Sidebar({ files = [] }) {
       setSessions(sessions);
       setSelectedSessionFiles(files);
     } catch (error) {
-      console.error("Error fetching sessions from AWS Lambda:", error);
+      console.error("Error fetching sessions", error);
       alert("Error fetching sessions, please try again.");
     }
   };
@@ -185,19 +180,16 @@ function Sidebar({ files = [] }) {
     setIsUploading(true);
     uploadToS3(files);
     const sessionId = sessionStorage.getItem("sessionId");
-    console.log("After upload : ", sessionId);
     uploadToBackend(files);
     setIsUploading(false);
   };
 
   const handleAdditionalFileUpload = async (newFiles) => {
-    // Combine the existing files with the new files
     const updatedFilesArray = [...files, ...Array.from(newFiles)];
     
     setIsUploading(true);
     
     try {
-      // Prepare the new files for AWS Lambda upload
       const base64Files = await Promise.all(
         updatedFilesArray.map((file) => {
           return new Promise((resolve, reject) => {
@@ -213,11 +205,9 @@ function Sidebar({ files = [] }) {
       );
   
       const sessionId = sessionStorage.getItem("sessionId");
-      console.log("Before upload : ", sessionId);
   
-      // Upload to AWS Lambda
       const response = await axios.post(
-        `https://i01exvp49l.execute-api.ap-south-1.amazonaws.com/default/addSessionFiles`,
+        `${process.env.REACT_APP_AWS_ADD_SESSION}`,
         {
           sessionId,
           token,
@@ -226,10 +216,7 @@ function Sidebar({ files = [] }) {
         { headers: { "Content-Type": "application/json" } }
       );
   
-      console.log(response.data);
-      setFiles(updatedFilesArray); // Update the state with the combined files
-  
-      // Upload to Backend
+      setFiles(updatedFilesArray); 
       const formData = new FormData();
       updatedFilesArray.forEach((file) => formData.append("files", file));
       formData.append("token", token);
@@ -239,8 +226,6 @@ function Sidebar({ files = [] }) {
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
-  
-      console.log("Backend response:", backendResponse.data);
   
     } catch (error) {
       console.error("Error uploading files:", error);
@@ -269,7 +254,6 @@ function Sidebar({ files = [] }) {
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
-      console.log(response.data);
     } catch (error) {
       console.error("Error removing file:", error);
       alert("Couldn't upload file, kindly retry!");
@@ -326,28 +310,19 @@ function Sidebar({ files = [] }) {
 
   const fetchAndAppendSessionFiles = async (session) => {
     setIsUploading(true);
-    console.log(session);
     try {
       const response = await axios.post(
-        `https://0b67ejrhq7.execute-api.ap-south-1.amazonaws.com/default/fetchFiles`,
+        `${process.env.REACT_APP_AWS_FETCH_FILES}`,
         { token, sessionId: session.id },
         { headers: { "Content-Type": "application/json" } }
       );
-      console.log(response);
-
       const fetchedFiles = response.data.files;
-      console.log("fetched files: ", fetchedFiles);
-
       const fileObjects = transformFetchedFiles(fetchedFiles);
-      console.log(fileObjects);
-
       setFiles(fileObjects);
       uploadToBackend(fileObjects);
-      console.log(session.id);
       sessionStorage.setItem("sessionId", session.id);
     } catch (error) {
       console.error("Error fetching and appending session files:", error);
-      alert("Error fetching and appending session files, please try again.");
     }
     setIsUploading(false);
   };
