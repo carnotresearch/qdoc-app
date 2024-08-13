@@ -116,7 +116,6 @@ const Login = () => {
   // Define your local timings based on IST
   const { time: localStartTime, timezone } = convertISTtoLocal(11, 0); // 11:00 AM IST
   const { time: localEndTime } = convertISTtoLocal(22, 0); // 10:00 PM IST
-  console.log("here: ", timezone);
 
   const noticeStyles = {
     backgroundColor: "red",
