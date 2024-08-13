@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { RiMessage2Fill, RiArrowDropDownLine, RiArrowDropUpLine } from "react-icons/ri";
 import axios from "axios";
 import { FileContext } from "./FileContext";
-import '../styles/Sidebar.css';
+import '../styles/sidebar.css';
 
 function Sidebar({ files = [] }) {
   const { setFiles } = useContext(FileContext);
