@@ -97,112 +97,147 @@ const Login = () => {
     }
   };
 
-  return (
-    <div className="login-main">
-      <div className="login-left text-center">
-        <figure className="figure" style={{ color: "black" }}>
-          <p className="m-1">
-            iCarKno-chat is a knowledge agent that allows you
-          </p>
-          <p>to query multiple documents in diverse languages.</p>
-          <img
-            src="/computer-vision.png"
-            alt=""
-            className="figure-img img-fluid rounded"
-          />
-          <figcaption
-            className="figure-caption"
-            style={{ fontSize: "1rem", fontWeight: "bolder" }}
-          >
-            <p className="m-1">
-              Deployable as containerised, secure and 100% on-premise{" "}
-            </p>
-            <p className="m-1">
-              solution for corporate data security; can be integrated
-            </p>
-            <p>with earmarked standalone drive or network storage</p>
-          </figcaption>
-        </figure>
-      </div>
-      <div className="login-right">
-        <div className="login-right-container">
-          <div className="login-logo">
-            <img src="/logo.png" alt="" />
-          </div>
-          <div className="login-center">
-            <h2>Carnot Research</h2>
-            <p>iCarKno-chat</p>
-            <form className="login-form" onSubmit={handleSubmit}>
-              <input
-                type="text"
-                id="email"
-                placeholder="Email"
-                ref={emailRef}
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              <div className="pass-input-div">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  placeholder="Password"
-                  id="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-                {showPassword ? (
-                  <FaEyeSlash
-                    onClick={() => {
-                      setShowPassword(!showPassword);
-                    }}
-                  />
-                ) : (
-                  <FaEye
-                    onClick={() => {
-                      setShowPassword(!showPassword);
-                    }}
-                  />
-                )}
-              </div>
+  // Convert IST timings to local time
+  const convertISTtoLocal = (hour, minute) => {
+    const date = new Date();
+    date.setHours(hour);
+    date.setMinutes(minute);
 
-              <div className="login-center-options">
-                <a href="/forgot-password" className="forgot-pass-link">
-                  Forgot password?
-                </a>
-              </div>
-              <div className="login-center-buttons">
-                <button type="submit" disabled={isLoading}>
-                  {isLoading ? (
-                    <Spinner animation="border" size="sm" />
+    // IST is UTC+5:30
+    const ISTOffset = 5.5 * 60;
+    const localOffset = date.getTimezoneOffset();
+    const offsetDifference = ISTOffset - localOffset;
+
+    date.setMinutes(date.getMinutes() + offsetDifference);
+
+    const options = { hour: "2-digit", minute: "2-digit" };
+    return new Intl.DateTimeFormat("default", options).format(date);
+  };
+
+  // Define your local timings based on IST
+  const localStartTime = convertISTtoLocal(24, 0); // 11:00 AM IST
+  const localEndTime = convertISTtoLocal(12, 0); // 10:00 PM IST
+
+  const noticeStyles = {
+    backgroundColor: "red",
+    color: "white",
+    textAlign: "center",
+    fontWeight: "bold",
+    marginBottom: "0",
+  };
+
+  return (
+    <div>
+      <p style={noticeStyles}>
+        This is beta testing. The website will be available from{" "}
+        {localStartTime} to {localEndTime} in your local timezone only.
+      </p>
+      <div className="login-main">
+        <div className="login-left text-center">
+          <figure className="figure" style={{ color: "black" }}>
+            <p className="m-1">
+              iCarKno-chat is a knowledge agent that allows you
+            </p>
+            <p>to query multiple documents in diverse languages.</p>
+            <img
+              src="/computer-vision.png"
+              alt=""
+              className="figure-img img-fluid rounded"
+            />
+            <figcaption
+              className="figure-caption"
+              style={{ fontSize: "1rem", fontWeight: "bolder" }}
+            >
+              <p className="m-1">
+                Deployable as containerised, secure and 100% on-premise{" "}
+              </p>
+              <p className="m-1">
+                solution for corporate data security; can be integrated
+              </p>
+              <p>with earmarked standalone drive or network storage</p>
+            </figcaption>
+          </figure>
+        </div>
+        <div className="login-right">
+          <div className="login-right-container">
+            <div className="login-logo">
+              <img src="/logo.png" alt="" />
+            </div>
+            <div className="login-center">
+              <h2>Carnot Research</h2>
+              <p>iCarKno-chat</p>
+              <form className="login-form" onSubmit={handleSubmit}>
+                <input
+                  type="text"
+                  id="email"
+                  placeholder="Email"
+                  ref={emailRef}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+                <div className="pass-input-div">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Password"
+                    id="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                  {showPassword ? (
+                    <FaEyeSlash
+                      onClick={() => {
+                        setShowPassword(!showPassword);
+                      }}
+                    />
                   ) : (
-                    "Log In"
+                    <FaEye
+                      onClick={() => {
+                        setShowPassword(!showPassword);
+                      }}
+                    />
                   )}
-                </button>
-                {/* <button type="button" onClick={handleGoogleLogin}>
+                </div>
+
+                <div className="login-center-options">
+                  <a href="/forgot-password" className="forgot-pass-link">
+                    Forgot password?
+                  </a>
+                </div>
+                <div className="login-center-buttons">
+                  <button type="submit" disabled={isLoading}>
+                    {isLoading ? (
+                      <Spinner animation="border" size="sm" />
+                    ) : (
+                      "Log In"
+                    )}
+                  </button>
+                  {/* <button type="button" onClick={handleGoogleLogin}>
                   <img src="/icons8-google.svg" alt="" />
                   Log In with Google
                 </button> */}
-                <div style={{ margin: "auto" }}>
-                  <GoogleOAuthProvider clientId={clientId}>
-                    <GoogleLogin
-                      onSuccess={(credentialResponse) => {
-                        handleGoogleSubmit(credentialResponse.credential);
-                      }}
-                      onError={() => {
-                        console.log("Login Failed");
-                      }}
-                    />
-                  </GoogleOAuthProvider>
+                  <div style={{ margin: "auto" }}>
+                    <GoogleOAuthProvider clientId={clientId}>
+                      <GoogleLogin
+                        onSuccess={(credentialResponse) => {
+                          handleGoogleSubmit(credentialResponse.credential);
+                        }}
+                        onError={() => {
+                          console.log("Login Failed");
+                        }}
+                      />
+                    </GoogleOAuthProvider>
+                  </div>
                 </div>
-              </div>
-            </form>
-          </div>
+              </form>
+            </div>
 
-          <p className="login-bottom-p">
-            Don't have an account?{" "}
-            <a href="/register" className="sign-up">
-              Sign Up
-            </a>
-          </p>
+            <p className="login-bottom-p">
+              Don't have an account?{" "}
+              <a href="/register" className="sign-up">
+                Sign Up
+              </a>
+            </p>
+          </div>
         </div>
       </div>
     </div>
