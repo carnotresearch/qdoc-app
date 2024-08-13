@@ -5,6 +5,7 @@ import { Spinner } from "react-bootstrap";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { GoogleLogin } from "@react-oauth/google";
 import axios from "axios";
+import moment from "moment-timezone";
 import { FileContext } from "./FileContext";
 import "../styles/login.css";
 
@@ -97,26 +98,25 @@ const Login = () => {
     }
   };
 
-  // Convert IST timings to local time
+  // Convert IST timings to local time and get timezone code
   const convertISTtoLocal = (hour, minute) => {
-    const date = new Date();
-    date.setHours(hour);
-    date.setMinutes(minute);
+    // Create a moment object in IST
+    const istTime = moment.tz({ hour, minute }, "Asia/Kolkata");
 
-    // IST is UTC+5:30
-    const ISTOffset = 5.5 * 60;
-    const localOffset = date.getTimezoneOffset();
-    const offsetDifference = ISTOffset - localOffset;
+    // Convert IST time to local time
+    const localTime = istTime.clone().tz(moment.tz.guess());
 
-    date.setMinutes(date.getMinutes() + offsetDifference);
+    // Format the time and extract the timezone abbreviation
+    const time = localTime.format("HH:mm"); // 24-hour format
+    const timezone = localTime.format("z"); // Timezone abbreviation
 
-    const options = { hour: "2-digit", minute: "2-digit" };
-    return new Intl.DateTimeFormat("default", options).format(date);
+    return { time, timezone };
   };
 
   // Define your local timings based on IST
-  const localStartTime = convertISTtoLocal(24, 0); // 11:00 AM IST
-  const localEndTime = convertISTtoLocal(12, 0); // 10:00 PM IST
+  const { time: localStartTime, timezone } = convertISTtoLocal(11, 0); // 11:00 AM IST
+  const { time: localEndTime } = convertISTtoLocal(22, 0); // 10:00 PM IST
+  console.log("here: ", timezone);
 
   const noticeStyles = {
     backgroundColor: "red",
@@ -130,7 +130,7 @@ const Login = () => {
     <div>
       <p style={noticeStyles}>
         This is beta testing. The website will be available from{" "}
-        {localStartTime} to {localEndTime} in your local timezone only.
+        {localStartTime} to {localEndTime} {timezone} only.
       </p>
       <div className="login-main">
         <div className="login-left text-center">
