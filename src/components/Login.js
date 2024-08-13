@@ -118,7 +118,7 @@ const Login = () => {
   const { time: localEndTime } = convertISTtoLocal(22, 0); // 10:00 PM IST
 
   const noticeStyles = {
-    backgroundColor: "red",
+    backgroundColor: "#36b7b7cc",
     color: "white",
     textAlign: "center",
     fontWeight: "bold",
@@ -128,8 +128,8 @@ const Login = () => {
   return (
     <div>
       <p style={noticeStyles}>
-        This is beta testing. The website will be available from{" "}
-        {localStartTime} to {localEndTime} {timezone} only.
+        Test Application - Available between {localStartTime} to {localEndTime}{" "}
+        {timezone}.
       </p>
       <div className="login-main">
         <div className="login-left text-center">
