@@ -8,10 +8,14 @@ import {
   Spinner,
 } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { RiMessage2Fill, RiArrowDropDownLine, RiArrowDropUpLine } from "react-icons/ri";
+import {
+  RiMessage2Fill,
+  RiArrowDropDownLine,
+  RiArrowDropUpLine,
+} from "react-icons/ri";
 import axios from "axios";
 import { FileContext } from "./FileContext";
-import '../styles/sidebar.css';
+import "../styles/sidebar.css";
 
 function Sidebar({ files = [] }) {
   const { setFiles } = useContext(FileContext);
@@ -27,7 +31,7 @@ function Sidebar({ files = [] }) {
 
   useEffect(() => {
     fetchSessions();
-  }, []);
+  });
 
   const uploadToS3 = async (files) => {
     try {
@@ -37,10 +41,11 @@ function Sidebar({ files = [] }) {
           return new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.readAsDataURL(file);
-            reader.onload = () => resolve({
-              filename: file.name,
-              content: reader.result.split(',')[1], 
-            });
+            reader.onload = () =>
+              resolve({
+                filename: file.name,
+                content: reader.result.split(",")[1],
+              });
             reader.onerror = (error) => reject(error);
           });
         })
@@ -54,9 +59,7 @@ function Sidebar({ files = [] }) {
         { headers: { "Content-Type": "application/json" } }
       );
 
-      
       sessionStorage.setItem("sessionId", lambdaResponse.data.sessionId);
-      
     } catch (lambdaError) {
       console.error("Error uploading files to AWS:", lambdaError);
     }
@@ -67,16 +70,15 @@ function Sidebar({ files = [] }) {
       const filesArray = Array.from(files);
       const formData = new FormData();
       filesArray.forEach((file) => formData.append("files", file));
-      formData.append("token", token); 
-  
-      const backendResponse = await axios.post(
+      formData.append("token", token);
+
+      await axios.post(
         `${process.env.REACT_APP_BACKEND_URL}/upload`,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
-  
-      setFiles(filesArray); 
-  
+
+      setFiles(filesArray);
     } catch (backendError) {
       if (backendError.response) {
         if (backendError.response.status === 401) {
@@ -84,7 +86,9 @@ function Sidebar({ files = [] }) {
           alert("User session is expired!");
           navigate("/login");
         } else {
-          console.log("Error uploading files to backend, please check your network connection.");
+          console.log(
+            "Error uploading files to backend, please check your network connection."
+          );
         }
       } else {
         alert("Error uploading files, please check your network connection.");
@@ -177,36 +181,43 @@ function Sidebar({ files = [] }) {
   };
 
   const handleFileUpload = async (files) => {
+    let size = 0;
+    for (let i = 0; i < files.length; i++) {
+      size += files[i].size;
+    }
+    // Converting bytes to MB and mulitply by 20 for avg
+    const estimated_time = Math.floor(size / (1024 * 1024)) * 20;
+    if (estimated_time > 10) {
+      setProcessTime(estimated_time);
+    }
     setIsUploading(true);
     uploadToS3(files);
-    const sessionId = sessionStorage.getItem("sessionId");
     uploadToBackend(files);
     setIsUploading(false);
   };
 
   const handleAdditionalFileUpload = async (newFiles) => {
     const updatedFilesArray = [...files, ...Array.from(newFiles)];
-    
     setIsUploading(true);
-    
+
     try {
       const base64Files = await Promise.all(
         updatedFilesArray.map((file) => {
           return new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.readAsDataURL(file);
-            reader.onload = () => resolve({
-              filename: file.name,
-              content: reader.result.split(',')[1],
-            });
+            reader.onload = () =>
+              resolve({
+                filename: file.name,
+                content: reader.result.split(",")[1],
+              });
             reader.onerror = (error) => reject(error);
           });
         })
       );
-  
+
       const sessionId = sessionStorage.getItem("sessionId");
-  
-      const response = await axios.post(
+      await axios.post(
         `${process.env.REACT_APP_AWS_ADD_SESSION}`,
         {
           sessionId,
@@ -215,18 +226,17 @@ function Sidebar({ files = [] }) {
         },
         { headers: { "Content-Type": "application/json" } }
       );
-  
-      setFiles(updatedFilesArray); 
+
+      setFiles(updatedFilesArray);
       const formData = new FormData();
       updatedFilesArray.forEach((file) => formData.append("files", file));
       formData.append("token", token);
-  
-      const backendResponse = await axios.post(
+
+      await axios.post(
         `${process.env.REACT_APP_BACKEND_URL}/upload`,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
-  
     } catch (error) {
       console.error("Error uploading files:", error);
       alert("Error uploading files, please try again.");
@@ -234,7 +244,6 @@ function Sidebar({ files = [] }) {
       setIsUploading(false);
     }
   };
-  
 
   const handleRemoveFile = async (index) => {
     const removedFile = files[index];
@@ -249,7 +258,7 @@ function Sidebar({ files = [] }) {
     formData.append("token", token);
 
     try {
-      const response = await axios.post(
+      await axios.post(
         `${process.env.REACT_APP_BACKEND_URL}/upload`,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
@@ -273,7 +282,7 @@ function Sidebar({ files = [] }) {
     });
   };
 
-  const base64ToBlob = (base64, type = '') => {
+  const base64ToBlob = (base64, type = "") => {
     const byteCharacters = atob(base64);
     const byteNumbers = new Array(byteCharacters.length);
     for (let i = 0; i < byteCharacters.length; i++) {
@@ -284,26 +293,29 @@ function Sidebar({ files = [] }) {
   };
 
   const transformFetchedFiles = (fetchedFiles) => {
-    return fetchedFiles.map(file => {
-      const extension = file.key.split('.').pop().toLowerCase();
-      let type = 'application/octet-stream';
-  
+    return fetchedFiles.map((file) => {
+      const extension = file.key.split(".").pop().toLowerCase();
+      let type = "application/octet-stream";
+
       switch (extension) {
-        case 'txt':
-          type = 'text/plain';
+        case "txt":
+          type = "text/plain";
           break;
-        case 'docx':
-          type = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+        case "docx":
+          type =
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
           break;
-        case 'pdf':
-          type = 'application/pdf';
+        case "pdf":
+          type = "application/pdf";
           break;
+        default:
+          type = "none";
       }
-  
+
       const blob = base64ToBlob(file.content, type);
-      return new File([blob], file.key.split('/').pop(), {
+      return new File([blob], file.key.split("/").pop(), {
         type: type,
-        lastModified: new Date(file.lastModified).getTime()
+        lastModified: new Date(file.lastModified).getTime(),
       });
     });
   };
@@ -333,7 +345,7 @@ function Sidebar({ files = [] }) {
       sessionId.slice(4, 6) - 1,
       sessionId.slice(6, 8)
     );
-    const options = { day: 'numeric', month: 'short' };
+    const options = { day: "numeric", month: "short" };
     return date.toLocaleDateString(undefined, options);
   };
 
@@ -392,25 +404,41 @@ function Sidebar({ files = [] }) {
           <div key={index}>
             <ListGroup.Item
               className="d-flex justify-content-between align-items-center session-item"
-              style={index === 0 ? { backgroundColor: '#f0f0f0' } : {}}
+              style={index === 0 ? { backgroundColor: "#f0f0f0" } : {}}
               onClick={() => fetchAndAppendSessionFiles(session)}
             >
-              <span 
+              <span
                 style={listItemStyle}
-                title={index === 0 ? 'Current Session' : `${formatSessionDate(session.id)} - ${session.fileNames.join(', ')}`}
+                title={
+                  index === 0
+                    ? "Current Session"
+                    : `${formatSessionDate(
+                        session.id
+                      )} - ${session.fileNames.join(", ")}`
+                }
               >
-                {index === 0 ? 'Current Session' : `${formatSessionDate(session.id)} - ${session.fileNames.join(', ')}`}
+                {index === 0
+                  ? "Current Session"
+                  : `${formatSessionDate(
+                      session.id
+                    )} - ${session.fileNames.join(", ")}`}
               </span>
               <Button
                 variant="link"
                 onClick={(e) => {
                   e.stopPropagation();
-                  if (index !== 0) { 
+                  if (index !== 0) {
                     toggleFileVisibility(session.id);
                   }
                 }}
               >
-                {index === 0 ? <RiArrowDropUpLine /> : (visibleFiles[session.id] ? <RiArrowDropUpLine /> : <RiArrowDropDownLine />)}
+                {index === 0 ? (
+                  <RiArrowDropUpLine />
+                ) : visibleFiles[session.id] ? (
+                  <RiArrowDropUpLine />
+                ) : (
+                  <RiArrowDropDownLine />
+                )}
               </Button>
             </ListGroup.Item>
 
@@ -422,10 +450,7 @@ function Sidebar({ files = [] }) {
                     className="d-flex justify-content-between align-items-center"
                     style={listStyle}
                   >
-                    <span 
-                      style={listItemStyle}
-                      title={file.name}
-                    >
+                    <span style={listItemStyle} title={file.name}>
                       {file.name}
                     </span>
                     <div>
@@ -467,10 +492,7 @@ function Sidebar({ files = [] }) {
                     key={idx}
                     className="d-flex justify-content-between align-items-center file-item"
                   >
-                    <span 
-                      style={listItemStyle}
-                      title={file.name}
-                    >
+                    <span style={listItemStyle} title={file.name}>
                       {file.name} - {(file.size / 1024).toFixed(2)} KB
                     </span>
                   </ListGroup.Item>
