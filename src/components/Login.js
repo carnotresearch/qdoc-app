@@ -29,9 +29,17 @@ const Login = () => {
   }, [location]);
 
   const handleGoogleSubmit = async (googleToken) => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
-
+      await axios.get(`${process.env.REACT_APP_BACKEND_URL}/healthcheck`);
+    } catch (error) {
+      alert(
+        "Sorry! The application is down for maintainance. Kindly try again after some time."
+      );
+      setIsLoading(false);
+      return;
+    }
+    try {
       const response = await axios.post(
         `${process.env.REACT_APP_GOOGLE_LOGIN_URL}`,
         { googleToken }
@@ -68,16 +76,25 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!email) {
+      alert("Email is required");
+      return;
+    }
+    if (!password) {
+      alert("Password is required");
+      return;
+    }
+    setIsLoading(true);
     try {
-      if (!email) {
-        alert("Email is required");
-        return;
-      }
-      if (!password) {
-        alert("Password is required");
-        return;
-      }
-      setIsLoading(true);
+      await axios.get(`${process.env.REACT_APP_BACKEND_URL}/healthcheck`);
+    } catch (error) {
+      alert(
+        "Sorry! The application is down for maintainance. Kindly try again after some time."
+      );
+      setIsLoading(false);
+      return;
+    }
+    try {
       const response = await axios.post(`${process.env.REACT_APP_LOGIN_URL}`, {
         email,
         password,
