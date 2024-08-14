@@ -30,8 +30,10 @@ function Sidebar({ files = [] }) {
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log("here");
     fetchSessions();
-  });
+    console.log("here again")
+  }, []);
 
   const uploadToS3 = async (files) => {
     try {
@@ -71,7 +73,7 @@ function Sidebar({ files = [] }) {
       const formData = new FormData();
       filesArray.forEach((file) => formData.append("files", file));
       formData.append("token", token);
-
+      setIsUploading(true);
       await axios.post(
         `${process.env.REACT_APP_BACKEND_URL}/upload`,
         formData,
@@ -79,6 +81,7 @@ function Sidebar({ files = [] }) {
       );
 
       setFiles(filesArray);
+      setIsUploading(false);
     } catch (backendError) {
       if (backendError.response) {
         if (backendError.response.status === 401) {
@@ -185,16 +188,23 @@ function Sidebar({ files = [] }) {
     for (let i = 0; i < files.length; i++) {
       size += files[i].size;
     }
-    // Converting bytes to MB and mulitply by 20 for avg
+    // Converting bytes to MB and multiply by 20 for avg
     const estimated_time = Math.floor(size / (1024 * 1024)) * 20;
     if (estimated_time > 10) {
       setProcessTime(estimated_time);
     }
     setIsUploading(true);
-    uploadToS3(files);
-    uploadToBackend(files);
-    setIsUploading(false);
+    try {
+      await uploadToS3(files);
+      await uploadToBackend(files);
+    } catch (error) {
+      console.error("Error uploading files:", error);
+      alert("Error uploading files, please try again.");
+    } finally {
+      setIsUploading(false);
+    }
   };
+
 
   const handleAdditionalFileUpload = async (newFiles) => {
     const updatedFilesArray = [...files, ...Array.from(newFiles)];
@@ -506,4 +516,5 @@ function Sidebar({ files = [] }) {
   );
 }
 
-export default Sidebar;
+export default React.memo(Sidebar);
+ 
