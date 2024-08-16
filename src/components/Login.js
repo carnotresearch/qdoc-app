@@ -89,7 +89,7 @@ const Login = () => {
       await axios.get(`${process.env.REACT_APP_BACKEND_URL}/healthcheck`);
     } catch (error) {
       alert(
-        "Sorry! The application is down for maintainance. Kindly try again after some time."
+        "The backend server is not active. It'll be activated on request. Kindly contact contact@carnotresearch.com!"
       );
       setIsLoading(false);
       return;
@@ -152,9 +152,10 @@ const Login = () => {
         <div className="login-left text-center">
           <figure className="figure" style={{ color: "black" }}>
             <p className="m-1">
-              iCarKno-chat is a knowledge agent that allows you
+              <b>iCarKno-chat</b> is a knowledge agent that allows you to query{" "}
+              <br />
+              multiple documents in diverse languages using natural language.
             </p>
-            <p>to query multiple documents in diverse languages.</p>
             <img
               src="/computer-vision.png"
               alt=""
@@ -165,12 +166,10 @@ const Login = () => {
               style={{ fontSize: "1rem", fontWeight: "bolder" }}
             >
               <p className="m-1">
-                Deployable as containerised, secure and 100% on-premise{" "}
+                Deployable as containerised, secure and 100% on-premise <br />
+                solution for corporate data security; can be integrated <br />
+                with earmarked standalone drive or network storage
               </p>
-              <p className="m-1">
-                solution for corporate data security; can be integrated
-              </p>
-              <p>with earmarked standalone drive or network storage</p>
             </figcaption>
           </figure>
         </div>
