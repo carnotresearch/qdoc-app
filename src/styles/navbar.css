@@ -13,7 +13,7 @@
   --dropdown-background-color-light: #ffffff;
   --dropdown-background-color-dark: #333333;
 }
-/* Base styles for .btn-warning */
+
 .btn-warning {
   background-color: transparent !important; /* Transparent background by default */
   color: var(--text-color) !important; /* Text color */
@@ -21,7 +21,6 @@
   transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition for background color and text color */
 }
 
-/* Hover state for .btn-warning */
 .btn-warning:hover,
 .btn-warning:focus {
   background-color: rgba(54, 183, 183, 0.8) !important; /* Background color on hover/focus */
