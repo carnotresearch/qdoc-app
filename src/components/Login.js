@@ -34,7 +34,7 @@ const Login = () => {
       await axios.get(`${process.env.REACT_APP_BACKEND_URL}/healthcheck`);
     } catch (error) {
       alert(
-        "Sorry! The application is down for maintainance. Kindly try again after some time."
+        "The backend server is not active. It'll be activated on request. Kindly contact contact@carnotresearch.com"
       );
       setIsLoading(false);
       return;
@@ -89,7 +89,7 @@ const Login = () => {
       await axios.get(`${process.env.REACT_APP_BACKEND_URL}/healthcheck`);
     } catch (error) {
       alert(
-        "The backend server is not active. It'll be activated on request. Kindly contact contact@carnotresearch.com!"
+        "The backend server is not active. It'll be activated on request. Kindly contact contact@carnotresearch.com"
       );
       setIsLoading(false);
       return;
