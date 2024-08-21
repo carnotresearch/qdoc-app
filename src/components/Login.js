@@ -5,7 +5,6 @@ import { Spinner } from "react-bootstrap";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { GoogleLogin } from "@react-oauth/google";
 import axios from "axios";
-import moment from "moment-timezone";
 import { FileContext } from "./FileContext";
 import "../styles/login.css";
 
@@ -18,7 +17,6 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const emailRef = useRef(null);
-  // const handleGoogleSubmitRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -59,20 +57,6 @@ const Login = () => {
       alert("Error in login, kindly retry!");
     }
   };
-
-  // Goolge login through script
-  // handleGoogleSubmitRef.current = handleGoogleSubmit;
-  // useEffect(() => {
-  //   // Initialize the Google Sign-In client
-  //   window.google.accounts.id.initialize({
-  //     client_id: clientId,
-  //     callback: (response) => handleGoogleSubmitRef.current(response),
-  //   });
-  // }, []);
-
-  // const handleGoogleLogin = () => {
-  //   window.google.accounts.id.prompt();
-  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -115,144 +99,111 @@ const Login = () => {
     }
   };
 
-  // Convert IST timings to local time and get timezone code
-  const convertISTtoLocal = (hour, minute) => {
-    // Create a moment object in IST
-    const istTime = moment.tz({ hour, minute }, "Asia/Kolkata");
-
-    // Convert IST time to local time
-    const localTime = istTime.clone().tz(moment.tz.guess());
-
-    // Format the time and extract the timezone abbreviation
-    const time = localTime.format("HH:mm"); // 24-hour format
-    const timezone = localTime.format("z"); // Timezone abbreviation
-
-    return { time, timezone };
-  };
-
-  // Define your local timings based on IST
-  const { time: localStartTime, timezone } = convertISTtoLocal(11, 0); // 11:00 AM IST
-  const { time: localEndTime } = convertISTtoLocal(22, 0); // 10:00 PM IST
-
-  const noticeStyles = {
-    backgroundColor: "#36b7b7cc",
-    color: "white",
-    textAlign: "center",
-    fontWeight: "bold",
-    marginBottom: "0",
-  };
-
   return (
-    <div>
-      <p style={noticeStyles}>
-        Test Application - Available between {localStartTime} to {localEndTime}{" "}
-        {timezone}.
-      </p>
-      <div className="login-main">
-        <div className="login-left text-center">
-          <figure className="figure" style={{ color: "black" }}>
+    <div className="login-main">
+      <div className="login-left text-center">
+        <figure className="figure" style={{ color: "black" }}>
+          <p className="m-1">
+            <b>iCarKno-chat</b> is a knowledge agent that allows you to query{" "}
+            <br />
+            multiple documents in diverse languages using natural language.
+          </p>
+          <img
+            src="/computer-vision.png"
+            alt=""
+            className="figure-img img-fluid rounded"
+          />
+          <figcaption
+            className="figure-caption"
+            style={{ fontSize: "1rem", fontWeight: "bolder" }}
+          >
             <p className="m-1">
-              <b>iCarKno-chat</b> is a knowledge agent that allows you to query{" "}
-              <br />
-              multiple documents in diverse languages using natural language.
+              Deployable as containerised, secure and 100% on-premise <br />
+              solution for corporate data security; can be integrated <br />
+              with earmarked standalone drive or network storage
             </p>
-            <img
-              src="/computer-vision.png"
-              alt=""
-              className="figure-img img-fluid rounded"
-            />
-            <figcaption
-              className="figure-caption"
-              style={{ fontSize: "1rem", fontWeight: "bolder" }}
-            >
-              <p className="m-1">
-                Deployable as containerised, secure and 100% on-premise <br />
-                solution for corporate data security; can be integrated <br />
-                with earmarked standalone drive or network storage
-              </p>
-            </figcaption>
-          </figure>
-        </div>
-        <div className="login-right">
-          <div className="login-right-container">
-            <div className="login-logo">
-              <img src="/logo.png" alt="" />
-            </div>
-            <div className="login-center">
-              <h2>Carnot Research</h2>
-              <p>iCarKno-chat</p>
-              <form className="login-form" onSubmit={handleSubmit}>
+          </figcaption>
+        </figure>
+      </div>
+      <div className="login-right">
+        <div className="login-right-container">
+          <div className="login-logo">
+            <img src="/logo.png" alt="" />
+          </div>
+          <div className="login-center">
+            <h2>Carnot Research</h2>
+            <p>iCarKno-chat</p>
+            <form className="login-form" onSubmit={handleSubmit}>
+              <input
+                type="text"
+                id="email"
+                placeholder="Email"
+                ref={emailRef}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <div className="pass-input-div">
                 <input
-                  type="text"
-                  id="email"
-                  placeholder="Email"
-                  ref={emailRef}
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Password"
+                  id="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                 />
-                <div className="pass-input-div">
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Password"
-                    id="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                {showPassword ? (
+                  <FaEyeSlash
+                    onClick={() => {
+                      setShowPassword(!showPassword);
+                    }}
                   />
-                  {showPassword ? (
-                    <FaEyeSlash
-                      onClick={() => {
-                        setShowPassword(!showPassword);
-                      }}
-                    />
-                  ) : (
-                    <FaEye
-                      onClick={() => {
-                        setShowPassword(!showPassword);
-                      }}
-                    />
-                  )}
-                </div>
+                ) : (
+                  <FaEye
+                    onClick={() => {
+                      setShowPassword(!showPassword);
+                    }}
+                  />
+                )}
+              </div>
 
-                <div className="login-center-options">
-                  <a href="/forgot-password" className="forgot-pass-link">
-                    Forgot password?
-                  </a>
-                </div>
-                <div className="login-center-buttons">
-                  <button type="submit" disabled={isLoading}>
-                    {isLoading ? (
-                      <Spinner animation="border" size="sm" />
-                    ) : (
-                      "Log In"
-                    )}
-                  </button>
-                  {/* <button type="button" onClick={handleGoogleLogin}>
+              <div className="login-center-options">
+                <a href="/forgot-password" className="forgot-pass-link">
+                  Forgot password?
+                </a>
+              </div>
+              <div className="login-center-buttons">
+                <button type="submit" disabled={isLoading}>
+                  {isLoading ? (
+                    <Spinner animation="border" size="sm" />
+                  ) : (
+                    "Log In"
+                  )}
+                </button>
+                {/* <button type="button" onClick={handleGoogleLogin}>
                   <img src="/icons8-google.svg" alt="" />
                   Log In with Google
                 </button> */}
-                  <div style={{ margin: "auto" }}>
-                    <GoogleOAuthProvider clientId={clientId}>
-                      <GoogleLogin
-                        onSuccess={(credentialResponse) => {
-                          handleGoogleSubmit(credentialResponse.credential);
-                        }}
-                        onError={() => {
-                          console.log("Login Failed");
-                        }}
-                      />
-                    </GoogleOAuthProvider>
-                  </div>
+                <div style={{ margin: "auto" }}>
+                  <GoogleOAuthProvider clientId={clientId}>
+                    <GoogleLogin
+                      onSuccess={(credentialResponse) => {
+                        handleGoogleSubmit(credentialResponse.credential);
+                      }}
+                      onError={() => {
+                        console.log("Login Failed");
+                      }}
+                    />
+                  </GoogleOAuthProvider>
                 </div>
-              </form>
-            </div>
-
-            <p className="login-bottom-p">
-              Don't have an account?{" "}
-              <a href="/register" className="sign-up">
-                Sign Up
-              </a>
-            </p>
+              </div>
+            </form>
           </div>
+
+          <p className="login-bottom-p">
+            Don't have an account?{" "}
+            <a href="/register" className="sign-up">
+              Sign Up
+            </a>
+          </p>
         </div>
       </div>
     </div>
