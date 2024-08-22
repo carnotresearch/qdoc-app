@@ -268,7 +268,8 @@ function ChatPage({ inputLanguage, outputLanguage }) {
                 <b>Welcome to iCarKno-chat</b>
                 <p>
                   iCarKno-chat is a knowledge agent that allows you to query
-                  multiple documents in diverse languages.
+                  multiple documents in diverse languages. You can interact with
+                  the application by typing in questions such as:
                 </p>
                 {files.length > 0 && (
                   <ul className="custom-list">
