@@ -118,8 +118,8 @@ const Login = () => {
             style={{ fontSize: "1rem", fontWeight: "bolder" }}
           >
             <p className="m-1">
-              Deployable as containerised, secure and 100% on-premise <br />
-              solution for corporate data security; can be integrated <br />
+              Deployable as containerised, secure and completely <br />
+              on-site solution for corporate data; can be integrated <br />
               with earmarked standalone drive or network storage
             </p>
           </figcaption>
