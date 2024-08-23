@@ -265,10 +265,11 @@ function ChatPage({ inputLanguage, outputLanguage }) {
           <div className="message bot">
             <div className="message-box">
               <span className="message-text">
-                <b>Welcome to iCarKno-chat</b>
+                <b>Welcome to icarKno-chat</b>
                 <p>
-                  iCarKno-chat is a knowledge agent that allows you to query
-                  multiple documents in diverse languages.
+                  icarKno-chat is a knowledge agent that allows you to query
+                  multiple documents in diverse languages. You can interact with
+                  the application by typing in questions such as:
                 </p>
                 {files.length > 0 && (
                   <ul className="custom-list">
@@ -300,7 +301,7 @@ function ChatPage({ inputLanguage, outputLanguage }) {
               <div className="message bot">
                 <div className="message-box">
                   <span className={"message-text"}>
-                    <b className="text-success">iCarKno: </b>
+                    <b className="text-success">icarKno: </b>
                     {chat.loading ? (
                       <LoadingDots />
                     ) : (
@@ -361,7 +362,7 @@ function ChatPage({ inputLanguage, outputLanguage }) {
               <div className="message bot">
                 <div className="message-box">
                   <span className={"message-text"}>
-                    <b className="text-success">iCarKno: </b>
+                    <b className="text-success">icarKno: </b>
                     Your files have been updated!
                   </span>
                 </div>

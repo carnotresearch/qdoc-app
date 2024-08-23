@@ -78,10 +78,17 @@ body {
   color: rgba(54, 183, 183, 0.8);
 }
 
+.nav-link{
+  top:-0.5px;
+  position: relative;
+}
+
 .login-logout-btn {
   color: var(--text-color);
   transition: color 0.3s ease;
   border: none; 
+  top:-1.5px;
+  position: relative;
   background: none;
 }
 
@@ -204,6 +211,8 @@ body {
   cursor: pointer;
   color: var(--text-color);
   display: flex;
+  top:-3px;
+  position: relative;
   align-items: center;
   justify-content: center;
 }
