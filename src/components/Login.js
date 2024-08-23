@@ -104,7 +104,7 @@ const Login = () => {
       <div className="login-left text-center">
         <figure className="figure" style={{ color: "black" }}>
           <p className="m-1">
-            <b>iCarKno-chat</b> is a knowledge agent that allows you to query{" "}
+            <b>icarKno-chat</b> is a knowledge agent that allows you to query{" "}
             <br />
             multiple documents in diverse languages using natural language.
           </p>
@@ -132,7 +132,7 @@ const Login = () => {
           </div>
           <div className="login-center">
             <h2>Carnot Research</h2>
-            <p>iCarKno-chat</p>
+            <p>icarKno-chat</p>
             <form className="login-form" onSubmit={handleSubmit}>
               <input
                 type="text"

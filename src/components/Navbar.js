@@ -64,7 +64,7 @@ const Navbar = ({
     >
       <Profile />
       <Link className="navbar-brand" style={{ marginLeft: "0.5cm" }} to="/">
-        iCarKno-chat
+        icarKno-chat
       </Link>
       <button
         className="navbar-toggler"
