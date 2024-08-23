@@ -2,9 +2,12 @@ import React from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import LanguageDropdown from "./LanguageDropdown";
 import Profile from "./Profile";
-import DarkModeIcon from "@mui/icons-material/DarkMode";
-import Brightness7Icon from "@mui/icons-material/Brightness7";
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import DarkModeIcon from '@mui/icons-material/DarkMode';
+import Brightness7Icon from '@mui/icons-material/Brightness7';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import Button from '@mui/material/Button';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 import "../styles/navbar.css";
 
 const Navbar = ({
@@ -17,7 +20,10 @@ const Navbar = ({
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const token = sessionStorage.getItem("token");
   const paid = sessionStorage.getItem("paymentStatus");
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
 
   const handleLogout = () => {
     sessionStorage.removeItem("token");
@@ -25,9 +31,18 @@ const Navbar = ({
     sessionStorage.removeItem("paymentStatus");
     navigate("/login");
   };
+  
 
   const handleLoginClick = () => {
     navigate("/login", { state: { focusEmail: true } });
+  };
+
+  const handleMenuClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
   };
 
   const languages = [
@@ -57,94 +72,118 @@ const Navbar = ({
   ];
 
   return (
-    <nav
-      className={`navbar navbar-expand-lg ${
-        darkMode ? "navbar-dark bg-dark" : "navbar-light bg-light"
-      }`}
-    >
+    <nav className={`navbar ${darkMode ? "navbar-dark bg-dark" : "navbar-light bg-light"}`}>
       <Profile />
-      <Link className="navbar-brand" style={{ marginLeft: "0.5cm" }} to="/">
+      <Link
+        className="navbar-brand"
+        style={{ marginLeft: "0.5cm" }}
+        to="/"
+      >
         iCarKno-chat
       </Link>
-      <button
+      <Button
         className="navbar-toggler"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#navbarNav"
-        aria-controls="navbarNav"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
+        onClick={handleMenuClick}
+        style={{
+          border: `2px solid ${darkMode ? 'white' : 'black'}`,
+          borderRadius: '6px',
+          padding: '2px',
+          color: darkMode ? 'white' : 'black',
+        }}
       >
-        <ArrowDropDownIcon
-          style={{ fontSize: "2rem", marginLeft: "-0.5rem" }}
-        />
-      </button>
-      <div className="collapse navbar-collapse" id="navbarNav">
-        <ul className="navbar-nav ms-auto">
-          <li className="nav-item">
-            <a
-              className="nav-link"
-              href="https://carnotresearch.com/#section-about"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              About Us
-            </a>
-          </li>
-          {location.pathname === "/" && (
-            <>
-              <LanguageDropdown
-                label="Input"
-                selectedLanguage={
-                  languages.find((lang) => lang.value === inputLanguage)
-                    ?.label || "English"
-                }
-                languages={languages}
-                onChange={setInputLanguage}
-              />
-              <LanguageDropdown
-                label="Output"
-                selectedLanguage={
-                  languages.find((lang) => lang.value === outputLanguage)
-                    ?.label || "English"
-                }
-                languages={languages}
-                onChange={setOutputLanguage}
-              />
-            </>
-          )}
-          {location.pathname === "/" && paid === "0" && (
-            <li className="nav-item">
-              <Link to="/payment">
-                <button className="btn btn-purple">Upgrade</button>
-              </Link>
-            </li>
-          )}
-          <li className="nav-item">
-            {location.pathname === "/" ? (
-              <button className="btn login-logout-btn" onClick={handleLogout}>
-                Logout
-              </button>
-            ) : (
-              <button
-                className="btn login-logout-btn"
-                onClick={handleLoginClick}
-              >
-                Login
-              </button>
-            )}
-          </li>
+        <ArrowDropDownIcon style={{ fontSize: '2rem', color: darkMode ? 'white' : 'black' }} />
+      </Button>
+      <Menu
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleCloseMenu}
+        PaperProps={{
+          style: {
+            width: '200px',
+            backgroundColor: darkMode ? '#424242' : '#f5f5f5',
+            color: darkMode ? 'white' : 'black',
+            zIndex: 1300,
+          },
+        }}
+        MenuListProps={{
+          style: {
+            padding: '10px',
+          },
+        }}
+      >
+        <MenuItem
+          component="a"
+          href="https://carnotresearch.com/#section-about"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="menu-item"
+        >
+          About Us
+        </MenuItem>
+        {location.pathname === "/" && (
+          <>
+          <MenuItem className="menu-item input-dropdown">
+            <LanguageDropdown
+              label="Input"
+              selectedLanguage={
+                languages.find((lang) => lang.value === inputLanguage)?.label || "English"
+              }
+              languages={languages}
+              onChange={setInputLanguage}
+            />
+          </MenuItem>
+          <MenuItem className="menu-item output-dropdown">
+            <LanguageDropdown
+              label="Output"
+              selectedLanguage={
+                languages.find((lang) => lang.value === outputLanguage)?.label || "English"
+              }
+              languages={languages}
+              onChange={setOutputLanguage}
+            />
+          </MenuItem>
+        </>
+        
+        )}
+        {paid === "0" && (
+          <MenuItem className="menu-item">
+            <Link to="/payment" style={{ textDecoration: 'none' }}>
+              <a className="btn btn-purple" style={{ border: '2px solid black', color: darkMode ? 'white' : 'black' }}>
+                Upgrade
+              </a>
+            </Link>
+          </MenuItem>
+        )}
+       <MenuItem className="menu-item">
+  {location.pathname === "/" ?  (
+    <a 
+      className="btn login-logout-btn" 
+      onClick={handleLogout} 
+      style={{ color: darkMode ? 'white' : 'black', cursor: 'pointer' }} 
+    >
+      Logout
+    </a>
+  ) : (
+    <a 
+      className="btn login-logout-btn" 
+      onClick={handleLoginClick} 
+      style={{ color: darkMode ? 'white' : 'black', cursor: 'pointer' }} 
+    >
+      Login
+    </a>
+  )}
+</MenuItem>
 
-          <li className="nav-item">
-            <button
-              className="dark-mode-toggle"
-              onClick={() => setDarkMode(!darkMode)}
-            >
-              {darkMode ? <Brightness7Icon /> : <DarkModeIcon />}
-            </button>
-          </li>
-        </ul>
-      </div>
+        <MenuItem className="menu-item">
+          <a
+            className="dark-mode-toggle"
+            onClick={() => setDarkMode(!darkMode)}
+            style={{ color: darkMode ? 'white' : 'black', cursor: 'pointer' }} 
+          >
+            {darkMode ? <Brightness7Icon style={{ color: 'white' }} /> : <DarkModeIcon style={{ color: 'black' }} />}
+          </a>
+        </MenuItem>
+      </Menu>
     </nav>
   );
 };

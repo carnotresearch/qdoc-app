@@ -12,6 +12,10 @@
   font-family: "Poppins", sans-serif;
   height: calc(100vh - 100px);
 }
+.pass-input-div svg {
+  color: #7d7c7c; /* Grey color for the eye icon */
+}
+
 
 .login-main{
   display: flex;

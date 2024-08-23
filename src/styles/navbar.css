@@ -7,8 +7,8 @@
   --text-color-dark: white;
   --background-color-light: #ffffff;
   --background-color-dark: #121212;
-  --btn-background-color: transparent;
-  --btn-border-color: transparent;
+ 
+  
   --btn-hover-border-color: white;
   --dropdown-background-color-light: #ffffff;
   --dropdown-background-color-dark: #333333;
@@ -24,13 +24,13 @@
 /* Hover state for .btn-warning */
 .btn-warning:hover,
 .btn-warning:focus {
-  background-color: rgba(54, 183, 183, 0.8) !important; /* Background color on hover/focus */
+  /*background-color: rgba(54, 183, 183, 0.8) !important; /* Background color on hover/focus */
   color: var(--text-color) !important; /* Text color remains the same */
 }
 
 /* Active state for when button is clicked */
 .btn-warning:active {
-  background-color: rgba(54, 183, 183, 0.8) !important; /* Background color when clicked */
+ /* Background color when clicked */
   color: var(--text-color) !important; /* Text color remains the same */
 }
 
@@ -70,19 +70,11 @@ body {
   color: var(--text-color);
 }
 
-.navbar-brand:hover {
-  color: rgba(54, 183, 183, 0.8);
-}
-/* Existing styles for the nav-link hover */
-.navbar-nav .nav-link:hover {
-  color: rgba(54, 183, 183, 0.8);
-}
 
 .nav-link{
-  top:-0.5px;
+  top:-2.5px;
   position: relative;
 }
-
 .login-logout-btn {
   color: var(--text-color);
   transition: color 0.3s ease;
@@ -110,7 +102,7 @@ body {
 .login-logout-btn {
   color: var(--text-color);
   transition: color 0.3s ease;
-  border: none;
+  border: none !important; /* Force no border */
   background: none;
 }
 
@@ -121,31 +113,34 @@ body {
 .language-dropdown .btn {
   color: var(--text-color);
   transition: color 0.3s ease;
+  border: none !important;
 }
-
-.language-dropdown .btn:hover {
-  color: rgba(54, 183, 183, 0.8);
-}
-
-.dropdown-menu {
-  background-color: var(--dropdown-background-color);
+.dropdown-toggle{
+  color:transparent;
 }
 
 .dropdown-item {
+  background-color: rgb(155, 152, 152);
   color: var(--text-color);
   transition: color 0.3s ease;
+  padding: 10px 15px;
+  width: 100%;
+  top:-8px;
+  position: relative;
+  box-sizing: border-box;
+  margin: 0; /* Ensure no margins are causing gaps */
+  border: none; /* Remove any borders that might affect the appearance */
+  display: block; /* Ensure the item behaves as a block element */
 }
 
-.dropdown-item:hover {
-  color: rgba(54, 183, 183, 0.8);
-}
+/*
 
 .btn:hover {
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
   transform: translateY(-2px);
   border: 2px solid var(--btn-hover-border-color);
 }
-
+*/
 
 .navbar-nav .nav-link {
   color: var(--text-color);
@@ -158,10 +153,13 @@ body {
 
 .navbar-toggler {
   border-color: var(--text-color);
-  width: 40px;
+  width: 30px;
   height: 40px;
   border: none;
+  left: -3px;
+  position: relative;
 }
+
 
 .navbar-toggler:focus {
   outline: none;
@@ -174,15 +172,12 @@ body {
 .btn {
   background-color: var(--btn-background-color);
   color: var(--text-color);
-  border: 2px solid var(--btn-border-color);
+left: -13px;
+position: relative;
   transition: all 0.3s ease;
 }
 
-.btn:hover {
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-  transform: translateY(-2px);
-  border: 2px solid var(--btn-hover-border-color);
-}
+
 
 .btn-purple {
   background-color: var(--secondary-color);
@@ -212,6 +207,7 @@ body {
   color: var(--text-color);
   display: flex;
   top:-3px;
+  left: -8px;
   position: relative;
   align-items: center;
   justify-content: center;
