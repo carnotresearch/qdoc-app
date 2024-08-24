@@ -174,7 +174,6 @@ function Sidebar({ files = [] }) {
     width: "50%",
     padding: "0.375rem 0.75rem",
     margin: "auto",
-    marginBottom: "0.5rem",
     fontSize: "0.875rem",
   };
 
@@ -486,7 +485,7 @@ function Sidebar({ files = [] }) {
                 />
               </ListGroup>
             )}
-            {index === 0 && <h3>Prev Sessions</h3>}
+            {index === 0 && <h3 className="mt-3">Your Sessions</h3>}
 
             {visibleFiles[session.id] && index !== 0 && (
               <ListGroup>
