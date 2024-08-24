@@ -17,32 +17,42 @@ body {
 }
 
 .login-footer {
-  background-color: #E9E9E9;
+  background-color: rgb(248, 247, 247);
   padding: 10px 20px;
   text-align: center;
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 10px; 
+  gap: 4px; 
   position: fixed; 
   font-size: 13px;
   bottom: 0;
   width: 100%;
   height: 30px; 
+  color: #151414;
   box-sizing: border-box;
   flex-wrap: wrap;
+  word-spacing: -1px; 
   display: none; 
+  
 }
+
 
 .show-footer {
   display: flex; 
 }
+.login-footer a {
+  gap:0px;
+  color: black;         
+  
+}
 
-.login-footer a,
 .login-footer svg {
-  color: rgb(47, 47, 47);
+  color: rgb(0, 0, 0);
+  font-weight: bold;
   text-decoration: none;
   display: flex;
+  letter-spacing: -0.5px;
   align-items: center;
   gap: 3px; 
 }
@@ -54,7 +64,7 @@ body {
 .login-footer .footer-item {
   display: flex;
   align-items: center;
-  gap: 10px; 
+  gap: 1px; 
 }
 
 @media (min-width: 1000px) {
@@ -66,7 +76,7 @@ body {
   }
 
   .login-footer .footer-item {
-    gap: 5px; 
+    gap: 1px; 
   }
 }
 *{
@@ -131,6 +141,9 @@ body {
 .login-right form{
   display: flex;
   flex-direction: column;
+  top:25px;
+  position: relative;
+  
 }
 
 .login-logo{
@@ -154,7 +167,7 @@ body {
 
 .login-center {
   margin: auto 0;
-  bottom: 30px; /* Move it up by decreasing the value */
+  bottom: 17px ;/* Move it up by decreasing the value */
   position: relative;
 }
 
@@ -176,16 +189,23 @@ body {
   font-size: 1.5rem;
   margin-bottom: 40px;
 }
+.footer-separator {
+  margin: 0 0px;     /* Minimal space between the separator and the links */
+  font-weight: bold; /* Makes the separator bold */
+  color: #000;       /* Adjust the color as needed */
+}
+
 
 .login-form input[type='email'],
 .login-form input[type='password'],
 .login-form input[type='text']
  {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   width: 100%;
-  padding: 16px;
+  padding: 13px;
   margin-bottom: 16px;
   border: 0px;
+  
   border-bottom: 1px solid black;
   outline: none;
   box-sizing: border-box;
@@ -202,6 +222,7 @@ body {
   bottom: 35px;
   cursor: pointer;
   outline: none;
+  color: grey;
 }
 
 .login-form button {
@@ -240,6 +261,9 @@ body {
   display: flex;
   flex-direction: column;
   row-gap: 10px;
+  margin-bottom: 20px;
+
+
 }
 
 .login-center-buttons button:nth-child(1){
@@ -270,16 +294,18 @@ body {
 }
 
 .login-bottom-p{
-  
   text-align: center;
   font-size: 1rem;
   padding-bottom: 10px;
-  margin-top: 10px;
+  margin-top: 2px;
+  
+  
 }
 
 .login-bottom-p a{
   text-decoration: none;
   font-weight: 600;
+  
 }
 
 .login-bottom-p a:hover{
