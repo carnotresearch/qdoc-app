@@ -6,6 +6,7 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import { GoogleLogin } from "@react-oauth/google";
 import axios from "axios";
 import { FileContext } from "./FileContext";
+import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import "../styles/login.css";
 
 const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
@@ -24,8 +25,38 @@ const Login = () => {
     if (location.state?.focusEmail && emailRef.current) {
       emailRef.current.focus();
     }
+  
+    const handleScroll = () => {
+      const footer = document.querySelector('.login-footer');
+      const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const lastScrollTop = window.lastScrollTop || 0;
+  
+      if (currentScrollTop === 0) {
+        footer.classList.remove('show-footer'); 
+        return;
+      }
+  
+      if (window.innerWidth <= 768) { 
+        if (currentScrollTop > lastScrollTop) {
+         
+          footer.classList.add('show-footer'); 
+        } else {
+        
+          footer.classList.remove('show-footer'); 
+        }
+      } else {
+        footer.classList.add('show-footer'); 
+      }
+  
+      window.lastScrollTop = currentScrollTop <= 0 ? 0 : currentScrollTop; 
+    };
+  
+    window.addEventListener('scroll', handleScroll);
+  
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, [location]);
-
   const handleGoogleSubmit = async (googleToken) => {
     setIsLoading(true);
     try {
@@ -206,6 +237,18 @@ const Login = () => {
           </p>
         </div>
       </div>
+        {/* Footer Section */}
+        <footer className="login-footer">
+        <a href="https://www.linkedin.com/company/carnot-research-pvt-ltd/" target="_blank" rel="noopener noreferrer">
+          <LinkedInIcon style={{ color: "grey", marginRight: "10px" }} />
+        </a>
+        <a href="https://carnotresearch.com/terms.html" className="footer-link">
+        Terms & Conditions
+        </a>
+        <a href="contact@carnotresearch.com" className="footer-link">
+          Contact us for private/corporate deployment
+        </a>
+      </footer>
     </div>
   );
 };
