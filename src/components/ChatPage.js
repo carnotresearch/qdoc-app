@@ -247,6 +247,18 @@ function ChatPage({ inputLanguage, outputLanguage }) {
     "Explain one feature mentioned in the document.",
   ];
 
+  const exportChat = () => {
+    const dataStr = JSON.stringify(chatHistory, null, 2); // Convert chatHistory to a formatted JSON string
+    const blob = new Blob([dataStr], { type: "application/json" }); // Create a blob from the JSON string
+    const url = URL.createObjectURL(blob); // Create a URL for the blob
+    const link = document.createElement("a"); // Create a link element
+    link.href = url;
+    link.download = "chat_history.json"; // Set the name of the downloaded file
+    document.body.appendChild(link);
+    link.click(); // Programmatically click the link to trigger the download
+    document.body.removeChild(link); // Clean up by removing the link element
+  };
+
   return (
     <Container fluid className="chat-container">
       <div className={`sidebar ${sidebarCollapsed ? "collapsed" : ""}`}>
@@ -261,6 +273,9 @@ function ChatPage({ inputLanguage, outputLanguage }) {
       </div>
       <FileViewer files={files} />
       <div className="chat-content">
+        <button onClick={exportChat} className="btn btn-primary m-0">
+          Export Chat
+        </button>
         <div className="chat-history" ref={chatHistoryRef}>
           <div className="message bot">
             <div className="message-box">
