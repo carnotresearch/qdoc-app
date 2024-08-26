@@ -1,0 +1,28 @@
+.session-item {
+    background-color: rgba(54, 183, 183, 0.8);
+    color: white;
+    cursor: pointer;
+    padding: 0.5rem;
+    word-wrap: break-word;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.3s ease;
+  }
+  
+  .session-item:hover {
+    background-color: #4e749c;
+    color: white;
+  }
+  
+  .file-item {
+    background-color: #f8f9fa;
+    color: #4e749c;
+    cursor: pointer;
+    padding: 0.5rem;
+    word-wrap: break-word;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+  }
+  

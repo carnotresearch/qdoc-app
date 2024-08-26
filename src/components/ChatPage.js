@@ -265,23 +265,27 @@ function ChatPage({ inputLanguage, outputLanguage }) {
           <div className="message bot">
             <div className="message-box">
               <span className="message-text">
-                <b>Welcome to iCarKno-chat</b>
-                <p>
-                  iCarKno-chat is a knowledge agent that allows you to query
+                <b>Welcome to icarKno-chat</b>
+                <p style={{ marginBottom: "0" }}>
+                  icarKno-chat is a knowledge agent that allows you to query
                   multiple documents in diverse languages.
                 </p>
                 {files.length > 0 && (
-                  <ul className="custom-list">
-                    {startingQuestions.map((question, index) => (
-                      <li key={index}>
-                        <FontAwesomeIcon
-                          icon={faCheckCircle}
-                          style={iconStyles}
-                        />
-                        {question}
-                      </li>
-                    ))}
-                  </ul>
+                  <>
+                    You can interact with the application by typing in questions
+                    such as:
+                    <ul className="custom-list">
+                      {startingQuestions.map((question, index) => (
+                        <li key={index}>
+                          <FontAwesomeIcon
+                            icon={faCheckCircle}
+                            style={iconStyles}
+                          />
+                          {question}
+                        </li>
+                      ))}
+                    </ul>
+                  </>
                 )}
               </span>
             </div>
@@ -300,7 +304,7 @@ function ChatPage({ inputLanguage, outputLanguage }) {
               <div className="message bot">
                 <div className="message-box">
                   <span className={"message-text"}>
-                    <b className="text-success">iCarKno: </b>
+                    <b className="text-success">icarKno: </b>
                     {chat.loading ? (
                       <LoadingDots />
                     ) : (
@@ -361,8 +365,8 @@ function ChatPage({ inputLanguage, outputLanguage }) {
               <div className="message bot">
                 <div className="message-box">
                   <span className={"message-text"}>
-                    <b className="text-success">iCarKno: </b>
-                    Your files have been updated!
+                    <b className="text-success">icarKno: </b>
+                    Your files have been uploaded!
                   </span>
                 </div>
               </div>
