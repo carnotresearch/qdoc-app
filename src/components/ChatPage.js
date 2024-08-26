@@ -266,23 +266,26 @@ function ChatPage({ inputLanguage, outputLanguage }) {
             <div className="message-box">
               <span className="message-text">
                 <b>Welcome to icarKno-chat</b>
-                <p>
+                <p style={{ marginBottom: "0" }}>
                   icarKno-chat is a knowledge agent that allows you to query
-                  multiple documents in diverse languages. You can interact with
-                  the application by typing in questions such as:
+                  multiple documents in diverse languages.
                 </p>
                 {files.length > 0 && (
-                  <ul className="custom-list">
-                    {startingQuestions.map((question, index) => (
-                      <li key={index}>
-                        <FontAwesomeIcon
-                          icon={faCheckCircle}
-                          style={iconStyles}
-                        />
-                        {question}
-                      </li>
-                    ))}
-                  </ul>
+                  <>
+                    You can interact with the application by typing in questions
+                    such as:
+                    <ul className="custom-list">
+                      {startingQuestions.map((question, index) => (
+                        <li key={index}>
+                          <FontAwesomeIcon
+                            icon={faCheckCircle}
+                            style={iconStyles}
+                          />
+                          {question}
+                        </li>
+                      ))}
+                    </ul>
+                  </>
                 )}
               </span>
             </div>
@@ -363,7 +366,7 @@ function ChatPage({ inputLanguage, outputLanguage }) {
                 <div className="message-box">
                   <span className={"message-text"}>
                     <b className="text-success">icarKno: </b>
-                    Your files have been updated!
+                    Your files have been uploaded!
                   </span>
                 </div>
               </div>

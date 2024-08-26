@@ -32,7 +32,7 @@ function Sidebar({ files = [] }) {
   useEffect(() => {
     console.log("here");
     fetchSessions();
-    console.log("here again")
+    console.log("here again");
   }, []);
 
   const uploadToS3 = async (files) => {
@@ -170,8 +170,10 @@ function Sidebar({ files = [] }) {
   };
 
   const addButtonStyle = {
-    width: "auto",
+    color: "white",
+    width: "50%",
     padding: "0.375rem 0.75rem",
+    margin: "auto",
     fontSize: "0.875rem",
   };
 
@@ -204,7 +206,6 @@ function Sidebar({ files = [] }) {
       setIsUploading(false);
     }
   };
-
 
   const handleAdditionalFileUpload = async (newFiles) => {
     const updatedFilesArray = [...files, ...Array.from(newFiles)];
@@ -399,7 +400,7 @@ function Sidebar({ files = [] }) {
               ) : (
                 <div>
                   <p className="mb-0">
-                    <RiMessage2Fill /> <b>New Chat</b>
+                    <RiMessage2Fill /> <b>New Container</b>
                   </p>
                   <p className="mb-0">Drop files here</p>
                 </div>
@@ -408,31 +409,23 @@ function Sidebar({ files = [] }) {
           </div>
         </Form.Group>
       </Form>
-      <h3>Files/Sessions</h3>
+
       <ListGroup>
         {sessions.slice(0, 4).map((session, index) => (
           <div key={index}>
             <ListGroup.Item
               className="d-flex justify-content-between align-items-center session-item"
-              style={index === 0 ? { backgroundColor: "#f0f0f0" } : {}}
+              // style={index === 0 ? { backgroundColor: "#f0f0f0" } : {}}
               onClick={() => fetchAndAppendSessionFiles(session)}
-            >
-              <span
-                style={listItemStyle}
-                title={
-                  index === 0
-                    ? "Current Session"
-                    : `${formatSessionDate(
-                        session.id
-                      )} - ${session.fileNames.join(", ")}`
-                }
-              >
-                {index === 0
+              title={
+                index === 0
                   ? "Current Session"
                   : `${formatSessionDate(
                       session.id
-                    )} - ${session.fileNames.join(", ")}`}
-              </span>
+                    )} - ${session.fileNames.join(", ")}`
+              }
+            >
+              {index === 0 ? "Current Session" : `Folder - ${index}`}
               <Button
                 variant="link"
                 onClick={(e) => {
@@ -441,9 +434,10 @@ function Sidebar({ files = [] }) {
                     toggleFileVisibility(session.id);
                   }
                 }}
+                style={{ paddingTop: "0", paddingBottom: "0" }}
               >
                 {index === 0 ? (
-                  <RiArrowDropUpLine />
+                  <></>
                 ) : visibleFiles[session.id] ? (
                   <RiArrowDropUpLine />
                 ) : (
@@ -460,9 +454,7 @@ function Sidebar({ files = [] }) {
                     className="d-flex justify-content-between align-items-center"
                     style={listStyle}
                   >
-                    <span style={listItemStyle} title={file.name}>
-                      {file.name}
-                    </span>
+                    <span style={listItemStyle}>{file.name}</span>
                     <div>
                       {isUploading && index === files.length - 1 ? (
                         <Spinner animation="border" size="sm" />
@@ -475,12 +467,12 @@ function Sidebar({ files = [] }) {
 
                 {!isUploading && files.length > 0 && (
                   <Button
-                    className="mt-2"
+                    className="mt-2 bg-secondary"
                     variant="secondary"
                     onClick={() => additionalFileInputRef.current.click()}
                     style={addButtonStyle}
                   >
-                    + Add More
+                    <big>+</big> Add Files
                   </Button>
                 )}
                 <input
@@ -494,6 +486,7 @@ function Sidebar({ files = [] }) {
                 />
               </ListGroup>
             )}
+            {index === 0 && <h3 className="mt-3">Your Containers</h3>}
 
             {visibleFiles[session.id] && index !== 0 && (
               <ListGroup>
@@ -502,7 +495,7 @@ function Sidebar({ files = [] }) {
                     key={idx}
                     className="d-flex justify-content-between align-items-center file-item"
                   >
-                    <span style={listItemStyle} title={file.name}>
+                    <span style={listItemStyle}>
                       {file.name} - {(file.size / 1024).toFixed(2)} KB
                     </span>
                   </ListGroup.Item>
@@ -517,4 +510,3 @@ function Sidebar({ files = [] }) {
 }
 
 export default React.memo(Sidebar);
- 
