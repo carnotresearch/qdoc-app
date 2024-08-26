@@ -6,6 +6,7 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import { GoogleLogin } from "@react-oauth/google";
 import axios from "axios";
 import { FileContext } from "./FileContext";
+import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import "../styles/login.css";
 
 const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
@@ -16,16 +17,46 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const emailRef = useRef(null);
+  const emailInputRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
-    if (location.state?.focusEmail && emailRef.current) {
-      emailRef.current.focus();
+    if (location.state && location.state.focusEmail) {
+      emailInputRef.current.focus();
     }
+  
+    const handleScroll = () => {
+      const footer = document.querySelector('.login-footer');
+      const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const lastScrollTop = window.lastScrollTop || 0;
+  
+      if (currentScrollTop === 0) {
+        footer.classList.remove('show-footer'); 
+        return;
+      }
+  
+      if (window.innerWidth <= 768) { 
+        if (currentScrollTop > lastScrollTop) {
+         
+          footer.classList.add('show-footer'); 
+        } else {
+        
+          footer.classList.remove('show-footer'); 
+        }
+      } else {
+        footer.classList.add('show-footer'); 
+      }
+  
+      window.lastScrollTop = currentScrollTop <= 0 ? 0 : currentScrollTop; 
+    };
+  
+    window.addEventListener('scroll', handleScroll);
+  
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, [location]);
-
   const handleGoogleSubmit = async (googleToken) => {
     setIsLoading(true);
     try {
@@ -104,7 +135,7 @@ const Login = () => {
       <div className="login-left text-center">
         <figure className="figure" style={{ color: "black" }}>
           <p className="m-1">
-            <b>iCarKno-chat</b> is a knowledge agent that allows you to query{" "}
+            <b>icarKno-chat</b> is a knowledge agent that allows you to query{" "}
             <br />
             multiple documents in diverse languages using natural language.
           </p>
@@ -118,8 +149,8 @@ const Login = () => {
             style={{ fontSize: "1rem", fontWeight: "bolder" }}
           >
             <p className="m-1">
-              Deployable as containerised, secure and 100% on-premise <br />
-              solution for corporate data security; can be integrated <br />
+              Deployable as containerised, secure and completely <br />
+              on-site solution for corporate data; can be integrated <br />
               with earmarked standalone drive or network storage
             </p>
           </figcaption>
@@ -132,13 +163,14 @@ const Login = () => {
           </div>
           <div className="login-center">
             <h2>Carnot Research</h2>
-            <p>iCarKno-chat</p>
+            
             <form className="login-form" onSubmit={handleSubmit}>
               <input
                 type="text"
                 id="email"
                 placeholder="Email"
-                ref={emailRef}
+
+                ref={emailInputRef}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -166,10 +198,12 @@ const Login = () => {
               </div>
 
               <div className="login-center-options">
-                <a href="/forgot-password" className="forgot-pass-link">
-                  Forgot password?
-                </a>
-              </div>
+  <div className="hover-area">
+    <a href="/forgot-password" className="forgot-pass-link">
+      Forgot password?
+    </a>
+  </div>
+</div>
               <div className="login-center-buttons">
                 <button type="submit" disabled={isLoading}>
                   {isLoading ? (
@@ -206,6 +240,26 @@ const Login = () => {
           </p>
         </div>
       </div>
+    {/* Footer Section */}
+<footer className="login-footer">
+  <a className="Licon" href="https://www.linkedin.com/company/carnot-research-pvt-ltd/" target="_blank" rel="noopener noreferrer">
+    <LinkedInIcon style={{ color: "#0072b1", marginRight: "2px" }} />
+  </a>
+
+  <span className="footer-separator">|</span>
+
+  <a href="https://carnotresearch.com/terms.html" className="footer-link">
+    Terms & Conditions
+  </a>
+
+  <span className="footer-separator">|</span>
+
+  <a href="mailto:contact@carnotresearch.com" className="footer-link">
+    Contact us for private/corporate deployment
+  </a>
+</footer>
+
+
     </div>
   );
 };

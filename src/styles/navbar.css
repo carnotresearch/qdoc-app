@@ -13,25 +13,25 @@
   --dropdown-background-color-light: #ffffff;
   --dropdown-background-color-dark: #333333;
 }
-/* Base styles for .btn-warning */
+
 .btn-warning {
-  background-color: transparent !important; /* Transparent background by default */
-  color: var(--text-color) !important; /* Text color */
-  border: none !important; /* No border */
-  transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition for background color and text color */
+  background-color: transparent !important; 
+  color: var(--text-color) !important; 
+  border: none !important; 
+  transition: background-color 0.3s ease, color 0.3s ease; 
 }
 
-/* Hover state for .btn-warning */
+
 .btn-warning:hover,
 .btn-warning:focus {
   /*background-color: rgba(54, 183, 183, 0.8) !important; /* Background color on hover/focus */
-  color: var(--text-color) !important; /* Text color remains the same */
+  color: var(--text-color) !important; 
 }
 
-/* Active state for when button is clicked */
+
 .btn-warning:active {
  /* Background color when clicked */
-  color: var(--text-color) !important; /* Text color remains the same */
+  color: var(--text-color) !important;
 }
 
 body.dark-mode {
@@ -102,9 +102,12 @@ body {
 .login-logout-btn {
   color: var(--text-color);
   transition: color 0.3s ease;
-  border: none !important; /* Force no border */
+  border: none !important; 
   background: none;
+  left:-92px;
+  position: relative;
 }
+
 
 .login-logout-btn:hover {
   color: rgba(54, 183, 183, 0.8);
@@ -165,9 +168,7 @@ body {
   outline: none;
 }
 
-.navbar-toggler-icon {
-  background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'><path stroke='var(--text-color)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/></svg>");
-}
+
 
 .btn {
   background-color: var(--btn-background-color);
@@ -224,3 +225,55 @@ position: relative;
   height: 1.5rem;
   color: inherit;
 }
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 1rem;
+}
+
+.navbar-items {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-item {
+  margin: 0 1rem;
+  color: inherit; /* Use inherited color */
+  text-decoration: none;
+}
+
+.btn.login-logout-btn {
+  margin-left: 1rem;
+}
+
+.navbar-toggler {
+  display: none; 
+}
+
+@media (max-width: 768px) {
+  .navbar-items {
+    display: none; 
+  }
+
+  .navbar-toggler {
+    display: block; 
+    border-radius: 6px;
+    padding: 2px;
+    color: var(--text-color);
+  }
+}
+
+  .MuiPaper-root.MuiMenu-paper {
+    width: 200px;
+    background-color: var(--dropdown-background-color);
+    color: var(--text-color);
+    z-index: 1300;
+    display: block !important; 
+  }
+
+  .MuiList-root.MuiMenu-list {
+    padding: 10px;
+  }
+
