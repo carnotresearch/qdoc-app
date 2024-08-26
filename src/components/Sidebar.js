@@ -164,7 +164,7 @@ function Sidebar({ files = [] }) {
     wordWrap: "break-word",
     overflow: "hidden",
     color: "white",
-    backgroundColor: "#4e749c",
+    backgroundColor: "#7393b6",
     display: "flex",
     alignItems: "center",
   };
