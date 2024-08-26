@@ -30,9 +30,7 @@ function Sidebar({ files = [] }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log("here");
     fetchSessions();
-    console.log("here again");
   }, []);
 
   const uploadToS3 = async (files) => {
@@ -417,15 +415,11 @@ function Sidebar({ files = [] }) {
               className="d-flex justify-content-between align-items-center session-item"
               // style={index === 0 ? { backgroundColor: "#f0f0f0" } : {}}
               onClick={() => fetchAndAppendSessionFiles(session)}
-              title={
-                index === 0
-                  ? "Current Session"
-                  : `${formatSessionDate(
-                      session.id
-                    )} - ${session.fileNames.join(", ")}`
-              }
+              title={`${formatSessionDate(
+                session.id
+              )} - ${session.fileNames.join(", ")}`}
             >
-              {index === 0 ? "Current Session" : `Folder - ${index}`}
+              {index === 0 ? "Latest Container" : `Folder - ${index}`}
               <Button
                 variant="link"
                 onClick={(e) => {
@@ -486,7 +480,9 @@ function Sidebar({ files = [] }) {
                 />
               </ListGroup>
             )}
-            {index === 0 && <h3 className="mt-3">Your Containers</h3>}
+            {index === 0 && sessions.length > 1 && (
+              <h5 className="mt-3">Your Containers</h5>
+            )}
 
             {visibleFiles[session.id] && index !== 0 && (
               <ListGroup>
