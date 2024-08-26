@@ -1,5 +1,5 @@
 :root {
-  --primary-color-light: #ffffff;
+  --primary-color-light: white;
   --primary-color-dark: #333333;
   --secondary-color: #6f42c1;
   --hover-color: #5a32a3;
@@ -13,7 +13,7 @@
   --dropdown-background-color-light: #ffffff;
   --dropdown-background-color-dark: #333333;
 }
-/* Base styles for .btn-warning */
+
 .btn-warning {
   background-color: transparent !important; /* Transparent background by default */
   color: var(--text-color) !important; /* Text color */
@@ -49,7 +49,7 @@ body {
 }
 
 .navbar {
-  background-color: var(--primary-color);
+  --primary-color: var(--primary-color-light);;
   width: 100%;
   z-index: 1000;
   transition: background-color 0.3s ease;
