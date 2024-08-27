@@ -67,17 +67,18 @@ body {
   gap: 1px; 
 }
 
-.login-footer {
-  display: flex;
-  font-size: 13px; 
-  padding: 8px 15px; 
-  height: auto; 
-}
+@media (min-width: 1000px) {
+  .login-footer {
+    display: flex;
+    font-size: 13px; 
+    padding: 8px 15px; 
+    height: auto; 
+  }
 
-.login-footer .footer-item {
-  gap: 1px; 
+  .login-footer .footer-item {
+    gap: 1px; 
+  }
 }
-
 *{
   box-sizing: border-box;
   padding: 0px;
@@ -253,6 +254,7 @@ body {
 }
 .forgot-pass-link:hover{
   text-decoration: underline;
+  color:rgba(54, 183, 183, 0.8);
 }
 
 .login-center-buttons{

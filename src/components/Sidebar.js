@@ -419,7 +419,7 @@ function Sidebar({ files = [] }) {
                 session.id
               )} - ${session.fileNames.join(", ")}`}
             >
-              {index === 0 ? "Latest Container" : `Folder - ${index}`}
+              {index === 0 ? "Latest Container" : `Container - ${index}`}
               <Button
                 variant="link"
                 onClick={(e) => {
