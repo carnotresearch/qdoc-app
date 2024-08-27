@@ -10,6 +10,7 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import "../styles/navbar.css";
 
+
 const Navbar = ({
   inputLanguage,
   setInputLanguage,
@@ -20,6 +21,7 @@ const Navbar = ({
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  
   const paid = sessionStorage.getItem("paymentStatus");
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -30,8 +32,15 @@ const Navbar = ({
     sessionStorage.removeItem("paymentStatus");
     navigate("/login");
   };
+   
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
-  const handleLoginClick = () => {
+ const handleLoginClick = () => {
+  console.log("login");
+  handleClose();
+  
     navigate("/login", { state: { focusEmail: true } });
   };
 
@@ -79,7 +88,7 @@ const Navbar = ({
       <Link className="navbar-brand" style={{ marginLeft: "0.5cm" }} to="/">
         icarKno-chat
       </Link>
-      <div className="collapse navbar-collapse" id="navbarNav">
+      <div className="collapse navbar-collapse " id="navbarNav" >
         <ul className="navbar-nav ms-auto">
           <li className="nav-item">
             <a
@@ -88,34 +97,32 @@ const Navbar = ({
               href="https://carnotresearch.com/#section-about"
               target="_blank"
               rel="noopener noreferrer"
-              style={{marginTop:'-1px'}}
+              style={{marginTop:'1px'}}
             >
               About Us
             </a>
           </li>
           {location.pathname === "/" && (
             <>
-            
-              <LanguageDropdown
-                
-                label="Input"
-                selectedLanguage={
-                  languages.find((lang) => lang.value === inputLanguage)
-                    ?.label || "English"
-                }
-                languages={languages}
-                onChange={setInputLanguage}
-                
-              />
-              <LanguageDropdown
-                label="Output"
-                selectedLanguage={
-                  languages.find((lang) => lang.value === outputLanguage)
-                    ?.label || "English"
-                }
-                languages={languages}
-                onChange={setOutputLanguage}
-              />
+            <li className="nav-item"></li>
+            <LanguageDropdown
+  className="language-dropdown-input" // Class name for Input Dropdown
+  label="Input"
+  selectedLanguage={
+    languages.find((lang) => lang.value === inputLanguage)?.label || "English"
+  }
+  languages={languages}
+  onChange={setInputLanguage}
+/>
+<LanguageDropdown
+  className="language-dropdown-output" // Class name for Output Dropdown
+  label="Output"
+  selectedLanguage={
+    languages.find((lang) => lang.value === outputLanguage)?.label || "English"
+  }
+  languages={languages}
+  onChange={setOutputLanguage}
+/>
             </>
           )}
           {location.pathname === "/" && paid === "0" && (
@@ -127,7 +134,7 @@ const Navbar = ({
           )}
           <li className="nav-item">
             {location.pathname === "/" ? (
-              <button className="btn login-logout-btn" style={{ color: darkMode ? 'white' : 'black', cursor: 'pointer',marginLeft: '-1px' ,marginTop:'1.5px'}}  onClick={handleLogout}>
+              <button className="btn login-logout-btn" style={{  cursor: 'pointer',marginLeft: '-1px' ,marginTop:'1.5px'}}  onClick={handleLogout}>
                 
                 Logout
               </button>
@@ -222,7 +229,7 @@ const Navbar = ({
             </Link>
           </MenuItem>
         )}
-          <MenuItem className="menu-item">
+        <MenuItem className="menu-item">
           {location.pathname === "/" ?  (
             <a 
               className="btn login-logout-btn" 
@@ -238,9 +245,9 @@ const Navbar = ({
               style={{ 
                 color: darkMode ? 'white' : 'black', 
                 cursor: 'pointer', 
-                marginLeft: '-0.5px'  // Negative value to move it left
+                marginLeft: '-0.5px'  
               }}
-              
+              onClose={handleClose}
             >
               Login
             </a>

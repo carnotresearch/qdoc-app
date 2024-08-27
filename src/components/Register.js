@@ -174,8 +174,10 @@ const Register = () => {
         <button type="submit" className="btn btn-primary"
           style={{ border: '2px solid black',
             backgroundColor: 'transparent',
-    color: 'black', 
-    transition: 'border-color 0.3s ease' 
+            marginLeft: '13px',
+            color: 'black', 
+            marginTop: '16px',
+            transition: 'border-color 0.3s ease' 
   }}
   onMouseOver={(e) => e.currentTarget.style.borderColor = 'darkgrey'}
   onMouseOut={(e) => e.currentTarget.style.borderColor = 'black'} 
