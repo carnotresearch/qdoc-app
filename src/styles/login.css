@@ -67,18 +67,17 @@ body {
   gap: 1px; 
 }
 
-@media (min-width: 1000px) {
-  .login-footer {
-    display: flex;
-    font-size: 13px; 
-    padding: 8px 15px; 
-    height: auto; 
-  }
-
-  .login-footer .footer-item {
-    gap: 1px; 
-  }
+.login-footer {
+  display: flex;
+  font-size: 13px; 
+  padding: 8px 15px; 
+  height: auto; 
 }
+
+.login-footer .footer-item {
+  gap: 1px; 
+}
+
 *{
   box-sizing: border-box;
   padding: 0px;
