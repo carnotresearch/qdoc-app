@@ -26,3 +26,7 @@
     align-items: center;
   }
   
+  .latest-container {
+    background-color: #f0ad4e; /* Example color, you can choose your preferred color */
+    color: white;
+  }

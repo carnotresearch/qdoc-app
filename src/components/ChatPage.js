@@ -52,8 +52,54 @@ function ChatPage({ inputLanguage, outputLanguage }) {
   const { files, setFiles } = useContext(FileContext);
   const [copiedIndex, setCopiedIndex] = useState(null);
   const [isFileUpdated, setIsFileUpdated] = useState(false);
+  const [sessions, setSessions] = useState([]);
+  const [latestSessionId, setLatestSessionId] = useState("");
+  const token = sessionStorage.getItem("token");
+  const [selectedSessionFiles, setSelectedSessionFiles] = useState({});
   const navigate = useNavigate();
+  useEffect(() => {
+    fetchSessions();
+  }, []);
 
+  const fetchSessions = async () => {
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_AWS_FETCH_SESSIONS}`,
+        { token },
+        { headers: { "Content-Type": "application/json" } }
+      );
+
+      const data = response.data.data;
+      if (!data || !data.sessions || data.sessions.length === 0) {
+        console.log("No sessions available.");
+        return;
+      }
+
+      const sessionsData = data.sessions;
+
+      const sessions = sessionsData.map((session) => ({
+        id: session.session_id,
+        timestamp: session.timestamp,
+        fileNames: session.file_names,
+        name: session.name,
+      }));
+
+      const files = sessionsData.reduce((acc, session) => {
+        acc[session.session_id] = session.file_names.map((fileName) => ({
+          name: fileName,
+          size: 0,
+        }));
+        return acc;
+      }, {});
+
+      setSessions(sessions);
+      setSelectedSessionFiles(files);
+    } catch (error) {
+      console.error("Error fetching sessions", error);
+      alert("Error fetching sessions, please try again.");
+    }
+  };
+  
   const handleCopy = (text, index) => {
     navigator.clipboard.writeText(text).then(() => {
       setCopiedIndex(index);
@@ -155,6 +201,7 @@ function ChatPage({ inputLanguage, outputLanguage }) {
         const response = await axios.post(
           `${process.env.REACT_APP_BACKEND_URL}/ask`,
           {
+            sessionId: sessionStorage.getItem("sessionId"),
             message,
             token,
             inputLanguage,
@@ -257,7 +304,7 @@ function ChatPage({ inputLanguage, outputLanguage }) {
         >
           <MenuOutlinedIcon className="menu-icon" fontSize="medium" />
         </Button>
-        {!sidebarCollapsed && <Sidebar files={files} />}
+        {!sidebarCollapsed && <Sidebar files={files} sessions={sessions} setLatestSessionId={setLatestSessionId} latestSessionId={latestSessionId} selectedSessionFiles={selectedSessionFiles} setSelectedSessionFiles={setSelectedSessionFiles} setSessions={setSessions} />}
       </div>
       <FileViewer files={files} />
       <div className="chat-content">
