@@ -1,0 +1,192 @@
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 75vh;
+    width: 100vw;
+    background-color: #f0f0f0;
+    font-family: 'Arial', sans-serif;
+    overflow: hidden;
+  }
+  
+  .chat-messages {
+    flex-grow: 1;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .chat-message {
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    border-radius: 20px;
+    max-width: 60%;
+    animation: slideUp 0.8s ease-out;
+    color: black; /* Set text color to black */
+  }
+  
+  .user {
+    background-color: #e0e0e0;
+    align-self: flex-end;;
+  }
+  
+  .bot {
+    background-color: #E0F7FA;
+    color: black; /* Set bot text color to black */
+    align-self: flex-start;
+  }
+  
+  .chat-input-container {
+    display: flex;
+    padding: 10px 20px;
+    background-color: #ffffff;
+    border-top: 1px solid #ccc;
+  }
+  
+  .chat-input {
+    flex-grow: 1;
+    padding: 10px 15px;
+    border-radius: 30px;
+    border: 1px solid #ccc;
+    outline: none;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+  }
+  
+  .chat-input:focus {
+    border-color: #888;
+  }
+  
+  .send-button {
+    padding: 10px 20px;
+    margin-left: 10px;
+    border-radius: 30px;
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .send-button:hover {
+    background-color: #357ab8;
+  }
+  .play-button,
+  .copy-button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    margin-left: 0.35cm;
+    margin-top: 0.25cm;
+  }
+  
+  .play-button:hover,
+  .copy-button:hover {
+    opacity: 0.8; /* Add a subtle effect on hover */
+  }
+  @keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  
+  .chat-navbar {
+    display: flex;
+    justify-content: space-between; /* Aligns the logo to the left and the dropdowns to the right */
+    align-items: center; /* Vertically centers the content */
+    padding: 10px 20px;
+    background-color: #f5f5f5;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .company-logo {
+    height: 100px; /* Adjust the size of the logo as needed */
+  }
+  
+  .navbar-dropdowns {
+    display: flex;
+    gap: 10px; /* Adds space between the dropdowns */
+  }
+  
+  .dropdown-container {
+    display: flex;
+    align-items: center;
+  }
+  
+  .dropdown {
+    margin-right: 10px;
+    padding: 8px;
+    border: 1px solid #649cd7;
+    border-radius: 20px;
+    background-color: #f0f0f0;
+    color: #649cd7;
+    font-weight: bold;
+    outline: none;
+    cursor: pointer;
+  }
+  
+  .dropdown:hover {
+    background-color: #649cd7;
+    color: white;
+  }
+  
+  .send-button {
+    padding: 8px 12px;
+    background-color: #649cd7;
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    outline: none;
+  }
+  
+  .send-button:hover {
+    background-color: #649cd7;
+  }
+  
+  /* Footer styling */
+  .chat-footer {
+    padding: 10px;
+    background-color: #f1f1f1;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #666;
+  }
+  
+  .chat-footer a {
+    color: #649cd7;
+    text-decoration: none;
+  }
+  
+  .chat-footer a:hover {
+    text-decoration: underline;
+  }
+  /* Additional styling for labels and voice button */
+  .dropdown-container {
+    display: flex;
+    flex-direction: column;
+    margin-right: 10px;
+  }
+  
+  .dropdown-label {
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #649cd7;
+  }
+  
+  .voice-button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0 10px;
+    font-size: 24px;
+    color: #649cd7;
+    outline: none;
+  }
+  
+  .voice-button:hover {
+    opacity: 0.8;
+  }
+  
