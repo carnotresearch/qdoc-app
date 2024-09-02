@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FaPlay, FaCopy, FaCheck, FaExternalLinkAlt, FaMicrophone } from 'react-icons/fa';
-import '../styles/cisce.css';
+import '../styles/cisce.module.css';
 
 const Cisce = () => {
   const [messages, setMessages] = useState([]);
