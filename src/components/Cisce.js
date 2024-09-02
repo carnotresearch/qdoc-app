@@ -1,22 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { FaPlay, FaCopy, FaCheck, FaExternalLinkAlt, FaMicrophone } from 'react-icons/fa';
-import '../styles/cisce.module.css';
+import ReactMarkdown from 'react-markdown';
+import { FaPlay, FaStop, FaCopy, FaCheck, FaExternalLinkAlt, FaMicrophone } from 'react-icons/fa';
+import '../styles/cisce.css';
 
 const Cisce = () => {
-  const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState('');
+  const [chatMessages, setChatMessages] = useState([]);
+  const [userInput, setUserInput] = useState('');
   const [inputLanguage, setInputLanguage] = useState(23); // Default to English
   const [outputLanguage, setOutputLanguage] = useState(23); // Default to English
+  const [audioPlaying, setAudioPlaying] = useState(false);
+  const [currentUtterance, setCurrentUtterance] = useState(null);
 
   useEffect(() => {
     // Set initial bot message when the page loads
-    setMessages([{ text: 'Welcome to icarKnow Chat. <br /> Ask me anything about Inter School Robotics Championship, 2024', sender: 'bot', copied: false }]);
+    setChatMessages([{ text: 'Welcome to icarKnow Chat. \n\nAsk me anything about Inter School Robotics Championship, 2024', sender: 'bots', copied: false }]);
   }, []);
 
-  const sendMessage = async () => {
-    if (input.trim()) {
-      setMessages([...messages, { text: input, sender: 'user', copied: false }]);
-      setInput('');
+  const sendChatMessage = async () => {
+    if (userInput.trim()) {
+      setChatMessages([...chatMessages, { text: userInput, sender: 'users', copied: false }]);
+      setUserInput('');
 
       try {
         const response = await fetch('https://qdocbackend.carnotresearch.com:5000/askcisce', {
@@ -24,14 +27,14 @@ const Cisce = () => {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ message: input, inputLanguage, outputLanguage }),
+          body: JSON.stringify({ message: userInput, inputLanguage, outputLanguage }),
         });
 
         const data = await response.json();
         console.log(data);
-        setMessages((prevMessages) => [
+        setChatMessages((prevMessages) => [
           ...prevMessages,
-          { text: data.answer, sender: 'bot', copied: false },
+          { text: data.answer, sender: 'bots', copied: false },
         ]);
       } catch (error) {
         console.error('Error fetching bot response:', error);
@@ -40,9 +43,23 @@ const Cisce = () => {
   };
 
   const playVoice = (text) => {
+    if (audioPlaying) {
+      speechSynthesis.cancel(); // Stop the current utterance completely
+      setAudioPlaying(false);
+      setCurrentUtterance(null);
+      return;
+    }
+
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = outputLanguage === 1 ? 'hi-IN' : 'en-US'; // Set language for voice output
+    utterance.onend = () => {
+      setAudioPlaying(false);
+      setCurrentUtterance(null);
+    };
+
+    setCurrentUtterance(utterance);
     speechSynthesis.speak(utterance);
+    setAudioPlaying(true);
   };
 
   const handleVoiceInput = () => {
@@ -50,7 +67,7 @@ const Cisce = () => {
     recognition.lang = inputLanguage === 1 ? 'hi-IN' : 'en-US'; // Set language for voice input
 
     recognition.onresult = (event) => {
-      setInput(event.results[0][0].transcript); // Set the recognized text as input
+      setUserInput(event.results[0][0].transcript); // Set the recognized text as input
     };
 
     recognition.start();
@@ -58,9 +75,9 @@ const Cisce = () => {
 
   const copyToClipboard = (text, index) => {
     navigator.clipboard.writeText(text).then(() => {
-      setMessages((prevMessages) =>
-        prevMessages.map((message, i) =>
-          i === index ? { ...message, copied: true } : message
+      setChatMessages((prevMessages) =>
+        prevMessages.map((msg, i) =>
+          i === index ? { ...msg, copied: true } : msg
         )
       );
     });
@@ -73,9 +90,9 @@ const Cisce = () => {
           <img src="logo.jpg" alt="Company Logo" className="company-logo" />
         </a>
         <div className="navbar-dropdowns">
-          <div className="dropdown-container">
-            <label htmlFor="inputLanguage" className="dropdown-label">Input Language:</label>
-            <select id="inputLanguage" value={inputLanguage} onChange={(e) => setInputLanguage(Number(e.target.value))} className="dropdown">
+          <div className="dropdowncontainer">
+            <label htmlFor="inputLanguage" className="dropdown-label">Input Language</label>
+            <select id="inputLanguage" value={inputLanguage} onChange={(e) => setInputLanguage(Number(e.target.value))} className="dropdownn">
               <option value={23}>English</option>
               <option value={1}>Hindi</option>
               <option value={3}>Kannada</option>
@@ -99,11 +116,12 @@ const Cisce = () => {
               <option value={21}>Gujarati</option>
               <option value={22}>Odia</option>
               <option value={2}>Gom</option>
+              {/* Add other language options here */}
             </select>
           </div>
-          <div className="dropdown-container">
-            <label htmlFor="outputLanguage" className="dropdown-label">Output Language:</label>
-            <select id="outputLanguage" value={outputLanguage} onChange={(e) => setOutputLanguage(Number(e.target.value))} className="dropdown">
+          <div className="dropdowncontainer">
+            <label htmlFor="outputLanguage" className="dropdown-label">Output Language</label>
+            <select id="outputLanguage" value={outputLanguage} onChange={(e) => setOutputLanguage(Number(e.target.value))} className="dropdownn">
               <option value={23}>English</option>
               <option value={1}>Hindi</option>
               <option value={3}>Kannada</option>
@@ -127,26 +145,33 @@ const Cisce = () => {
               <option value={21}>Gujarati</option>
               <option value={22}>Odia</option>
               <option value={2}>Gom</option>
+              {/* Add other language options here */}
             </select>
           </div>
         </div>
       </nav>
-      <div className="chat-container">
+      <div className="chatcontainer">
         <div className="chat-messages">
-          {messages.map((message, index) => (
-            <div key={index} className={`chat-message ${message.sender === 'bot' ? 'bot' : 'user'}`}>
-              <div className="message-content" dangerouslySetInnerHTML={{ __html: message.text }} />
+          {chatMessages.map((chatMessage, index) => (
+            <div key={index} className={`chat-message ${chatMessage.sender === 'bots' ? 'bots' : 'users'}`}>
+              <div className="message-content">
+                {chatMessage.sender === 'bots' ? (
+                  <ReactMarkdown>{chatMessage.text}</ReactMarkdown>
+                ) : (
+                  chatMessage.text
+                )}
+              </div>
               <div className="message-actions">
-                {message.sender === 'bot' && (
+                {chatMessage.sender === 'bots' && (
                   <>
-                    <button className="play-button" onClick={() => playVoice(message.text)}>
-                      <FaPlay />
+                    <button className="play-button" onClick={() => playVoice(chatMessage.text)}>
+                      {audioPlaying ? <FaStop /> : <FaPlay />}
                     </button>
                     <button
                       className="copy-button"
-                      onClick={() => copyToClipboard(message.text, index)}
+                      onClick={() => copyToClipboard(chatMessage.text, index)}
                     >
-                      {message.copied ? <FaCheck /> : <FaCopy />}
+                      {chatMessage.copied ? <FaCheck /> : <FaCopy />}
                     </button>
                   </>
                 )}
@@ -157,16 +182,16 @@ const Cisce = () => {
         <div className="chat-input-container">
           <input
             type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+            value={userInput}
+            onChange={(e) => setUserInput(e.target.value)}
+            onKeyPress={(e) => e.key === 'Enter' && sendChatMessage()}
             placeholder="Type a message..."
-            className="chat-input"
+            className="chatinput"
           />
           <button className="voice-button" onClick={handleVoiceInput}>
             <FaMicrophone />
           </button>
-          <button onClick={sendMessage} className="send-button">Send</button>
+          <button onClick={sendChatMessage} className="sendbutton">Send</button>
         </div>
       </div>
       <footer className="chat-footer">

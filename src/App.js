@@ -37,7 +37,6 @@ function App() {
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/cisce" element={<Cisce />} />
             <Route
               path="/payment"
               element={
@@ -57,6 +56,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            <Route path="/cisce" element={<Cisce />} />
           </Routes>
         </div>
       </Router>
