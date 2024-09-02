@@ -27,13 +27,14 @@
 }
 
 .users {
-  background-color: #e0e0e0;
+  background-color: #e0f7fa;
   align-self: flex-end;
   max-width: 75%;
+  padding: auto 2rem;
 }
 
 .bots {
-  background-color: #E0F7FA;
+  background-color: #e8eaf6;
   color: black; /* Set bot text color to black */
   align-self: flex-start;
   max-width: 75%; /* Make bot messages cover 75% of the width */
@@ -125,7 +126,6 @@
 .dropdown-label {
   margin-bottom: 5px; /* Adds space between the label and the dropdown */
   font-weight: bold;
-  color: #649cd7;
 }
 
 .dropdownn {

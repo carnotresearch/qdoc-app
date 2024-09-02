@@ -1,11 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import ReactMarkdown from 'react-markdown';
-import { FaPlay, FaStop, FaCopy, FaCheck, FaExternalLinkAlt, FaMicrophone } from 'react-icons/fa';
-import '../styles/cisce.css';
+import React, { useState, useEffect } from "react";
+import ReactMarkdown from "react-markdown";
+import {
+  FaPlay,
+  FaStop,
+  FaCopy,
+  FaCheck,
+  FaExternalLinkAlt,
+  FaMicrophone,
+} from "react-icons/fa";
+import "../styles/cisce.css";
 
 const Cisce = () => {
   const [chatMessages, setChatMessages] = useState([]);
-  const [userInput, setUserInput] = useState('');
+  const [userInput, setUserInput] = useState("");
   const [inputLanguage, setInputLanguage] = useState(23); // Default to English
   const [outputLanguage, setOutputLanguage] = useState(23); // Default to English
   const [audioPlaying, setAudioPlaying] = useState(false);
@@ -13,31 +20,47 @@ const Cisce = () => {
 
   useEffect(() => {
     // Set initial bot message when the page loads
-    setChatMessages([{ text: 'Welcome to icarKnow Chat. \n\nAsk me anything about Inter School Robotics Championship, 2024', sender: 'bots', copied: false }]);
+    setChatMessages([
+      {
+        text: "**Welcome to icarKnow Chat.** \n\nAsk me anything about Inter School Robotics Championship, 2024",
+        sender: "bots",
+        copied: false,
+      },
+    ]);
   }, []);
 
   const sendChatMessage = async () => {
     if (userInput.trim()) {
-      setChatMessages([...chatMessages, { text: userInput, sender: 'users', copied: false }]);
-      setUserInput('');
+      setChatMessages([
+        ...chatMessages,
+        { text: userInput, sender: "users", copied: false },
+      ]);
+      setUserInput("");
 
       try {
-        const response = await fetch('https://qdocbackend.carnotresearch.com:5000/askcisce', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ message: userInput, inputLanguage, outputLanguage }),
-        });
+        const response = await fetch(
+          "https://qdocbackend.carnotresearch.com:5000/askcisce",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              message: userInput,
+              inputLanguage,
+              outputLanguage,
+            }),
+          }
+        );
 
         const data = await response.json();
         console.log(data);
         setChatMessages((prevMessages) => [
           ...prevMessages,
-          { text: data.answer, sender: 'bots', copied: false },
+          { text: data.answer, sender: "bots", copied: false },
         ]);
       } catch (error) {
-        console.error('Error fetching bot response:', error);
+        console.error("Error fetching bot response:", error);
       }
     }
   };
@@ -51,7 +74,7 @@ const Cisce = () => {
     }
 
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = outputLanguage === 1 ? 'hi-IN' : 'en-US'; // Set language for voice output
+    utterance.lang = outputLanguage === 1 ? "hi-IN" : "en-US"; // Set language for voice output
     utterance.onend = () => {
       setAudioPlaying(false);
       setCurrentUtterance(null);
@@ -64,7 +87,7 @@ const Cisce = () => {
 
   const handleVoiceInput = () => {
     const recognition = new window.webkitSpeechRecognition(); // or window.SpeechRecognition
-    recognition.lang = inputLanguage === 1 ? 'hi-IN' : 'en-US'; // Set language for voice input
+    recognition.lang = inputLanguage === 1 ? "hi-IN" : "en-US"; // Set language for voice input
 
     recognition.onresult = (event) => {
       setUserInput(event.results[0][0].transcript); // Set the recognized text as input
@@ -91,8 +114,15 @@ const Cisce = () => {
         </a>
         <div className="navbar-dropdowns">
           <div className="dropdowncontainer">
-            <label htmlFor="inputLanguage" className="dropdown-label">Input Language</label>
-            <select id="inputLanguage" value={inputLanguage} onChange={(e) => setInputLanguage(Number(e.target.value))} className="dropdownn">
+            <label htmlFor="inputLanguage" className="dropdown-label">
+              Input Language
+            </label>
+            <select
+              id="inputLanguage"
+              value={inputLanguage}
+              onChange={(e) => setInputLanguage(Number(e.target.value))}
+              className="dropdownn"
+            >
               <option value={23}>English</option>
               <option value={1}>Hindi</option>
               <option value={3}>Kannada</option>
@@ -120,8 +150,15 @@ const Cisce = () => {
             </select>
           </div>
           <div className="dropdowncontainer">
-            <label htmlFor="outputLanguage" className="dropdown-label">Output Language</label>
-            <select id="outputLanguage" value={outputLanguage} onChange={(e) => setOutputLanguage(Number(e.target.value))} className="dropdownn">
+            <label htmlFor="outputLanguage" className="dropdown-label">
+              Output Language
+            </label>
+            <select
+              id="outputLanguage"
+              value={outputLanguage}
+              onChange={(e) => setOutputLanguage(Number(e.target.value))}
+              className="dropdownn"
+            >
               <option value={23}>English</option>
               <option value={1}>Hindi</option>
               <option value={3}>Kannada</option>
@@ -153,18 +190,26 @@ const Cisce = () => {
       <div className="chatcontainer">
         <div className="chat-messages">
           {chatMessages.map((chatMessage, index) => (
-            <div key={index} className={`chat-message ${chatMessage.sender === 'bots' ? 'bots' : 'users'}`}>
+            <div
+              key={index}
+              className={`chat-message ${
+                chatMessage.sender === "bots" ? "bots" : "users"
+              }`}
+            >
               <div className="message-content">
-                {chatMessage.sender === 'bots' ? (
+                {chatMessage.sender === "bots" ? (
                   <ReactMarkdown>{chatMessage.text}</ReactMarkdown>
                 ) : (
                   chatMessage.text
                 )}
               </div>
               <div className="message-actions">
-                {chatMessage.sender === 'bots' && (
+                {chatMessage.sender === "bots" && (
                   <>
-                    <button className="play-button" onClick={() => playVoice(chatMessage.text)}>
+                    <button
+                      className="play-button"
+                      onClick={() => playVoice(chatMessage.text)}
+                    >
                       {audioPlaying ? <FaStop /> : <FaPlay />}
                     </button>
                     <button
@@ -184,19 +229,29 @@ const Cisce = () => {
             type="text"
             value={userInput}
             onChange={(e) => setUserInput(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && sendChatMessage()}
+            onKeyPress={(e) => e.key === "Enter" && sendChatMessage()}
             placeholder="Type a message..."
             className="chatinput"
           />
           <button className="voice-button" onClick={handleVoiceInput}>
             <FaMicrophone />
           </button>
-          <button onClick={sendChatMessage} className="sendbutton">Send</button>
+          <button onClick={sendChatMessage} className="sendbutton">
+            Send
+          </button>
         </div>
       </div>
       <footer className="chat-footer">
         <p>
-          Powered by <a href="https://carnotresearch.com" target="_blank" rel="noopener noreferrer">Carnot Research <FaExternalLinkAlt /></a>, all rights reserved.
+          Powered by{" "}
+          <a
+            href="https://carnotresearch.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Carnot Research <FaExternalLinkAlt />
+          </a>
+          , all rights reserved.
         </p>
       </footer>
     </div>
