@@ -1,12 +1,5 @@
 import React, { useState, useRef, useContext, useEffect } from "react";
-import {
-  ListGroup,
-  Form,
-  Button,
-  Card,
-  Spinner,
-  ButtonGroup
-} from "react-bootstrap";
+import { ListGroup, Form, Button, Card, ButtonGroup } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import {
   RiMessage2Fill,
@@ -19,7 +12,16 @@ import axios from "axios";
 import { FileContext } from "./FileContext";
 import "../styles/sidebar.css";
 
-function Sidebar({ files = [] , sessions = [], setLatestSessionId, latestSessionId, selectedSessionFiles, setSelectedSessionFiles, setSessions, }) {
+
+function Sidebar({
+  files = [],
+  sessions = [],
+  setLatestSessionId,
+  latestSessionId,
+  selectedSessionFiles,
+  setSelectedSessionFiles,
+  setSessions,
+}) {
   const { setFiles } = useContext(FileContext);
   const fileInputRef = useRef(null);
   const additionalFileInputRef = useRef(null);
@@ -34,7 +36,7 @@ function Sidebar({ files = [] , sessions = [], setLatestSessionId, latestSession
     if (newName && newName.trim() !== "") {
       try {
         await axios.post(
-          `${process.env.REACT_APP_RENAME}`, 
+          `${process.env.REACT_APP_RENAME}`,
           {
             sessionId,
             newName,
@@ -53,13 +55,12 @@ function Sidebar({ files = [] , sessions = [], setLatestSessionId, latestSession
       }
     }
   };
-  
 
   const handleDeleteSession = async (sessionId) => {
     if (window.confirm("Are you sure you want to delete this session?")) {
       try {
         await axios.post(
-          `${process.env.REACT_APP_DELETE_SESSION}`, 
+          `${process.env.REACT_APP_DELETE_SESSION}`,
           {
             sessionId,
             token: sessionStorage.getItem("token"),
@@ -256,13 +257,13 @@ function Sidebar({ files = [] , sessions = [], setLatestSessionId, latestSession
     const newFilesArray = Array.from(newFiles);
     setIsUploading(true);
     const sessionId = latestSessionId || sessionStorage.getItem("sessionId");
-  
+
     // Set the updated files array for the session
     setSelectedSessionFiles((prevState) => ({
       ...prevState,
       [sessionId]: [...(prevState[sessionId] || []), ...newFilesArray],
     }));
-  
+
     try {
       const base64Files = await Promise.all(
         newFilesArray.map((file) => {
@@ -278,7 +279,7 @@ function Sidebar({ files = [] , sessions = [], setLatestSessionId, latestSession
           });
         })
       );
-  
+
       // Sending the base64 encoded files to AWS Add Session
       await axios.post(
         `${process.env.REACT_APP_AWS_ADD_SESSION}`,
@@ -289,19 +290,19 @@ function Sidebar({ files = [] , sessions = [], setLatestSessionId, latestSession
         },
         { headers: { "Content-Type": "application/json" } }
       );
-  
+
       // Now sending only the newly added files to the backend
       const formData = new FormData();
       newFilesArray.forEach((file) => formData.append("files", file));
       formData.append("token", sessionStorage.getItem("token"));
       formData.append("sessionId", sessionId);
-  
+
       await axios.post(
         `${process.env.REACT_APP_BACKEND_URL}/add-upload`,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
-  
+
       // Update the local files state with the new files added
       setFiles((prevFiles) => [...prevFiles, ...newFilesArray]);
     } catch (error) {
@@ -365,10 +366,10 @@ function Sidebar({ files = [] , sessions = [], setLatestSessionId, latestSession
 
   const fetchAndAppendSessionFiles = async (session) => {
     try {
-      setLatestSessionId(session.id); 
-      const updateResponse =  axios.post(
+      setLatestSessionId(session.id);
+      const updateResponse = axios.post(
         `${process.env.REACT_APP_UPDATE_TIMESTAMP}`,
-        { token, sessionId: session.id},
+        { token, sessionId: session.id },
         { headers: { "Content-Type": "application/json" } }
       );
       // Auto-expand the selected session
@@ -380,7 +381,7 @@ function Sidebar({ files = [] , sessions = [], setLatestSessionId, latestSession
         newState[session.id] = true; // Expand the selected session
         return newState;
       });
-  
+
       const response = await axios.post(
         `${process.env.REACT_APP_AWS_FETCH_FILES}`,
         { token, sessionId: session.id },
@@ -437,7 +438,13 @@ function Sidebar({ files = [] , sessions = [], setLatestSessionId, latestSession
             >
               {isUploading ? (
                 <div className="text-center">
-                  <Spinner animation="border" size="sm" />
+                  <video
+                    src="/container.mp4" // Replace with your loading video path
+                    loop
+                    autoPlay
+                    muted
+                    style={{ width: "100%", height: "auto" }}
+                  />
                   <p className="mb-0">
                     This may take up to {processTime} seconds...
                   </p>
@@ -454,7 +461,6 @@ function Sidebar({ files = [] , sessions = [], setLatestSessionId, latestSession
           </div>
         </Form.Group>
       </Form>
-
       <ListGroup>
         {sessions.slice(0, 4).map((session, index) => (
           <div key={index}>
