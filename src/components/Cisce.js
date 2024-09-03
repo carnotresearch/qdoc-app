@@ -205,7 +205,7 @@ const Cisce = () => {
                 chatMessage.sender === "bots" ? "bots" : "users"
               }`}
             >
-              <div className="message-content">
+              <div>
                 {chatMessage.sender === "bots" ? (
                   <ReactMarkdown>{chatMessage.text}</ReactMarkdown>
                 ) : (
@@ -252,7 +252,7 @@ const Cisce = () => {
         </div>
       </div>
       <footer className="chat-footer">
-        <p style={{ margin: "0" }}>
+        <p>
           Copyright © 2024{" "}
           <a
             href="https://carnotresearch.com"
