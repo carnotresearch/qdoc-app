@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import {
   FaPlay,
@@ -17,6 +17,7 @@ const Cisce = () => {
   const [outputLanguage, setOutputLanguage] = useState(23); // Default to English
   const [audioPlaying, setAudioPlaying] = useState(false);
   const [currentUtterance, setCurrentUtterance] = useState(null);
+  const chatMessagesEndRef = useRef(null); // Reference to the end of the chat messages
 
   useEffect(() => {
     // Set initial bot message when the page loads
@@ -28,6 +29,13 @@ const Cisce = () => {
       },
     ]);
   }, []);
+
+  useEffect(() => {
+    // Scroll to the bottom when the chatMessages array changes
+    if (chatMessagesEndRef.current) {
+      chatMessagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [chatMessages]);
 
   const sendChatMessage = async () => {
     if (userInput.trim()) {
@@ -223,6 +231,7 @@ const Cisce = () => {
               </div>
             </div>
           ))}
+          <div ref={chatMessagesEndRef} />
         </div>
         <div className="chat-input-container">
           <input
