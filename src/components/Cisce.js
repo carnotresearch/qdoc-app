@@ -1,13 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
-import {
-  FaPlay,
-  FaStop,
-  FaCopy,
-  FaCheck,
-  FaExternalLinkAlt,
-  FaMicrophone,
-} from "react-icons/fa";
+import { FaPlay, FaStop, FaCopy, FaCheck, FaMicrophone } from "react-icons/fa";
 import "../styles/cisce.css";
 
 const Cisce = () => {
@@ -16,7 +9,6 @@ const Cisce = () => {
   const [inputLanguage, setInputLanguage] = useState(23); // Default to English
   const [outputLanguage, setOutputLanguage] = useState(23); // Default to English
   const [audioPlaying, setAudioPlaying] = useState(false);
-  const [currentUtterance, setCurrentUtterance] = useState(null);
   const chatMessagesEndRef = useRef(null); // Reference to the end of the chat messages
 
   useEffect(() => {
@@ -77,7 +69,6 @@ const Cisce = () => {
     if (audioPlaying) {
       speechSynthesis.cancel(); // Stop the current utterance completely
       setAudioPlaying(false);
-      setCurrentUtterance(null);
       return;
     }
 
@@ -85,10 +76,8 @@ const Cisce = () => {
     utterance.lang = outputLanguage === 1 ? "hi-IN" : "en-US"; // Set language for voice output
     utterance.onend = () => {
       setAudioPlaying(false);
-      setCurrentUtterance(null);
     };
 
-    setCurrentUtterance(utterance);
     speechSynthesis.speak(utterance);
     setAudioPlaying(true);
   };
@@ -118,11 +107,19 @@ const Cisce = () => {
     <div className="chat-page">
       <nav className="chat-navbar">
         <a href="https://iknow.carnotresearch.com">
-          <img src="logo.jpg" alt="Company Logo" className="company-logo" />
+          <img
+            src="logo_cisce.png"
+            alt="Company Logo"
+            className="company-logo"
+          />
         </a>
         <div className="navbar-dropdowns">
           <div className="dropdowncontainer">
-            <label htmlFor="inputLanguage" className="dropdown-label">
+            <label
+              htmlFor="inputLanguage"
+              className="dropdown-label"
+              style={{ margin: "auto" }}
+            >
               Input
             </label>
             <select
@@ -158,7 +155,11 @@ const Cisce = () => {
             </select>
           </div>
           <div className="dropdowncontainer">
-            <label htmlFor="outputLanguage" className="dropdown-label">
+            <label
+              htmlFor="outputLanguage"
+              className="dropdown-label"
+              style={{ margin: "auto" }}
+            >
               Output
             </label>
             <select
@@ -251,16 +252,16 @@ const Cisce = () => {
         </div>
       </div>
       <footer className="chat-footer">
-        <p>
-          Powered by{" "}
+        <p style={{ margin: "0" }}>
+          Copyright © 2024{" "}
           <a
             href="https://carnotresearch.com"
             target="_blank"
             rel="noopener noreferrer"
           >
-            Carnot Research <FaExternalLinkAlt />
+            Carnot Research
           </a>
-          , all rights reserved.
+          . All rights reserved.
         </p>
       </footer>
     </div>

@@ -101,7 +101,7 @@
   display: flex;
   justify-content: space-between; /* Aligns the logo to the left and the dropdowns to the right */
   align-items: center; /* Vertically centers the content */
-  padding: 10px 20px;
+  padding: 0 20px;
   background-color: #f5f5f5;
   border-bottom: 1px solid #ddd;
 }
