@@ -22,7 +22,7 @@ const Cisce = () => {
     // Set initial bot message when the page loads
     setChatMessages([
       {
-        text: "**Welcome to icarKnow Chat.** \n\nAsk me anything about Inter School Robotics Championship, 2024",
+        text: "**Welcome to icarKno™ Chat.** \n\nAsk me anything about Inter School Robotics Championship, 2024",
         sender: "bots",
         copied: false,
       },
@@ -115,7 +115,7 @@ const Cisce = () => {
         <div className="navbar-dropdowns">
           <div className="dropdowncontainer">
             <label htmlFor="inputLanguage" className="dropdown-label">
-              Input Language
+              Input
             </label>
             <select
               id="inputLanguage"
@@ -151,7 +151,7 @@ const Cisce = () => {
           </div>
           <div className="dropdowncontainer">
             <label htmlFor="outputLanguage" className="dropdown-label">
-              Output Language
+              Output
             </label>
             <select
               id="outputLanguage"
