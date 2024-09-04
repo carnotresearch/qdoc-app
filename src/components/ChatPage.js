@@ -207,7 +207,8 @@ function ChatPage({ inputLanguage, outputLanguage }) {
             inputLanguage,
             outputLanguage,
             context,
-          }
+            temperature:sessionStorage.getItem("temperature") || 0.2,
+                    }
         );
 
         newChatHistory[newChatHistory.length - 1].bot = response.data.answer;

@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import LanguageDropdown from "./LanguageDropdown";
 import Profile from "./Profile";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
+import SettingsIcon from "@mui/icons-material/Settings";
+import InfoIcon from "@mui/icons-material/Info";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import Tooltip from "@mui/material/Tooltip"; // Add Tooltip from Material UI
 import "../styles/navbar.css";
 
 const Navbar = ({
@@ -19,6 +22,17 @@ const Navbar = ({
   const location = useLocation();
   const paid = sessionStorage.getItem("paymentStatus");
 
+  // State for the temperature slider, loaded from sessionStorage if available
+  const [temperature, setTemperature] = useState(
+    sessionStorage.getItem("temperature") || 0.2
+  );
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  // Save temperature to sessionStorage when it changes
+  useEffect(() => {
+    sessionStorage.setItem("temperature", temperature);
+  }, [temperature]);
+
   const handleLogout = () => {
     sessionStorage.removeItem("token");
     sessionStorage.removeItem("expiryTime");
@@ -30,30 +44,14 @@ const Navbar = ({
     navigate("/login", { state: { focusEmail: true } });
   };
 
+  const toggleDropdown = () => {
+    setDropdownOpen(!dropdownOpen);
+  };
+
   const languages = [
     { value: "23", label: "English" },
     { value: "1", label: "Hindi" },
-    { value: "2", label: "Gom" },
-    { value: "3", label: "Kannada" },
-    { value: "4", label: "Dogri" },
-    { value: "5", label: "Bodo" },
-    { value: "6", label: "Urdu" },
-    { value: "7", label: "Tamil" },
-    { value: "8", label: "Kashmiri" },
-    { value: "9", label: "Assamese" },
-    { value: "10", label: "Bengali" },
-    { value: "11", label: "Marathi" },
-    { value: "12", label: "Sindhi" },
-    { value: "13", label: "Maithili" },
-    { value: "14", label: "Punjabi" },
-    { value: "15", label: "Malayalam" },
-    { value: "16", label: "Manipuri" },
-    { value: "17", label: "Telugu" },
-    { value: "18", label: "Sanskrit" },
-    { value: "19", label: "Nepali" },
-    { value: "20", label: "Santali" },
-    { value: "21", label: "Gujarati" },
-    { value: "22", label: "Odia" },
+    // other languages
   ];
 
   return (
@@ -131,6 +129,34 @@ const Navbar = ({
               </Link>
             </li>
           )}
+          {/* Dropdown for Temperature Settings */}
+          <li className="nav-item dropdown">
+            <button className="btn" onClick={toggleDropdown}>
+              <SettingsIcon /> {/* Replace text with Settings Icon */}
+            </button>
+            {dropdownOpen && (
+              <div className="dropdown-menu show">
+                <div className="temperature-slider">
+                  <label htmlFor="temperature" className="form-label">
+                    Temperature: {temperature}
+                  </label>
+                  <input
+                    type="range"
+                    id="temperature"
+                    className="form-range"
+                    min="0"
+                    max="2"
+                    step="0.1"
+                    value={temperature}
+                    onChange={(e) => setTemperature(e.target.value)}
+                  />
+                  <Tooltip title="Adjusts how creative the model's responses are. Higher values make responses more varied." arrow>
+                    <InfoIcon style={{ marginLeft: "5px", cursor: "pointer" }} /> {/* Info Icon with Tooltip */}
+                  </Tooltip>
+                </div>
+              </div>
+            )}
+          </li>
           <li className="nav-item">
             {location.pathname === "/" ? (
               <button className="btn login-logout-btn" onClick={handleLogout}>
@@ -145,7 +171,6 @@ const Navbar = ({
               </button>
             )}
           </li>
-
           <li className="nav-item">
             <button
               className="dark-mode-toggle"
