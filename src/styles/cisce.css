@@ -8,14 +8,15 @@ body p {
   justify-content: space-between;
   height: 82vh;
   width: 100vw;
-  background-color: #f0f0f0;
+  background-color: #fbf8f8;
   font-family: 'Arial', sans-serif;
   overflow: hidden;
 }
 
 .chat-messages {
   flex-grow: 1;
-  padding: 20px;
+  margin: 1rem 0;
+  padding: 0 0.5rem;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -24,7 +25,7 @@ body p {
 .chat-message {
   padding: 10px 15px;
   margin-bottom: 10px;
-  border-radius: 20px;
+  border-radius: 1rem;
   max-width: 60%;
   animation: slideUp 0.8s ease-out;
   color: black; /* Set text color to black */
@@ -46,34 +47,25 @@ body p {
 
 .chat-input-container {
   display: flex;
-  padding: 10px 20px;
-  background-color: #ffffff;
-  border-top: 1px solid #ccc;
 }
 
 .chatinput {
   flex-grow: 1;
-  padding: 10px 15px;
-  border-radius: 30px;
+  padding: 0.5rem 1rem;
+  border-radius: 1rem;
   border: 1px solid #ccc;
   outline: none;
-  font-size: 16px;
+  font-size: 1rem;
   transition: border-color 0.3s ease;
 }
 
-.chatinput:focus {
-  border-color: #888;
-}
-
 .sendbutton {
-  padding: 10px 20px;
-  margin-left: 10px;
-  border-radius: 30px;
-  background-color: #4a90e2;
-  color: white;
+  border-radius: 1rem;
+  background-color: #fbf8f8;
+  color: #4a90e2;
   border: none;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 1.5rem;
   transition: background-color 0.3s ease;
 }
 
@@ -115,6 +107,7 @@ body p {
 
 .navbar-dropdowns {
   display: flex;
+  font-size: 0.8rem;
 }
 
 .dropdowncontainer {
@@ -129,20 +122,19 @@ body p {
 
 .dropdownn {
   margin: auto;
+  margin-top: 0.2rem;
   padding: 0.3rem;
   border: 1px solid #649cd7;
   border-radius: 20px;
   background-color: #f0f0f0;
-  color: #649cd7;
   font-weight: bold;
   outline: none;
   cursor: pointer;
-  width: 80%; /* Ensures the dropdown takes full width of the container */
+  width: 90%; /* Ensures the dropdown takes full width of the container */
 }
 
-.dropdownn:hover {
-  background-color: #649cd7;
-  color: white;
+.dropdownn:focus {
+  background-color: whitesmoke;
 }
 
 .send-button {

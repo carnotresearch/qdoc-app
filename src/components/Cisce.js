@@ -1,26 +1,22 @@
 import React, { useState, useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import { FaPlay, FaStop, FaCopy, FaCheck, FaMicrophone } from "react-icons/fa";
+import { IoSend } from "react-icons/io5";
 import "../styles/cisce.css";
 
 const Cisce = () => {
-  const [chatMessages, setChatMessages] = useState([]);
+  const [chatMessages, setChatMessages] = useState([
+    {
+      text: "**Welcome to icarKno™ Chat.** \n\nAsk me anything about Inter School Robotics Championship, 2024",
+      sender: "bots",
+      copied: false,
+    },
+  ]);
   const [userInput, setUserInput] = useState("");
   const [inputLanguage, setInputLanguage] = useState(23); // Default to English
   const [outputLanguage, setOutputLanguage] = useState(23); // Default to English
   const [audioPlaying, setAudioPlaying] = useState(false);
   const chatMessagesEndRef = useRef(null); // Reference to the end of the chat messages
-
-  useEffect(() => {
-    // Set initial bot message when the page loads
-    setChatMessages([
-      {
-        text: "**Welcome to icarKno™ Chat.** \n\nAsk me anything about Inter School Robotics Championship, 2024",
-        sender: "bots",
-        copied: false,
-      },
-    ]);
-  }, []);
 
   useEffect(() => {
     // Scroll to the bottom when the chatMessages array changes
@@ -247,7 +243,7 @@ const Cisce = () => {
             <FaMicrophone />
           </button>
           <button onClick={sendChatMessage} className="sendbutton">
-            Send
+            <IoSend />
           </button>
         </div>
       </div>
