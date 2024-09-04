@@ -47,12 +47,14 @@ body p {
 
 .chat-input-container {
   display: flex;
+  margin:  auto 0.5rem;
 }
 
 .chatinput {
   flex-grow: 1;
   padding: 0.5rem 1rem;
   border-radius: 1rem;
+  max-width: 93%;
   border: 1px solid #ccc;
   outline: none;
   font-size: 1rem;
