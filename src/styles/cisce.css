@@ -47,7 +47,7 @@ body p {
 
 .chat-input-container {
   display: flex;
-  width: 100%;
+  width: 95%;
   margin: auto;
 }
 
@@ -110,6 +110,7 @@ body p {
 
 .navbar-dropdowns {
   display: flex;
+  font-size: 0.8rem;
 }
 
 .dropdowncontainer {
@@ -176,11 +177,38 @@ body p {
   border: none;
   cursor: pointer;
   padding: 0 10px;
-  font-size: 24px;
+  font-size: 1.5rem;
   color: #649cd7;
   outline: none;
 }
 
 .voice-button:hover {
   opacity: 0.8;
+}
+
+/* Media query for small screens */
+@media only screen and (max-width: 600px) {
+  .chat-message {
+    font-size: 0.7rem;
+  }
+
+  .navbar-dropdowns {
+    font-size: 0.7rem;
+  }
+
+  .chatinput {
+    font-size: 0.7rem;
+  }
+
+  .sendbutton {
+    font-size: 1.1rem;
+  }
+  
+  .voice-button {
+    font-size: 1.1rem;
+  }
+
+  .chat-footer {
+    font-size: 0.7rem;
+  }
 }
