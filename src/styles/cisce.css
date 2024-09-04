@@ -47,14 +47,15 @@ body p {
 
 .chat-input-container {
   display: flex;
-  margin:  auto 0.5rem;
+  width: 100%;
+  margin: auto;
 }
 
 .chatinput {
   flex-grow: 1;
   padding: 0.5rem 1rem;
   border-radius: 1rem;
-  max-width: 93%;
+  width: 80%;
   border: 1px solid #ccc;
   outline: none;
   font-size: 1rem;
@@ -109,7 +110,6 @@ body p {
 
 .navbar-dropdowns {
   display: flex;
-  font-size: 0.8rem;
 }
 
 .dropdowncontainer {
