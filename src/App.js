@@ -9,6 +9,7 @@ import ResetPassword from "./components/ResetPassword";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PaymentForm from "./components/PaymentForm";
 import Login from "./components/Login";
+import Pricing from "./components/Pricing";
 
 function App() {
   const [inputLanguage, setInputLanguage] = useState("23");
@@ -36,7 +37,10 @@ function App() {
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/Pricing" element={<Pricing />} />
+            
             <Route
+            
               path="/payment"
               element={
                 <ProtectedRoute>

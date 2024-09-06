@@ -1,0 +1,122 @@
+
+
+.pricing-container {
+  display: flex;
+  justify-content: center; 
+  align-items: flex-start;
+  flex-wrap: wrap; 
+  padding: 20px;
+  gap: 1px; 
+}
+
+.plan-section {
+  width: 280px; 
+  min-height: 350px; 
+  background-color: #f9f9f9; 
+  border: 1px solid #ddd; 
+  border-radius: 8px;
+  padding: 20px;
+  margin: 10px; 
+  text-align: center;
+ 
+
+}
+.page-title {
+  color: #333; 
+}
+
+.dark-mode .page-title {
+  color: white; 
+}
+.plan-section:hover {
+  transform: translateY(-5px); 
+  box-shadow: 0 1px 10px  rgba(54, 183, 183, 0.8);
+ 
+}
+
+.plan-section h2 {
+
+  border-bottom: 2px solid lightgrey; 
+  padding-bottom: 5px; 
+  margin-bottom: 15px; 
+  font-size: 20px;
+  color: #5b5a5a;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; 
+}
+
+
+.plan-section ul {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 20px;
+}
+
+.plan-section ul li {
+  font-size: 16px;
+  margin-bottom: 10px;
+  color: #555;
+}
+
+.plan-section button {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+
+
+.plan-section button:hover {
+  opacity: 0.9;
+}
+
+
+.page-title {
+  text-align: center;
+  font-size: 32px;
+  margin-Top: 40px;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+
+}
+.features-list {
+  list-style: none; 
+  padding-left: 0;
+  margin-left: 0;   
+  text-align: left;
+
+  gap:2px;
+}
+
+.feature-icon-container {
+  display: inline-flex; 
+  align-items: flex-start; 
+}
+
+.feature-icon {
+  display: inline-block;
+  width: 8px; 
+  height: 8px;
+  border-radius: 50%;
+  background-color: #555;
+  margin-right: 5px;
+}
+
+.feature-text {
+  font-size: 17px; 
+  color: #000000;
+  font-family: 'Roboto';
+  line-height: 1.2;
+  margin: 0;
+}
+.feature-premium {
+  margin-top: 3px;
+}
+.feature-free{
+  margin-top: 25px; 
+}
+.feature-business{
+  margin-top: 30px; 
+}
