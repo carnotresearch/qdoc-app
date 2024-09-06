@@ -1,4 +1,4 @@
-import React, { useState, useRef, useContext, useEffect } from "react";
+import React, { useState, useRef, useContext } from "react";
 import { ListGroup, Form, Button, Card, ButtonGroup } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import {
@@ -11,10 +11,9 @@ import {
 import axios from "axios";
 import { FileContext } from "./FileContext";
 import "../styles/sidebar.css";
-
+import { addUploadFiles, uploadMultiFiles } from "./utils/presignedUtils";
 
 function Sidebar({
-  files = [],
   sessions = [],
   setLatestSessionId,
   latestSessionId,
@@ -77,38 +76,6 @@ function Sidebar({
     }
   };
 
-  const uploadToS3 = async (files) => {
-    try {
-      const filesArray = Array.from(files);
-      const base64Files = await Promise.all(
-        filesArray.map((file) => {
-          return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () =>
-              resolve({
-                filename: file.name,
-                content: reader.result.split(",")[1],
-              });
-            reader.onerror = (error) => reject(error);
-          });
-        })
-      );
-      const lambdaResponse = await axios.post(
-        `${process.env.REACT_APP_AWS_UPLOAD_URL}`,
-        {
-          token,
-          files: base64Files,
-        },
-        { headers: { "Content-Type": "application/json" } }
-      );
-
-      sessionStorage.setItem("sessionId", lambdaResponse.data.sessionId);
-    } catch (lambdaError) {
-      console.error("Error uploading files to AWS:", lambdaError);
-    }
-  };
-
   const uploadToBackend = async (files) => {
     try {
       const filesArray = Array.from(files);
@@ -163,16 +130,6 @@ function Sidebar({
     handleFileUpload(files);
   };
 
-  const listStyle = {
-    padding: "0.5rem",
-    wordWrap: "break-word",
-    overflow: "hidden",
-    color: "white",
-    backgroundColor: "#7393b6",
-    display: "flex",
-    alignItems: "center",
-  };
-
   const addButtonStyle = {
     color: "white",
     width: "50%",
@@ -192,6 +149,10 @@ function Sidebar({
   const handleFileUpload = async (files) => {
     let size = 0;
     for (let i = 0; i < files.length; i++) {
+      if (files[i].size > 20971520) {
+        alert("Kindly upload files upto 20MB.");
+        return;
+      }
       size += files[i].size;
     }
     // Converting bytes to MB and multiply by 20 for avg
@@ -201,7 +162,7 @@ function Sidebar({
     }
     setIsUploading(true);
     try {
-      await uploadToS3(files);
+      await uploadMultiFiles(token, files);
       await uploadToBackend(files);
       await fetchSessions();
       // Highlight the latest session (New Container)
@@ -214,7 +175,7 @@ function Sidebar({
       setIsUploading(false);
     }
   };
-  
+
   const fetchSessions = async () => {
     try {
       const response = await axios.post(
@@ -265,31 +226,8 @@ function Sidebar({
     }));
 
     try {
-      const base64Files = await Promise.all(
-        newFilesArray.map((file) => {
-          return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () =>
-              resolve({
-                filename: file.name,
-                content: reader.result.split(",")[1],
-              });
-            reader.onerror = (error) => reject(error);
-          });
-        })
-      );
-
-      // Sending the base64 encoded files to AWS Add Session
-      await axios.post(
-        `${process.env.REACT_APP_AWS_ADD_SESSION}`,
-        {
-          sessionId,
-          token: sessionStorage.getItem("token"),
-          files: base64Files,
-        },
-        { headers: { "Content-Type": "application/json" } }
-      );
+      // Upload files to S3
+      addUploadFiles(token, sessionId, newFiles);
 
       // Now sending only the newly added files to the backend
       const formData = new FormData();
@@ -367,7 +305,7 @@ function Sidebar({
   const fetchAndAppendSessionFiles = async (session) => {
     try {
       setLatestSessionId(session.id);
-      const updateResponse = axios.post(
+      axios.post(
         `${process.env.REACT_APP_UPDATE_TIMESTAMP}`,
         { token, sessionId: session.id },
         { headers: { "Content-Type": "application/json" } }
