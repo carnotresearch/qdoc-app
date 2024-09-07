@@ -27,16 +27,29 @@ const Navbar = ({
     sessionStorage.getItem("temperature") || 0.2
   );
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [mode, setMode] = useState(
+    sessionStorage.getItem("answerMode") || "contextual"
+  ); // New state for mode with initial value from sessionStorage
 
   // Save temperature to sessionStorage when it changes
   useEffect(() => {
     sessionStorage.setItem("temperature", temperature);
   }, [temperature]);
 
+  // Save mode to sessionStorage when it changes
+  useEffect(() => {
+    if (mode === "contextual") {
+      sessionStorage.setItem("answerMode", 1); // Set to 1 for Contextual Mode
+    } else if (mode === "creative") {
+      sessionStorage.setItem("answerMode", 2); // Set to 2 for Creative Mode
+    }
+  }, [mode]);
+
   const handleLogout = () => {
     sessionStorage.removeItem("token");
     sessionStorage.removeItem("expiryTime");
     sessionStorage.removeItem("paymentStatus");
+    sessionStorage.removeItem("answerMode"); // Clear mode on logout
     navigate("/login");
   };
 
@@ -129,7 +142,7 @@ const Navbar = ({
               </Link>
             </li>
           )}
-          {/* Dropdown for Temperature Settings */}
+          {/* Dropdown for Temperature Settings and Mode */}
           <li className="nav-item dropdown">
             <button className="btn" onClick={toggleDropdown}>
               <SettingsIcon /> {/* Replace text with Settings Icon */}
@@ -153,6 +166,39 @@ const Navbar = ({
                   <Tooltip title="Adjusts how creative the model's responses are. Higher values make responses more varied." arrow>
                     <InfoIcon style={{ marginLeft: "5px", cursor: "pointer" }} /> {/* Info Icon with Tooltip */}
                   </Tooltip>
+                </div>
+
+                {/* Mode Selection */}
+                <div className="mode-selection">
+                  <label className="form-label">Answer Mode</label>
+                  <div>
+                    <input
+                      type="radio"
+                      id="contextual"
+                      name="mode"
+                      value="contextual"
+                      checked={mode === "contextual"}
+                      onChange={() => setMode("contextual")}
+                    />
+                    <label htmlFor="contextual">Contextual Mode</label>
+                    <Tooltip title="Contextual Mode: Answers based on provided context, strictly sticking to the information given." arrow>
+                      <InfoIcon style={{ marginLeft: "5px", cursor: "pointer" }} />
+                    </Tooltip>
+                  </div>
+                  <div>
+                    <input
+                      type="radio"
+                      id="creative"
+                      name="mode"
+                      value="creative"
+                      checked={mode === "creative"}
+                      onChange={() => setMode("creative")}
+                    />
+                    <label htmlFor="creative">Creative Answering Mode</label>
+                    <Tooltip title="Creative Answering Mode: Provides more imaginative, inferred responses based on context and creativity." arrow>
+                      <InfoIcon style={{ marginLeft: "5px", cursor: "pointer" }} />
+                    </Tooltip>
+                  </div>
                 </div>
               </div>
             )}

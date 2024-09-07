@@ -208,6 +208,7 @@ function ChatPage({ inputLanguage, outputLanguage }) {
             outputLanguage,
             context,
             temperature:sessionStorage.getItem("temperature") || 0.2,
+            mode:sessionStorage.getItem("answerMode") || "contextual",
                     }
         );
 
