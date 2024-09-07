@@ -11,7 +11,11 @@ import {
 import axios from "axios";
 import { FileContext } from "./FileContext";
 import "../styles/sidebar.css";
-import { addUploadFiles, uploadMultiFiles } from "./utils/presignedUtils";
+import {
+  addUploadFiles,
+  fetchFilesFromS3,
+  uploadMultiFiles,
+} from "./utils/presignedUtils";
 
 function Sidebar({
   sessions = [],
@@ -264,44 +268,6 @@ function Sidebar({
     });
   };
 
-  const base64ToBlob = (base64, type = "") => {
-    const byteCharacters = atob(base64);
-    const byteNumbers = new Array(byteCharacters.length);
-    for (let i = 0; i < byteCharacters.length; i++) {
-      byteNumbers[i] = byteCharacters.charCodeAt(i);
-    }
-    const byteArray = new Uint8Array(byteNumbers);
-    return new Blob([byteArray], { type });
-  };
-
-  const transformFetchedFiles = (fetchedFiles) => {
-    return fetchedFiles.map((file) => {
-      const extension = file.key.split(".").pop().toLowerCase();
-      let type = "application/octet-stream";
-
-      switch (extension) {
-        case "txt":
-          type = "text/plain";
-          break;
-        case "docx":
-          type =
-            "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-          break;
-        case "pdf":
-          type = "application/pdf";
-          break;
-        default:
-          type = "none";
-      }
-
-      const blob = base64ToBlob(file.content, type);
-      return new File([blob], file.key.split("/").pop(), {
-        type: type,
-        lastModified: new Date(file.lastModified).getTime(),
-      });
-    });
-  };
-
   const fetchAndAppendSessionFiles = async (session) => {
     try {
       setLatestSessionId(session.id);
@@ -319,15 +285,8 @@ function Sidebar({
         newState[session.id] = true; // Expand the selected session
         return newState;
       });
-
-      const response = await axios.post(
-        `${process.env.REACT_APP_AWS_FETCH_FILES}`,
-        { token, sessionId: session.id },
-        { headers: { "Content-Type": "application/json" } }
-      );
-      const fetchedFiles = response.data.files;
-      const fileObjects = transformFetchedFiles(fetchedFiles);
-      setFiles(fileObjects);
+      // fetch files from s3
+      setFiles(await fetchFilesFromS3(token, session.id));
       sessionStorage.setItem("sessionId", session.id);
     } catch (error) {
       console.error("Error fetching and appending session files:", error);
