@@ -33,11 +33,10 @@ export const uploadMultiFiles = async (token, files) => {
         });
       })
     );
-
-    alert("All files uploaded successfully!");
   } catch (err) {
     console.error("Error uploading files:", err);
     alert("Failed to upload files.");
+    throw new Error("Error uploading files to S3");
   }
 };
 
@@ -74,11 +73,10 @@ export const addUploadFiles = async (token, sessionId, files) => {
         });
       })
     );
-
-    alert("All files uploaded successfully!");
   } catch (err) {
     console.error("Error uploading files:", err);
     alert("Failed to upload files.");
+    throw new Error("Error uploading additional files.");
   }
 };
 

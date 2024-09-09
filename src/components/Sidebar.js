@@ -285,9 +285,9 @@ function Sidebar({
         newState[session.id] = true; // Expand the selected session
         return newState;
       });
+      sessionStorage.setItem("sessionId", session.id);
       // fetch files from s3
       setFiles(await fetchFilesFromS3(token, session.id));
-      sessionStorage.setItem("sessionId", session.id);
     } catch (error) {
       console.error("Error fetching and appending session files:", error);
     }
