@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import { IconButton } from "@mui/material";
+
 import LanguageDropdown from "./LanguageDropdown";
 import Profile from "./Profile";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
@@ -9,7 +11,11 @@ import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import "../styles/navbar.css";
-
+import { useMediaQuery, useTheme } from "@mui/material";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import PaymentForm from "./PaymentForm";
+import CloseIcon from "@mui/icons-material/Close";
 
 const Navbar = ({
   inputLanguage,
@@ -21,10 +27,13 @@ const Navbar = ({
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  
+
   const paid = sessionStorage.getItem("paymentStatus");
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
+  const [openUpgradeDialog, setOpenUpgradeDialog] = React.useState(false);
+  const theme = useTheme();
+  const isLargeScreen = useMediaQuery(theme.breakpoints.up("lg"));
 
   const handleLogout = () => {
     sessionStorage.removeItem("token");
@@ -32,15 +41,15 @@ const Navbar = ({
     sessionStorage.removeItem("paymentStatus");
     navigate("/login");
   };
-   
+
   const handleClose = () => {
     setAnchorEl(null);
   };
 
- const handleLoginClick = () => {
-  console.log("login");
-  handleClose();
-  
+  const handleLoginClick = () => {
+    console.log("login");
+    handleClose();
+
     navigate("/login", { state: { focusEmail: true } });
   };
 
@@ -50,6 +59,13 @@ const Navbar = ({
 
   const handleCloseMenu = () => {
     setAnchorEl(null);
+  };
+  const handleUpgradeClick = () => {
+    setOpenUpgradeDialog(true);
+  };
+
+  const handleCloseUpgradeDialog = () => {
+    setOpenUpgradeDialog(false);
   };
 
   const languages = [
@@ -77,6 +93,11 @@ const Navbar = ({
     { value: "21", label: "Gujarati" },
     { value: "22", label: "Odia" },
   ];
+  useEffect(() => {
+    if (isLargeScreen) {
+      handleCloseMenu();
+    }
+  }, [isLargeScreen]);
 
   return (
     <nav
@@ -99,54 +120,93 @@ const Navbar = ({
         </span>{" "}
         Chat
       </Link>
-      <div className="collapse navbar-collapse " id="navbarNav" >
+      <div className="collapse navbar-collapse " id="navbarNav">
         <ul className="navbar-nav ms-auto">
           <li className="nav-item">
             <a
-            
               className="nav-link"
               href="https://carnotresearch.com/#section-about"
               target="_blank"
               rel="noopener noreferrer"
-              style={{marginTop:'1px'}}
             >
               About Us
             </a>
           </li>
+          <li className="nav-item">
+            <Link className="nav-link" to="/pricing">
+              Pricing
+            </Link>
+          </li>
           {location.pathname === "/" && (
             <>
-            <li className="nav-item"></li>
-            <LanguageDropdown
-  className="language-dropdown-input" // Class name for Input Dropdown
-  label="Input"
-  selectedLanguage={
-    languages.find((lang) => lang.value === inputLanguage)?.label || "English"
-  }
-  languages={languages}
-  onChange={setInputLanguage}
-/>
-<LanguageDropdown
-  className="language-dropdown-output" // Class name for Output Dropdown
-  label="Output"
-  selectedLanguage={
-    languages.find((lang) => lang.value === outputLanguage)?.label || "English"
-  }
-  languages={languages}
-  onChange={setOutputLanguage}
-/>
+              <li className="nav-item"></li>
+              <LanguageDropdown
+                className="className1"
+                label="Input"
+                selectedLanguage={
+                  languages.find((lang) => lang.value === inputLanguage)
+                    ?.label || "English"
+                }
+                languages={languages}
+                onChange={setInputLanguage}
+              />
+              <LanguageDropdown
+                className="language-dropdown-output"
+                label="Output"
+                selectedLanguage={
+                  languages.find((lang) => lang.value === outputLanguage)
+                    ?.label || "English"
+                }
+                languages={languages}
+                onChange={setOutputLanguage}
+              />
             </>
           )}
-          {location.pathname === "/" && paid === "0" && (
-            <li className="nav-item">
-              <Link to="/payment">
-                <button className="btn btn-purple">Upgrade</button>
-              </Link>
-            </li>
-          )}
+          <div>
+            {location.pathname === "/" && paid === "0" && (
+              <li className="nav-item">
+                <a
+                  className="btn btn-purple"
+                  style={{
+                    color: "black",
+                    fontFamily: "Roboto",
+                    textTransform: "none",
+                    fontSize: "16px",
+                    color: darkMode ? "white" : "black",
+                  }}
+                  onClick={handleUpgradeClick}
+                >
+                  Upgrade
+                </a>
+              </li>
+            )}
+
+            {/* Upgrade Dialog */}
+            <Dialog open={openUpgradeDialog} onClose={handleCloseUpgradeDialog}>
+              <IconButton
+                onClick={handleCloseUpgradeDialog}
+                style={{
+                  position: "absolute",
+                  right: "6px",
+                  top: "6px",
+                }}
+              >
+                <CloseIcon />
+              </IconButton>
+
+              <PaymentForm />
+
+              <DialogActions></DialogActions>
+            </Dialog>
+          </div>
+
           <li className="nav-item">
             {location.pathname === "/" ? (
-              <button className="btn login-logout-btn" style={{  cursor: 'pointer',marginLeft: '-1px' ,marginTop:'1.5px'}}  onClick={handleLogout}>
-                
+              <button
+                className="btn login-logout-btn"
+                style={{ cursor: "pointer", marginLeft: "-1px" }}
+                onClick={handleLogout}
+              >
                 Logout
               </button>
             ) : (
@@ -172,13 +232,15 @@ const Navbar = ({
         className="navbar-toggler d-lg-none"
         onClick={handleMenuClick}
         style={{
-          border: `2px solid ${darkMode ? 'white' : 'black'}`,
-          borderRadius: '6px',
-          padding: '2px',
-          color: darkMode ? 'white' : 'black',
+          border: `2px solid ${darkMode ? "white" : "black"}`,
+          borderRadius: "6px",
+          padding: "2px",
+          color: darkMode ? "white" : "black",
         }}
       >
-        <ArrowDropDownIcon style={{ fontSize: '2rem', color: darkMode ? 'white' : 'black' }} />
+        <ArrowDropDownIcon
+          style={{ fontSize: "2rem", color: darkMode ? "white" : "black" }}
+        />
       </Button>
       <Menu
         anchorEl={anchorEl}
@@ -186,15 +248,15 @@ const Navbar = ({
         onClose={handleCloseMenu}
         PaperProps={{
           style: {
-            width: '200px',
-            backgroundColor: darkMode ? '#424242' : '#f5f5f5',
-            color: darkMode ? 'white' : 'black',
+            width: "200px",
+            backgroundColor: darkMode ? "#424242" : "#f5f5f5",
+            color: darkMode ? "white" : "black",
             zIndex: 1300,
           },
         }}
         MenuListProps={{
           style: {
-            padding: '10px',
+            padding: "10px",
           },
         }}
       >
@@ -207,13 +269,23 @@ const Navbar = ({
         >
           About Us
         </MenuItem>
+        <MenuItem className="menu-item">
+          <Link
+            className="menu-item"
+            to="/pricing"
+            style={{ color: darkMode ? "white" : "black" }}
+          >
+            Pricing
+          </Link>
+        </MenuItem>
         {location.pathname === "/" && (
           <>
             <MenuItem className="menu-item input-dropdown">
               <LanguageDropdown
                 label="Input"
                 selectedLanguage={
-                  languages.find((lang) => lang.value === inputLanguage)?.label || "English"
+                  languages.find((lang) => lang.value === inputLanguage)
+                    ?.label || "English"
                 }
                 languages={languages}
                 onChange={setInputLanguage}
@@ -223,7 +295,8 @@ const Navbar = ({
               <LanguageDropdown
                 label="Output"
                 selectedLanguage={
-                  languages.find((lang) => lang.value === outputLanguage)?.label || "English"
+                  languages.find((lang) => lang.value === outputLanguage)
+                    ?.label || "English"
                 }
                 languages={languages}
                 onChange={setOutputLanguage}
@@ -233,30 +306,60 @@ const Navbar = ({
         )}
         {paid === "0" && (
           <MenuItem className="menu-item">
-            <Link to="/payment" style={{ textDecoration: 'none' }}>
-              <button className="btn btn-purple" style={{ border: '2px solid black', color: darkMode ? 'white' : 'black' }}>
-                Upgrade
-              </button>
-            </Link>
+            <button
+              className="btn btn-purple"
+              style={{
+                color: darkMode ? "white" : "black",
+                fontFamily: "Roboto",
+                textTransform: "none",
+                fontSize: "16px",
+              }}
+              onClick={handleUpgradeClick}
+            >
+              Upgrade
+            </button>
           </MenuItem>
         )}
+
+        <Dialog open={openUpgradeDialog} onClose={handleCloseUpgradeDialog}>
+          <IconButton
+            onClick={handleCloseUpgradeDialog}
+            style={{
+              position: "absolute",
+              right: "8px",
+              top: "8px",
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+
+          <PaymentForm />
+
+          <DialogActions>
+            {/* Additional actions can be added here if needed */}
+          </DialogActions>
+        </Dialog>
         <MenuItem className="menu-item">
-          {location.pathname === "/" ?  (
-            <a 
-              className="btn login-logout-btn" 
-              onClick={handleLogout} 
-              style={{ color: darkMode ? 'white' : 'black', cursor: 'pointer',marginLeft: '-0.5px' }} 
+          {location.pathname === "/" ? (
+            <a
+              className="btn login-logout-btn"
+              onClick={handleLogout}
+              style={{
+                color: darkMode ? "white" : "black",
+                cursor: "pointer",
+                marginLeft: "-0.5px",
+              }}
             >
               Logout
             </a>
           ) : (
-            <a 
-              className="btn login-logout-btn" 
-              onClick={handleLoginClick} 
-              style={{ 
-                color: darkMode ? 'white' : 'black', 
-                cursor: 'pointer', 
-                marginLeft: '-0.5px'  
+            <a
+              className="btn login-logout-btn"
+              onClick={handleLoginClick}
+              style={{
+                color: darkMode ? "white" : "black",
+                cursor: "pointer",
+                marginLeft: "-0.5px",
               }}
               onClose={handleClose}
             >
@@ -268,9 +371,13 @@ const Navbar = ({
           <button
             className="dark-mode-toggle"
             onClick={() => setDarkMode(!darkMode)}
-            style={{ color: darkMode ? 'white' : 'black' }}
+            style={{ color: darkMode ? "white" : "black" }}
           >
-            {darkMode ? <Brightness7Icon style={{ color: 'white' }} /> : <DarkModeIcon style={{ color: 'black' }} />}
+            {darkMode ? (
+              <Brightness7Icon style={{ color: "white" }} />
+            ) : (
+              <DarkModeIcon style={{ color: "black" }} />
+            )}
           </button>
         </MenuItem>
       </Menu>
