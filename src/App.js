@@ -7,7 +7,6 @@ import Register from "./components/Register";
 import ForgotPassword from "./components/ForgotPassword";
 import ResetPassword from "./components/ResetPassword";
 import ProtectedRoute from "./components/ProtectedRoute";
-import PaymentForm from "./components/PaymentForm";
 import Login from "./components/Login";
 import Pricing from "./components/Pricing";
 
@@ -38,16 +37,6 @@ function App() {
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/register" element={<Register />} />
             <Route path="/Pricing" element={<Pricing />} />
-            
-            <Route
-            
-              path="/payment"
-              element={
-                <ProtectedRoute>
-                  <PaymentForm />
-                </ProtectedRoute>
-              }
-            />
             <Route
               path="/"
               element={
