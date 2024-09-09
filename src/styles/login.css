@@ -253,6 +253,7 @@ body {
 }
 .forgot-pass-link:hover{
   text-decoration: underline;
+  color:rgba(54, 183, 183, 0.8);
 }
 
 .login-center-buttons{

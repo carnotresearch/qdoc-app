@@ -1,4 +1,6 @@
 import React from "react";
+import "../styles/navbar.css";
+
 
 const LanguageDropdown = ({ label, selectedLanguage, languages, onChange }) => {
   return (

@@ -450,6 +450,7 @@ function ChatPage({ inputLanguage, outputLanguage }) {
             onChange={(e) => setMessage(e.target.value)}
             placeholder="Type your message"
             ref={inputRef}
+            style={{ marginRight: "10px" }}
           />
           {showMicrophone && (
             <Button
@@ -462,7 +463,7 @@ function ChatPage({ inputLanguage, outputLanguage }) {
           <IconButton
             type="submit"
             aria-label=""
-            style={{ color: "rgba(54, 183, 183, 0.8)" }}
+            style={{ color: "rgba(54, 183, 183, 0.8)", marginLeft: "0" }}
           >
             <SendIcon />
           </IconButton>

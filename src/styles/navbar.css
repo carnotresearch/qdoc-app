@@ -7,31 +7,44 @@
   --text-color-dark: white;
   --background-color-light: #ffffff;
   --background-color-dark: #121212;
-  --btn-background-color: transparent;
-  --btn-border-color: transparent;
+ 
+  
   --btn-hover-border-color: white;
   --dropdown-background-color-light: #ffffff;
   --dropdown-background-color-dark: #333333;
 }
 
 .btn-warning {
-  background-color: transparent !important; /* Transparent background by default */
-  color: var(--text-color) !important; /* Text color */
-  border: none !important; /* No border */
-  transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition for background color and text color */
+  background-color: transparent !important; 
+  color: var(--text-color) !important; 
+  border: none !important; 
+  transition: background-color 0.3s ease, color 0.3s ease; 
+}
+.language-dropdown {
+  color: black; /* Default text color */
+  transition: color 0.3s; /* Optional for smooth color transition */
 }
 
-/* Hover state for .btn-warning */
+.btn-btn-warning-dropdown-toggle:hover {
+  color: rgba(54, 183, 183, 0.8);
+}
+
+
+
+
+.dropdown-item:hover {
+  background-color: white !important; 
+  color: var(--text-color) !important; }
 .btn-warning:hover,
 .btn-warning:focus {
-  background-color: rgba(54, 183, 183, 0.8) !important; /* Background color on hover/focus */
-  color: var(--text-color) !important; /* Text color remains the same */
+  /*background-color: rgba(54, 183, 183, 0.8) !important; /* Background color on hover/focus */
+  color: var(--text-color) !important; 
 }
 
-/* Active state for when button is clicked */
+
 .btn-warning:active {
-  background-color: rgba(54, 183, 183, 0.8) !important; /* Background color when clicked */
-  color: var(--text-color) !important; /* Text color remains the same */
+ /* Background color when clicked */
+  color: var(--text-color) !important;
 }
 
 body.dark-mode {
@@ -70,19 +83,11 @@ body {
   color: var(--text-color);
 }
 
-.navbar-brand:hover {
-  color: rgba(54, 183, 183, 0.8);
-}
-/* Existing styles for the nav-link hover */
-.navbar-nav .nav-link:hover {
-  color: rgba(54, 183, 183, 0.8);
-}
 
 .nav-link{
-  top:-0.5px;
+  top:-2.5px;
   position: relative;
 }
-
 .login-logout-btn {
   color: var(--text-color);
   transition: color 0.3s ease;
@@ -110,9 +115,12 @@ body {
 .login-logout-btn {
   color: var(--text-color);
   transition: color 0.3s ease;
-  border: none;
+  border: none !important; 
   background: none;
+  left:-92px;
+  position: relative;
 }
+
 
 .login-logout-btn:hover {
   color: rgba(54, 183, 183, 0.8);
@@ -121,31 +129,37 @@ body {
 .language-dropdown .btn {
   color: var(--text-color);
   transition: color 0.3s ease;
+  border: none !important;
 }
-
-.language-dropdown .btn:hover {
-  color: rgba(54, 183, 183, 0.8);
+.dropdown-toggle{
+  color:transparent;
 }
-
-.dropdown-menu {
-  background-color: var(--dropdown-background-color);
+.nav-item{
+  margin-right: 10px;
 }
 
 .dropdown-item {
+  background-color: rgb(155, 152, 152);
   color: var(--text-color);
   transition: color 0.3s ease;
+  padding: 10px 15px;
+  width: 100%;
+  top:-8px;
+  position: relative;
+  box-sizing: border-box;
+  margin: 0; /* Ensure no margins are causing gaps */
+  border: none; /* Remove any borders that might affect the appearance */
+  display: block; /* Ensure the item behaves as a block element */
 }
 
-.dropdown-item:hover {
-  color: rgba(54, 183, 183, 0.8);
-}
+/*
 
 .btn:hover {
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
   transform: translateY(-2px);
   border: 2px solid var(--btn-hover-border-color);
 }
-
+*/
 
 .navbar-nav .nav-link {
   color: var(--text-color);
@@ -158,31 +172,29 @@ body {
 
 .navbar-toggler {
   border-color: var(--text-color);
-  width: 40px;
+  width: 30px;
   height: 40px;
   border: none;
+  left: -3px;
+  position: relative;
 }
+
 
 .navbar-toggler:focus {
   outline: none;
 }
 
-.navbar-toggler-icon {
-  background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'><path stroke='var(--text-color)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/></svg>");
-}
+
 
 .btn {
   background-color: var(--btn-background-color);
   color: var(--text-color);
-  border: 2px solid var(--btn-border-color);
+left: -13px;
+position: relative;
   transition: all 0.3s ease;
 }
 
-.btn:hover {
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-  transform: translateY(-2px);
-  border: 2px solid var(--btn-hover-border-color);
-}
+
 
 .btn-purple {
   background-color: var(--secondary-color);
@@ -198,7 +210,7 @@ body {
 .dropdown-menu {
   background-color: var(--dropdown-background-color);
 }
-
+dropdown-menushow
 .dropdown-item {
   color: var(--text-color);
 }
@@ -212,6 +224,7 @@ body {
   color: var(--text-color);
   display: flex;
   top:-3px;
+  left: -8px;
   position: relative;
   align-items: center;
   justify-content: center;
@@ -228,3 +241,55 @@ body {
   height: 1.5rem;
   color: inherit;
 }
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 1rem;
+}
+
+.navbar-items {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-item {
+  margin: 0 1rem;
+  color: inherit; /* Use inherited color */
+  text-decoration: none;
+}
+
+.btn.login-logout-btn {
+  margin-left: 1rem;
+}
+
+.navbar-toggler {
+  display: none; 
+}
+
+@media (max-width: 768px) {
+  .navbar-items {
+    display: none; 
+  }
+
+  .navbar-toggler {
+    display: block; 
+    border-radius: 6px;
+    padding: 2px;
+    color: var(--text-color);
+  }
+}
+
+  .MuiPaper-root.MuiMenu-paper {
+    width: 200px;
+    background-color: var(--dropdown-background-color);
+    color: var(--text-color);
+    z-index: 1300;
+    display: block !important; 
+  }
+
+  .MuiList-root.MuiMenu-list {
+    padding: 10px;
+  }
+
