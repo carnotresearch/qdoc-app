@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  useLocation,
+} from "react-router-dom";
 import Navbar from "./components/Navbar";
 import { FileProvider } from "./components/FileContext";
 import ChatPage from "./components/ChatPage";
@@ -9,6 +14,7 @@ import ResetPassword from "./components/ResetPassword";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Login from "./components/Login";
 import Pricing from "./components/Pricing";
+import Cisce from "./components/Cisce";
 
 function App() {
   const [inputLanguage, setInputLanguage] = useState("23");
@@ -22,36 +28,61 @@ function App() {
   return (
     <FileProvider>
       <Router>
-        <div>
-          <Navbar
-            inputLanguage={inputLanguage}
-            setInputLanguage={setInputLanguage}
-            outputLanguage={outputLanguage}
-            setOutputLanguage={setOutputLanguage}
-            darkMode={darkMode}
-            setDarkMode={setDarkMode}
-          />
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/Pricing" element={<Pricing />} />
-            <Route
-              path="/"
-              element={
-                <ProtectedRoute>
-                  <ChatPage
-                    inputLanguage={inputLanguage}
-                    outputLanguage={outputLanguage}
-                  />
-                </ProtectedRoute>
-              }
-            />
-          </Routes>
-        </div>
+        <Content
+          inputLanguage={inputLanguage}
+          setInputLanguage={setInputLanguage}
+          outputLanguage={outputLanguage}
+          setOutputLanguage={setOutputLanguage}
+          darkMode={darkMode}
+          setDarkMode={setDarkMode}
+        />
       </Router>
     </FileProvider>
+  );
+}
+
+function Content({
+  inputLanguage,
+  setInputLanguage,
+  outputLanguage,
+  setOutputLanguage,
+  darkMode,
+  setDarkMode,
+}) {
+  const location = useLocation();
+
+  return (
+    <div>
+      {location.pathname !== "/cisce" && (
+        <Navbar
+          inputLanguage={inputLanguage}
+          setInputLanguage={setInputLanguage}
+          outputLanguage={outputLanguage}
+          setOutputLanguage={setOutputLanguage}
+          darkMode={darkMode}
+          setDarkMode={setDarkMode}
+        />
+      )}
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/Pricing" element={<Pricing />} />
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <ChatPage
+                inputLanguage={inputLanguage}
+                outputLanguage={outputLanguage}
+              />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/cisce" element={<Cisce />} />
+      </Routes>
+    </div>
   );
 }
 
