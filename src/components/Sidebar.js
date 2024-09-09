@@ -136,9 +136,8 @@ function Sidebar({
 
   const addButtonStyle = {
     color: "white",
-    width: "50%",
-    padding: "0.375rem 0.75rem",
-    margin: "auto",
+    width: "100%",
+    margin: "auto 0.8rem",
     fontSize: "0.875rem",
   };
 
@@ -148,6 +147,7 @@ function Sidebar({
     overflow: "hidden",
     textOverflow: "ellipsis",
     whiteSpace: "nowrap",
+    fontSize: "0.875rem",
   };
 
   const handleFileUpload = async (files) => {
@@ -362,7 +362,7 @@ function Sidebar({
         {sessions.slice(0, 4).map((session, index) => (
           <div key={index}>
             <ListGroup.Item
-              className={`d-flex justify-content-between align-items-center session-item ${
+              className={`d-flex justify-content-between session-item ${
                 session.id === latestSessionId ? "latest-container" : ""
               }`}
               onClick={() => fetchAndAppendSessionFiles(session)}
@@ -371,36 +371,34 @@ function Sidebar({
               )} - ${session.fileNames.join(", ")}`}
             >
               {session.name}
-              <div className="d-flex align-items-center">
-                <ButtonGroup>
-                  <Button
-                    variant="outline-primary"
-                    size="sm"
-                    onClick={(e) => {
-                      e.stopPropagation(); // Prevents triggering folder selection
-                      handleRenameSession(session.id);
-                    }}
-                  >
-                    <RiEdit2Line />
-                  </Button>
-                  <Button
-                    variant="outline-danger"
-                    size="sm"
-                    onClick={(e) => {
-                      e.stopPropagation(); // Prevents triggering folder selection
-                      handleDeleteSession(session.id);
-                    }}
-                  >
-                    <RiDeleteBinLine />
-                  </Button>
-                </ButtonGroup>
+              <ButtonGroup>
                 <Button
-                  variant="link"
+                  variant="outline-primary"
+                  size="sm"
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevents triggering folder selection
+                    handleRenameSession(session.id);
+                  }}
+                >
+                  <RiEdit2Line />
+                </Button>
+                <Button
+                  variant="outline-danger"
+                  size="sm"
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevents triggering folder selection
+                    handleDeleteSession(session.id);
+                  }}
+                >
+                  <RiDeleteBinLine />
+                </Button>
+                <Button
+                  variant="outline-info"
+                  size="sm"
                   onClick={(e) => {
                     e.stopPropagation();
                     toggleFileVisibility(session.id);
                   }}
-                  style={{ paddingTop: "0", paddingBottom: "0" }}
                 >
                   {visibleFiles[session.id] ? (
                     <RiArrowDropUpLine />
@@ -408,7 +406,7 @@ function Sidebar({
                     <RiArrowDropDownLine />
                   )}
                 </Button>
-              </div>
+              </ButtonGroup>
             </ListGroup.Item>
 
             {visibleFiles[session.id] && (
@@ -426,7 +424,7 @@ function Sidebar({
 
                 {!isUploading && session.id === latestSessionId && (
                   <Button
-                    className="mt-2 bg-secondary"
+                    className="mb-2 bg-secondary"
                     variant="secondary"
                     onClick={() => additionalFileInputRef.current.click()}
                     style={addButtonStyle}
