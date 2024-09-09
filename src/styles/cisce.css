@@ -1,0 +1,214 @@
+body p {
+  margin: 0;
+}
+
+.chatcontainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 82vh;
+  width: 100vw;
+  background-color: #fbf8f8;
+  font-family: 'Arial', sans-serif;
+  overflow: hidden;
+}
+
+.chat-messages {
+  flex-grow: 1;
+  margin: 1rem 0;
+  padding: 0 0.5rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-message {
+  padding: 10px 15px;
+  margin-bottom: 10px;
+  border-radius: 1rem;
+  max-width: 60%;
+  animation: slideUp 0.8s ease-out;
+  color: black; /* Set text color to black */
+}
+
+.users {
+  background-color: #e0f7fa;
+  align-self: flex-end;
+  max-width: 75%;
+  padding: auto 2rem;
+}
+
+.bots {
+  background-color: #e8eaf6;
+  color: black; /* Set bot text color to black */
+  align-self: flex-start;
+  max-width: 75%; /* Make bot messages cover 75% of the width */
+}
+
+.chat-input-container {
+  display: flex;
+  width: 95%;
+  margin: auto;
+}
+
+.chatinput {
+  flex-grow: 1;
+  padding: 0.5rem 1rem;
+  border-radius: 1rem;
+  width: 80%;
+  border: 1px solid #ccc;
+  outline: none;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.sendbutton {
+  border-radius: 1rem;
+  background-color: #fbf8f8;
+  color: #4a90e2;
+  border: none;
+  cursor: pointer;
+  font-size: 1.5rem;
+  transition: background-color 0.3s ease;
+}
+
+.send-button:hover {
+  background-color: #357ab8;
+}
+
+.play-button,
+.copy-button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  margin-right: 0.3rem;
+}
+
+.play-button:hover,
+.copy-button:hover {
+  opacity: 0.8; /* Add a subtle effect on hover */
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.chat-navbar {
+  display: flex;
+  justify-content: space-between; /* Aligns the logo to the left and the dropdowns to the right */
+  align-items: center; /* Vertically centers the content */
+  padding: 0 auto;
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #ddd;
+}
+
+.company-logo {
+  height: 5rem; /* Adjust the size of the logo as needed */
+}
+
+.navbar-dropdowns {
+  display: flex;
+  font-size: 0.8rem;
+}
+
+.dropdowncontainer {
+  display: flex;
+  flex-direction: column; /* Ensures label is on top */
+  align-items: flex-start; /* Aligns the label and dropdown to the left */
+}
+
+.dropdown-label {
+  font-weight: bold;
+}
+
+.dropdownn {
+  margin: auto;
+  margin-top: 0.2rem;
+  padding: 0.3rem;
+  border: 1px solid #649cd7;
+  border-radius: 20px;
+  background-color: #f0f0f0;
+  font-weight: bold;
+  outline: none;
+  cursor: pointer;
+  width: 90%; /* Ensures the dropdown takes full width of the container */
+}
+
+.dropdownn:focus {
+  background-color: whitesmoke;
+}
+
+.send-button {
+  padding: 8px 12px;
+  background-color: #649cd7;
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  outline: none;
+}
+
+.send-button:hover {
+  background-color: #649cd7;
+}
+
+/* Footer styling */
+.chat-footer {
+  padding: 10px;
+  background-color: #f1f1f1;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.chat-footer a {
+  color: #649cd7;
+  text-decoration: none;
+}
+
+.chat-footer a:hover {
+  text-decoration: underline;
+}
+
+.voice-button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0 10px;
+  font-size: 1.5rem;
+  color: #649cd7;
+  outline: none;
+}
+
+.voice-button:hover {
+  opacity: 0.8;
+}
+
+/* Media query for small screens */
+@media only screen and (max-width: 600px) {
+  .chat-message {
+    font-size: 0.7rem;
+  }
+
+  .navbar-dropdowns {
+    font-size: 0.7rem;
+  }
+
+  .chatinput {
+    font-size: 0.7rem;
+  }
+
+  .sendbutton {
+    font-size: 1.1rem;
+  }
+  
+  .voice-button {
+    font-size: 1.1rem;
+  }
+
+  .chat-footer {
+    font-size: 0.7rem;
+  }
+}
