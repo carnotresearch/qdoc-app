@@ -99,7 +99,7 @@ function ChatPage({ inputLanguage, outputLanguage }) {
       alert("Error fetching sessions, please try again.");
     }
   };
-  
+
   const handleCopy = (text, index) => {
     navigator.clipboard.writeText(text).then(() => {
       setCopiedIndex(index);
@@ -304,7 +304,16 @@ function ChatPage({ inputLanguage, outputLanguage }) {
         >
           <MenuOutlinedIcon className="menu-icon" fontSize="medium" />
         </Button>
-        {!sidebarCollapsed && <Sidebar files={files} sessions={sessions} setLatestSessionId={setLatestSessionId} latestSessionId={latestSessionId} selectedSessionFiles={selectedSessionFiles} setSelectedSessionFiles={setSelectedSessionFiles} setSessions={setSessions} />}
+        {!sidebarCollapsed && (
+          <Sidebar
+            sessions={sessions}
+            setLatestSessionId={setLatestSessionId}
+            latestSessionId={latestSessionId}
+            selectedSessionFiles={selectedSessionFiles}
+            setSelectedSessionFiles={setSelectedSessionFiles}
+            setSessions={setSessions}
+          />
+        )}
       </div>
       <FileViewer files={files} />
       <div className="chat-content">
