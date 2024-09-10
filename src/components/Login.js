@@ -6,12 +6,12 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import { GoogleLogin } from "@react-oauth/google";
 import axios from "axios";
 import { FileContext } from "./FileContext";
-import LinkedInIcon from '@mui/icons-material/LinkedIn';
+import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import "../styles/login.css";
 
 const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
-const Login = () => {
+const Login = ({ setIsLoggedIn }) => {
   const { setFiles } = useContext(FileContext);
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
@@ -25,36 +25,35 @@ const Login = () => {
     if (location.state && location.state.focusEmail) {
       emailInputRef.current.focus();
     }
-  
+
     const handleScroll = () => {
-      const footer = document.querySelector('.login-footer');
-      const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const footer = document.querySelector(".login-footer");
+      const currentScrollTop =
+        window.pageYOffset || document.documentElement.scrollTop;
       const lastScrollTop = window.lastScrollTop || 0;
-  
+
       if (currentScrollTop === 0) {
-        footer.classList.remove('show-footer'); 
+        footer.classList.remove("show-footer");
         return;
       }
-  
-      if (window.innerWidth <= 768) { 
+
+      if (window.innerWidth <= 768) {
         if (currentScrollTop > lastScrollTop) {
-         
-          footer.classList.add('show-footer'); 
+          footer.classList.add("show-footer");
         } else {
-        
-          footer.classList.remove('show-footer'); 
+          footer.classList.remove("show-footer");
         }
       } else {
-        footer.classList.add('show-footer'); 
+        footer.classList.add("show-footer");
       }
-  
-      window.lastScrollTop = currentScrollTop <= 0 ? 0 : currentScrollTop; 
+
+      window.lastScrollTop = currentScrollTop <= 0 ? 0 : currentScrollTop;
     };
-  
-    window.addEventListener('scroll', handleScroll);
-  
+
+    window.addEventListener("scroll", handleScroll);
+
     return () => {
-      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener("scroll", handleScroll);
     };
   }, [location]);
   const handleGoogleSubmit = async (googleToken) => {
@@ -81,6 +80,7 @@ const Login = () => {
       sessionStorage.setItem("expiryTime", expiryTime.toString());
       setIsLoading(false);
       setFiles([]);
+      setIsLoggedIn(true);
       navigate("/");
     } catch (error) {
       console.error("Login error", error);
@@ -122,6 +122,7 @@ const Login = () => {
       sessionStorage.setItem("expiryTime", expiryTime.toString());
       setIsLoading(false);
       setFiles([]);
+      setIsLoggedIn(true);
       navigate("/");
     } catch (error) {
       console.error("Login error", error);
@@ -163,13 +164,12 @@ const Login = () => {
           </div>
           <div className="login-center">
             <h2>Carnot Research</h2>
-            
+
             <form className="login-form" onSubmit={handleSubmit}>
               <input
                 type="text"
                 id="email"
                 placeholder="Email"
-
                 ref={emailInputRef}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -198,12 +198,12 @@ const Login = () => {
               </div>
 
               <div className="login-center-options">
-  <div className="hover-area">
-    <a href="/forgot-password" className="forgot-pass-link">
-      Forgot password?
-    </a>
-  </div>
-</div>
+                <div className="hover-area">
+                  <a href="/forgot-password" className="forgot-pass-link">
+                    Forgot password?
+                  </a>
+                </div>
+              </div>
               <div className="login-center-buttons">
                 <button type="submit" disabled={isLoading}>
                   {isLoading ? (
@@ -240,31 +240,37 @@ const Login = () => {
           </p>
         </div>
       </div>
-   
-<footer className="login-footer">
-  <a className="Licon" href="https://www.linkedin.com/company/carnot-research-pvt-ltd/" target="_blank" rel="noopener noreferrer">
-    <LinkedInIcon style={{ color: "#0072b1", marginRight: "2px" }} />
-  </a>
 
-  <span className="footer-separator">|</span>
+      <footer className="login-footer">
+        <a
+          className="Licon"
+          href="https://www.linkedin.com/company/carnot-research-pvt-ltd/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <LinkedInIcon style={{ color: "#0072b1", marginRight: "2px" }} />
+        </a>
 
-  <a href="https://carnotresearch.com/terms.html" className="footer-link">
-    Terms & Conditions
-  </a>
+        <span className="footer-separator">|</span>
 
-  <span className="footer-separator">|</span>
+        <a href="https://carnotresearch.com/terms.html" className="footer-link">
+          Terms & Conditions
+        </a>
 
-  <a href="mailto:contact@carnotresearch.com" className="footer-link">
-    Contact us for private/corporate deployment
-  </a>
-  <span className="footer-separator">|</span>
+        <span className="footer-separator">|</span>
 
-  <a href="https://carnotresearch.com/refund.html" className="footer-link">
-    Refund Policy
-  </a>
-</footer>
+        <a href="mailto:contact@carnotresearch.com" className="footer-link">
+          Contact us for private/corporate deployment
+        </a>
+        <span className="footer-separator">|</span>
 
-
+        <a
+          href="https://carnotresearch.com/refund.html"
+          className="footer-link"
+        >
+          Refund Policy
+        </a>
+      </footer>
     </div>
   );
 };

@@ -48,7 +48,7 @@ const plans = [
   },
 ];
 
-const Pricing = ({ plan, darkMode }) => {
+const Pricing = ({ darkMode }) => {
   const [paymentPlan, setPaymentPlan] = useState(2);
   const [email, setEmail] = useState("");
   const navigate = useNavigate();

@@ -24,6 +24,7 @@ function Sidebar({
   selectedSessionFiles,
   setSelectedSessionFiles,
   setSessions,
+  setIsLoggedIn,
 }) {
   const { setFiles } = useContext(FileContext);
   const fileInputRef = useRef(null);
@@ -101,6 +102,7 @@ function Sidebar({
         if (backendError.response.status === 401) {
           setFiles([]);
           alert("User session is expired!");
+          setIsLoggedIn(false);
           navigate("/login");
         } else {
           console.log(

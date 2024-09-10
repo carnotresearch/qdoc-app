@@ -20,6 +20,7 @@ function App() {
   const [inputLanguage, setInputLanguage] = useState("23");
   const [outputLanguage, setOutputLanguage] = useState("23");
   const [darkMode, setDarkMode] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     document.body.classList.toggle("dark-mode", darkMode);
@@ -35,6 +36,8 @@ function App() {
           setOutputLanguage={setOutputLanguage}
           darkMode={darkMode}
           setDarkMode={setDarkMode}
+          isLoggedIn={isLoggedIn}
+          setIsLoggedIn={setIsLoggedIn}
         />
       </Router>
     </FileProvider>
@@ -48,6 +51,8 @@ function Content({
   setOutputLanguage,
   darkMode,
   setDarkMode,
+  isLoggedIn,
+  setIsLoggedIn,
 }) {
   const location = useLocation();
 
@@ -61,10 +66,15 @@ function Content({
           setOutputLanguage={setOutputLanguage}
           darkMode={darkMode}
           setDarkMode={setDarkMode}
+          isLoggedIn={isLoggedIn}
+          setIsLoggedIn={setIsLoggedIn}
         />
       )}
       <Routes>
-        <Route path="/login" element={<Login />} />
+        <Route
+          path="/login"
+          element={<Login setIsLoggedIn={setIsLoggedIn} />}
+        />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/register" element={<Register />} />
@@ -76,6 +86,7 @@ function Content({
               <ChatPage
                 inputLanguage={inputLanguage}
                 outputLanguage={outputLanguage}
+                setIsLoggedIn={setIsLoggedIn}
               />
             </ProtectedRoute>
           }
