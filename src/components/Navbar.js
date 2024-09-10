@@ -1,7 +1,5 @@
 import React, { useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { IconButton } from "@mui/material";
-
 import LanguageDropdown from "./LanguageDropdown";
 import Profile from "./Profile";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
@@ -12,10 +10,6 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import "../styles/navbar.css";
 import { useMediaQuery, useTheme } from "@mui/material";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import PaymentForm from "./PaymentForm";
-import CloseIcon from "@mui/icons-material/Close";
 
 const Navbar = ({
   inputLanguage,
@@ -29,11 +23,8 @@ const Navbar = ({
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
-
-  const paid = sessionStorage.getItem("paymentStatus");
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
-  const [openUpgradeDialog, setOpenUpgradeDialog] = React.useState(false);
   const theme = useTheme();
   const isLargeScreen = useMediaQuery(theme.breakpoints.up("lg"));
 
@@ -62,13 +53,6 @@ const Navbar = ({
 
   const handleCloseMenu = () => {
     setAnchorEl(null);
-  };
-  const handleUpgradeClick = () => {
-    setOpenUpgradeDialog(true);
-  };
-
-  const handleCloseUpgradeDialog = () => {
-    setOpenUpgradeDialog(false);
   };
 
   const languages = [
@@ -135,11 +119,13 @@ const Navbar = ({
               About Us
             </a>
           </li>
-          <li className="nav-item">
-            <Link className="nav-link" to="/pricing">
-              Pricing
-            </Link>
-          </li>
+          {isLoggedIn && (
+            <li className="nav-item">
+              <Link className="nav-link" to="/pricing">
+                Pricing
+              </Link>
+            </li>
+          )}
           {location.pathname === "/" && (
             <>
               <li className="nav-item"></li>
@@ -165,43 +151,6 @@ const Navbar = ({
               />
             </>
           )}
-          <div>
-            {location.pathname === "/" && paid === "0" && (
-              <li className="nav-item">
-                <a
-                  className="btn btn-purple"
-                  style={{
-                    color: "black",
-                    fontFamily: "Roboto",
-                    textTransform: "none",
-                    fontSize: "16px",
-                    color: darkMode ? "white" : "black",
-                  }}
-                  onClick={handleUpgradeClick}
-                >
-                  Upgrade
-                </a>
-              </li>
-            )}
-
-            {/* Upgrade Dialog */}
-            <Dialog open={openUpgradeDialog} onClose={handleCloseUpgradeDialog}>
-              <IconButton
-                onClick={handleCloseUpgradeDialog}
-                style={{
-                  position: "absolute",
-                  right: "6px",
-                  top: "6px",
-                }}
-              >
-                <CloseIcon />
-              </IconButton>
-
-              <PaymentForm />
-
-              <DialogActions></DialogActions>
-            </Dialog>
-          </div>
 
           <li className="nav-item">
             {isLoggedIn ? (
@@ -272,15 +221,17 @@ const Navbar = ({
         >
           About Us
         </MenuItem>
-        <MenuItem className="menu-item">
-          <Link
-            className="menu-item"
-            to="/pricing"
-            style={{ color: darkMode ? "white" : "black" }}
-          >
-            Pricing
-          </Link>
-        </MenuItem>
+        {isLoggedIn && (
+          <MenuItem className="menu-item">
+            <Link
+              className="menu-item"
+              to="/pricing"
+              style={{ color: darkMode ? "white" : "black" }}
+            >
+              Pricing
+            </Link>
+          </MenuItem>
+        )}
 
         {location.pathname === "/" && [
           <MenuItem key="input-dropdown" className="menu-item input-dropdown">
@@ -306,40 +257,6 @@ const Navbar = ({
             />
           </MenuItem>,
         ]}
-
-        {paid === "0" && (
-          <MenuItem className="menu-item">
-            <button
-              className="btn btn-purple"
-              style={{
-                color: darkMode ? "white" : "black",
-                fontFamily: "Roboto",
-                textTransform: "none",
-                fontSize: "16px",
-              }}
-              onClick={handleUpgradeClick}
-            >
-              Upgrade
-            </button>
-          </MenuItem>
-        )}
-
-        <Dialog open={openUpgradeDialog} onClose={handleCloseUpgradeDialog}>
-          <IconButton
-            onClick={handleCloseUpgradeDialog}
-            style={{
-              position: "absolute",
-              right: "8px",
-              top: "8px",
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-
-          <PaymentForm />
-
-          <DialogActions></DialogActions>
-        </Dialog>
 
         <MenuItem className="menu-item">
           {isLoggedIn ? (

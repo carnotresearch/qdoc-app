@@ -54,9 +54,10 @@ const Pricing = ({ darkMode }) => {
   const navigate = useNavigate();
 
   const paymentPlanOptions = [
-    { value: 1, label: "₹59/week", price: 5900 },
-    { value: 2, label: " ₹189/month", price: 18900 },
-    { value: 3, label: " ₹479/quarter", price: 47900 },
+    { value: 0, label: "₹19 /day", price: 1900 },
+    { value: 1, label: "₹59 /week", price: 5900 },
+    { value: 2, label: " ₹189 /month", price: 18900 },
+    { value: 3, label: " ₹479 /3months", price: 47900 },
   ];
 
   const loadScript = (src) => {
