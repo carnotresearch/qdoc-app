@@ -51,8 +51,8 @@ const plans = [
 
 const Pricing = ({ darkMode }) => {
   const [paymentPlan, setPaymentPlan] = useState(2);
-  const [email, setEmail] = useState("");
   const navigate = useNavigate();
+  const token = sessionStorage.getItem("token");
 
   const paymentPlanOptions = [
     { value: 0, label: "₹19 /day", price: 1900 },
@@ -106,7 +106,7 @@ const Pricing = ({ darkMode }) => {
           const response = await axios.post(
             `${process.env.REACT_APP_UPGRADE_ACCOUNT_URL}`,
             {
-              email,
+              token,
               paymentPlan: selectedPlan.value,
             }
           );
