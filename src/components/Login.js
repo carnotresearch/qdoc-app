@@ -6,7 +6,7 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import { GoogleLogin } from "@react-oauth/google";
 import axios from "axios";
 import { FileContext } from "./FileContext";
-import LinkedInIcon from "@mui/icons-material/LinkedIn";
+import Footer from "./Footer";
 import "../styles/login.css";
 
 const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
@@ -25,36 +25,6 @@ const Login = ({ setIsLoggedIn }) => {
     if (location.state && location.state.focusEmail) {
       emailInputRef.current.focus();
     }
-
-    const handleScroll = () => {
-      const footer = document.querySelector(".login-footer");
-      const currentScrollTop =
-        window.pageYOffset || document.documentElement.scrollTop;
-      const lastScrollTop = window.lastScrollTop || 0;
-
-      if (currentScrollTop === 0) {
-        footer.classList.remove("show-footer");
-        return;
-      }
-
-      if (window.innerWidth <= 768) {
-        if (currentScrollTop > lastScrollTop) {
-          footer.classList.add("show-footer");
-        } else {
-          footer.classList.remove("show-footer");
-        }
-      } else {
-        footer.classList.add("show-footer");
-      }
-
-      window.lastScrollTop = currentScrollTop <= 0 ? 0 : currentScrollTop;
-    };
-
-    window.addEventListener("scroll", handleScroll);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
   }, [location]);
   const handleGoogleSubmit = async (googleToken) => {
     setIsLoading(true);
@@ -241,36 +211,7 @@ const Login = ({ setIsLoggedIn }) => {
         </div>
       </div>
 
-      <footer className="login-footer">
-        <a
-          className="Licon"
-          href="https://www.linkedin.com/company/carnot-research-pvt-ltd/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <LinkedInIcon style={{ color: "#0072b1", marginRight: "2px" }} />
-        </a>
-
-        <span className="footer-separator">|</span>
-
-        <a href="https://carnotresearch.com/terms.html" className="footer-link">
-          Terms & Conditions
-        </a>
-
-        <span className="footer-separator">|</span>
-
-        <a href="mailto:contact@carnotresearch.com" className="footer-link">
-          Contact us for private/corporate deployment
-        </a>
-        <span className="footer-separator">|</span>
-
-        <a
-          href="https://carnotresearch.com/refund.html"
-          className="footer-link"
-        >
-          Refund Policy
-        </a>
-      </footer>
+      <Footer />
     </div>
   );
 };
