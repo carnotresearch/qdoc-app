@@ -463,7 +463,7 @@ function ChatPage({ inputLanguage, outputLanguage }) {
           <IconButton
             type="submit"
             aria-label=""
-            style={{ color: "rgba(54, 183, 183, 0.8)", marginLeft: "0" }}
+            style={{ color: "rgba(54, 183, 183, 0.8)", padding: "0" }}
           >
             <SendIcon />
           </IconButton>

@@ -3,16 +3,12 @@
     color: white;
     cursor: pointer;
     padding: 0.5rem;
+    padding-right: 0;
     word-wrap: break-word;
     overflow: hidden;
     display: flex;
     align-items: center;
     transition: background-color 0.3s ease;
-  }
-  
-  .session-item:hover {
-    background-color: #4e749c;
-    color: white;
   }
   
   .file-item {
