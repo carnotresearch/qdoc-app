@@ -85,6 +85,12 @@ const Navbar = ({
       handleCloseMenu();
     }
   }, [isLargeScreen]);
+  useEffect(() => {
+    const token = sessionStorage.getItem("token");
+    if (token) {
+      setIsLoggedIn(true);
+    }
+  });
 
   return (
     <nav
