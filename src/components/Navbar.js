@@ -242,145 +242,146 @@ const Navbar = ({
           style={{ fontSize: "2rem", color: darkMode ? "white" : "black" }}
         />
       </Button>
-      <Menu
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleCloseMenu}
-        PaperProps={{
-          style: {
-            width: "200px",
-            backgroundColor: darkMode ? "#424242" : "#f5f5f5",
-            color: darkMode ? "white" : "black",
-            zIndex: 1300,
-          },
+     <Menu
+  anchorEl={anchorEl}
+  open={open}
+  onClose={handleCloseMenu}
+  PaperProps={{
+    style: {
+      width: "200px",
+      backgroundColor: darkMode ? "#424242" : "#f5f5f5",
+      color: darkMode ? "white" : "black",
+      zIndex: 1300,
+    },
+  }}
+  MenuListProps={{
+    style: {
+      padding: "10px",
+    },
+  }}
+>
+  <MenuItem
+    component="a"
+    href="https://carnotresearch.com/#section-about"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="menu-item"
+  >
+    About Us
+  </MenuItem>
+  <MenuItem className="menu-item">
+    <Link
+      className="menu-item"
+      to="/pricing"
+      style={{ color: darkMode ? "white" : "black" }}
+    >
+      Pricing
+    </Link>
+  </MenuItem>
+
+  {location.pathname === "/" && [
+    <MenuItem key="input-dropdown" className="menu-item input-dropdown">
+      <LanguageDropdown
+        label="Input"
+        selectedLanguage={
+          languages.find((lang) => lang.value === inputLanguage)?.label || "English"
+        }
+        languages={languages}
+        onChange={setInputLanguage}
+      />
+    </MenuItem>,
+    <MenuItem key="output-dropdown" className="menu-item output-dropdown">
+      <LanguageDropdown
+        label="Output"
+        selectedLanguage={
+          languages.find((lang) => lang.value === outputLanguage)?.label || "English"
+        }
+        languages={languages}
+        onChange={setOutputLanguage}
+      />
+    </MenuItem>,
+  ]}
+
+  {paid === "0" && (
+    <MenuItem className="menu-item">
+      <button
+        className="btn btn-purple"
+        style={{
+          color: darkMode ? "white" : "black",
+          fontFamily: "Roboto",
+          textTransform: "none",
+          fontSize: "16px",
         }}
-        MenuListProps={{
-          style: {
-            padding: "10px",
-          },
+        onClick={handleUpgradeClick}
+      >
+        Upgrade
+      </button>
+    </MenuItem>
+  )}
+
+  <Dialog open={openUpgradeDialog} onClose={handleCloseUpgradeDialog}>
+    <IconButton
+      onClick={handleCloseUpgradeDialog}
+      style={{
+        position: "absolute",
+        right: "8px",
+        top: "8px",
+      }}
+    >
+      <CloseIcon />
+    </IconButton>
+
+    <PaymentForm />
+
+    <DialogActions>
+
+    </DialogActions>
+  </Dialog>
+
+  <MenuItem className="menu-item">
+    {location.pathname === "/" ? (
+      <a
+        className="btn login-logout-btn"
+        onClick={handleLogout}
+        style={{
+          color: darkMode ? "white" : "black",
+          cursor: "pointer",
+          marginLeft: "-0.5px",
         }}
       >
-        <MenuItem
-          component="a"
-          href="https://carnotresearch.com/#section-about"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="menu-item"
-        >
-          About Us
-        </MenuItem>
-        <MenuItem className="menu-item">
-          <Link
-            className="menu-item"
-            to="/pricing"
-            style={{ color: darkMode ? "white" : "black" }}
-          >
-            Pricing
-          </Link>
-        </MenuItem>
-        {location.pathname === "/" && (
-          <>
-            <MenuItem className="menu-item input-dropdown">
-              <LanguageDropdown
-                label="Input"
-                selectedLanguage={
-                  languages.find((lang) => lang.value === inputLanguage)
-                    ?.label || "English"
-                }
-                languages={languages}
-                onChange={setInputLanguage}
-              />
-            </MenuItem>
-            <MenuItem className="menu-item output-dropdown">
-              <LanguageDropdown
-                label="Output"
-                selectedLanguage={
-                  languages.find((lang) => lang.value === outputLanguage)
-                    ?.label || "English"
-                }
-                languages={languages}
-                onChange={setOutputLanguage}
-              />
-            </MenuItem>
-          </>
-        )}
-        {paid === "0" && (
-          <MenuItem className="menu-item">
-            <button
-              className="btn btn-purple"
-              style={{
-                color: darkMode ? "white" : "black",
-                fontFamily: "Roboto",
-                textTransform: "none",
-                fontSize: "16px",
-              }}
-              onClick={handleUpgradeClick}
-            >
-              Upgrade
-            </button>
-          </MenuItem>
-        )}
+        Logout
+      </a>
+    ) : (
+      <a
+        className="btn login-logout-btn"
+        onClick={handleLoginClick}
+        style={{
+          color: darkMode ? "white" : "black",
+          cursor: "pointer",
+          marginLeft: "-0.5px",
+        }}
+        onClose={handleClose}
+      >
+        Login
+      </a>
+    )}
+  </MenuItem>
 
-        <Dialog open={openUpgradeDialog} onClose={handleCloseUpgradeDialog}>
-          <IconButton
-            onClick={handleCloseUpgradeDialog}
-            style={{
-              position: "absolute",
-              right: "8px",
-              top: "8px",
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
+  <MenuItem className="menu-item">
+    <button
+      className="dark-mode-toggle"
+      onClick={() => setDarkMode(!darkMode)}
+      style={{ color: darkMode ? "white" : "black" }}
+    >
+      {darkMode ? (
+        <Brightness7Icon style={{ color: "white" }} />
+      ) : (
+        <DarkModeIcon style={{ color: "black" }} />
+      )}
+    </button>
+  </MenuItem>
+</Menu>
 
-          <PaymentForm />
-
-          <DialogActions>
-            {/* Additional actions can be added here if needed */}
-          </DialogActions>
-        </Dialog>
-        <MenuItem className="menu-item">
-          {location.pathname === "/" ? (
-            <a
-              className="btn login-logout-btn"
-              onClick={handleLogout}
-              style={{
-                color: darkMode ? "white" : "black",
-                cursor: "pointer",
-                marginLeft: "-0.5px",
-              }}
-            >
-              Logout
-            </a>
-          ) : (
-            <a
-              className="btn login-logout-btn"
-              onClick={handleLoginClick}
-              style={{
-                color: darkMode ? "white" : "black",
-                cursor: "pointer",
-                marginLeft: "-0.5px",
-              }}
-              onClose={handleClose}
-            >
-              Login
-            </a>
-          )}
-        </MenuItem>
-        <MenuItem className="menu-item">
-          <button
-            className="dark-mode-toggle"
-            onClick={() => setDarkMode(!darkMode)}
-            style={{ color: darkMode ? "white" : "black" }}
-          >
-            {darkMode ? (
-              <Brightness7Icon style={{ color: "white" }} />
-            ) : (
-              <DarkModeIcon style={{ color: "black" }} />
-            )}
-          </button>
-        </MenuItem>
-      </Menu>
     </nav>
   );
 };

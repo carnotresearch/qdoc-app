@@ -16,6 +16,10 @@ const LanguageDropdown = ({ label, selectedLanguage, languages, onChange }) => {
       <ul
         className="dropdown-menu"
         aria-labelledby={`${label}LanguageDropdown`}
+        style={{
+          maxHeight: "230px", 
+          overflowY: "auto", 
+        }}
       >
         {languages.map((language) => (
           <li key={language.value}>

@@ -19,8 +19,8 @@
   transition: background-color 0.3s ease, color 0.3s ease; 
 }
 .language-dropdown {
-  color: black; /* Default text color */
-  transition: color 0.3s; /* Optional for smooth color transition */
+  color: black; 
+  transition: color 0.3s; 
 }
 
 .btn-btn-warning-dropdown-toggle:hover {
@@ -31,11 +31,11 @@
 
 
 .dropdown-item:hover {
-  background-color: white !important; 
+  background-color: rgba(255, 255, 255, 0.6) !important; 
   color: var(--text-color) !important; }
 .btn-warning:hover,
 .btn-warning:focus {
-  /*background-color: rgba(54, 183, 183, 0.8) !important; /* Background color on hover/focus */
+ 
   color: var(--text-color) !important; 
 }
 
@@ -138,16 +138,16 @@ body {
 
 .dropdown-item {
   background-color: rgb(155, 152, 152);
-  color: var(--text-color);
+  color: rgb(4, 4, 4);
   transition: color 0.3s ease;
   padding: 10px 15px;
   width: 100%;
   top:-8px;
   position: relative;
   box-sizing: border-box;
-  margin: 0; /* Ensure no margins are causing gaps */
-  border: none; /* Remove any borders that might affect the appearance */
-  display: block; /* Ensure the item behaves as a block element */
+  margin: 0; 
+  border: none; 
+  display: block; 
 }
 
 /*
