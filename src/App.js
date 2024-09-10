@@ -78,7 +78,14 @@ function Content({
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/Pricing" element={<Pricing />} />
+        <Route
+          path="/Pricing"
+          element={
+            <ProtectedRoute>
+              <Pricing />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/"
           element={
