@@ -3,6 +3,7 @@ import Button from "@mui/material/Button";
 import "../styles/pricing.css";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import Footer from "./Footer";
 
 const plans = [
   {
@@ -233,6 +234,7 @@ const Pricing = ({ darkMode }) => {
           </div>
         ))}
       </div>
+      <Footer />
     </div>
   );
 };
