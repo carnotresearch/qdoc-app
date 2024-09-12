@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Button from "@mui/material/Button";
 import "../styles/pricing.css";
 import { Link, useNavigate } from "react-router-dom";
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import axios from "axios";
 
 const plans = [
@@ -54,6 +55,7 @@ const Pricing = ({ plan, darkMode }) => {
   const navigate = useNavigate();
 
   const paymentPlanOptions = [
+    { value: 1, label: "₹19/day", price: 1900 },
     { value: 1, label: "₹59/week", price: 5900 },
     { value: 2, label: " ₹189/month", price: 18900 },
     { value: 3, label: " ₹479/quarter", price: 47900 },
@@ -135,6 +137,38 @@ const Pricing = ({ plan, darkMode }) => {
   return (
     <div className={darkMode ? "dark-mode" : ""}>
       <h1 className="page-title">Subscription Plans</h1>
+      <div style={{ textAlign: "center", marginBottom: "5px" }}>
+        <Link to="/" style={{ textDecoration: "none" }}>
+          <Button
+           
+           startIcon={<ArrowBackIosNewIcon fontSize="small" />} 
+            variant="contained"
+            sx={{
+              textTransform: "none",
+              fontWeight: "bold",
+              backgroundColor: "#f9f9f9",
+              color: "black",
+              "&:hover": {
+                backgroundColor: "#f9f9f9",
+              },
+            }}
+          >
+            icarKno
+            <span
+              style={{
+                verticalAlign: "super",
+                fontSize: "0.5rem",
+                top: "-0.2rem",
+                position: "relative",
+              }}
+            >
+              TM
+            </span>{" "}
+            Chat
+          </Button>
+        </Link>
+      </div>
+
       <div className="pricing-container">
         {plans.map((plan, index) => (
           <div key={index} className="plan-section">
