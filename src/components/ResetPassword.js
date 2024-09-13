@@ -73,7 +73,8 @@ const ResetPassword = () => {
 
   return (
     <div className="container mt-4">
-      <h1 className="text-center mb-4">Reset Password</h1>
+      <h1 className="text-center mb-4" 
+      >Reset Password</h1>
       {message && <div className="alert alert-danger">{message}</div>}
       <form onSubmit={handleResetPassword}>
         <div className="mb-3">
@@ -113,7 +114,16 @@ const ResetPassword = () => {
             <small className="text-danger">{confirmPasswordError}</small>
           )}
         </div>
-        <button type="submit" className="btn btn-primary">
+        <button type="submit" className="btn btn-primary"
+         style={{ border: '2px solid black',
+          marginTop: '14px',
+          marginLeft: '13px',
+          backgroundColor: 'transparent',
+          color: 'black', 
+         transition: 'border-color 0.3s ease' 
+          }}
+onMouseOver={(e) => e.currentTarget.style.borderColor = 'darkgrey'}
+onMouseOut={(e) => e.currentTarget.style.borderColor = 'black'} >
           {isLoading ? (
             <div className="text-center">
               <Spinner animation="border" size="sm" />

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import { IconButton } from "@mui/material";
+
 import LanguageDropdown from "./LanguageDropdown";
 import Profile from "./Profile";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
@@ -10,7 +12,14 @@ import BookIcon from "@mui/icons-material/Book"; // Add this for book icon
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import Tooltip from "@mui/material/Tooltip";
 import CloseIcon from "@mui/icons-material/Close";
+import Button from "@mui/material/Button";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
 import "../styles/navbar.css";
+import { useMediaQuery, useTheme } from "@mui/material";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import PaymentForm from "./PaymentForm";
 
 const Navbar = ({
   inputLanguage,
@@ -22,7 +31,13 @@ const Navbar = ({
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
+
   const paid = sessionStorage.getItem("paymentStatus");
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+  const [openUpgradeDialog, setOpenUpgradeDialog] = useState(false);
+  const theme = useTheme();
+  const isLargeScreen = useMediaQuery(theme.breakpoints.up("lg"));
 
   const [temperature, setTemperature] = useState(
     sessionStorage.getItem("temperature") || 0.2
@@ -31,7 +46,7 @@ const Navbar = ({
   const [mode, setMode] = useState(
     sessionStorage.getItem("answerMode") || "contextual"
   );
-  const [isManualOpen, setIsManualOpen] = useState(false);
+  const [isManualOpen, SetIsManualOpen] = useState(false);
 
   useEffect(() => {
     sessionStorage.setItem("temperature", temperature);
@@ -53,7 +68,13 @@ const Navbar = ({
     navigate("/login");
   };
 
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   const handleLoginClick = () => {
+    console.log("login");
+    handleClose();
     navigate("/login", { state: { focusEmail: true } });
   };
 
@@ -62,11 +83,27 @@ const Navbar = ({
   };
 
   const openManual = () => {
-    setIsManualOpen(true);
+    SetIsManualOpen(true);
   };
 
   const closeManual = () => {
-    setIsManualOpen(false);
+    SetIsManualOpen(false);
+  };
+
+  const handleMenuClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
+  };
+
+  const handleUpgradeClick = () => {
+    setOpenUpgradeDialog(true);
+  };
+
+  const handleCloseUpgradeDialog = () => {
+    setOpenUpgradeDialog(false);
   };
 
   const languages = [
@@ -94,6 +131,12 @@ const Navbar = ({
     { value: "21", label: "Gujarati" },
     { value: "22", label: "Odia" },
   ];
+
+  useEffect(() => {
+    if (isLargeScreen) {
+      handleCloseMenu();
+    }
+  }, [isLargeScreen]);
 
   return (
     <>
@@ -303,5 +346,6 @@ const Navbar = ({
     </>
   );
 };
+
 
 export default Navbar;

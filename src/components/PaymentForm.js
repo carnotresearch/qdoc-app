@@ -1,6 +1,9 @@
+
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import StarsIcon from '@mui/icons-material/Stars';
+
 
 function PaymentForm() {
   const [email, setEmail] = useState("");
@@ -17,9 +20,9 @@ function PaymentForm() {
   };
   const [paymentPlan, setPaymentPlan] = useState("");
   const paymentPlanOptions = [
-    { value: 1, label: "1 Month - ₹499", price: 49900 },
-    { value: 2, label: "3 months - ₹1099", price: 109900 },
-    { value: 3, label: "Annual plan - ₹3499", price: 349900 },
+    { value: 1, label: "₹59/week", price: 5900 },
+        { value: 2, label: " ₹189/month",price: 18900 },
+        { value: 3, label: " ₹479/quarter",price: 47900 },
   ];
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -52,7 +55,7 @@ function PaymentForm() {
 
     const options = {
       key: `${process.env.REACT_APP_RAZORPAY_PAYMENT_KEY}`,
-      amount: selectedPlan.price, //in paise
+      amount: selectedPlan.price,
       currency: "INR",
       name: "Carnot Research Pvt. Ltd.",
       description: "Test Transaction",
@@ -96,32 +99,46 @@ function PaymentForm() {
   return (
     <div style={styles.container}>
       <form onSubmit={handleSubmit} style={styles.form}>
-        <h2 style={styles.header}>Upgrade Subscription</h2>
-        Please confirm your email before payment.
-        <div style={styles.inputGroup}>
-          <label style={styles.label} htmlFor="email">
-            Email
-          </label>
-          <input
-            type="email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            style={styles.input}
-            required
-          />
-        </div>
+      <h3 style={{ marginTop: '20px', ...styles.header }}>Upgrade</h3>
+        <div style={{ ...styles.pointList, marginBottom: '30px' }}> </div>
+        <div style={styles.pointList}>
+  
+  <div style={styles.point}>
+    <StarsIcon fontSize="small" style={{ marginRight: '5px' ,marginBottom:'19px'}} />
+    <span style={{ fontWeight: 'bold' }}>Multilingual support across Indian languages</span>
+  </div>
+  <div style={styles.point}>
+    <StarsIcon fontSize="small" style={{ marginRight: '5px' }} />
+    <span style={{ fontWeight: 'bold' }}>Multiple Containers</span>
+  </div>
+  <div style={styles.point}>
+    <StarsIcon fontSize="small" style={{ marginRight: '5px' }} />
+    <span style={{ fontWeight: 'bold' }}>Unlimited queries</span>
+  </div>
+  <div style={styles.point}>
+    <StarsIcon fontSize="small" style={{ marginRight: '5px' }} />
+    <span style={{ fontWeight: 'bold' }}>Upto 800 pages per container
+    </span>
+  </div>
+</div>
+
         <div style={styles.inputGroup}>
           <label style={styles.label} htmlFor="paymentPlan">
-            Upgrade Plan
+          <div style={{ ...styles.pointList, marginBottom: '30px' }}> </div>
+           
           </label>
           <select
             id="paymentPlan"
+         
+
             value={paymentPlan}
             onChange={(e) => setPaymentPlan(e.target.value)}
             style={styles.select}
           >
-            <option value="">Select a payment plan</option>
+            <option value="" >
+  Select a payment plan
+</option>
+
             {paymentPlanOptions.map((option) => (
               <option
                 key={option.value}
@@ -133,6 +150,7 @@ function PaymentForm() {
             ))}
           </select>
         </div>
+        <div style={{ ...styles.pointList}}> </div>
         <button type="submit" style={styles.button}>
           Pay
         </button>
@@ -143,21 +161,41 @@ function PaymentForm() {
 
 export default PaymentForm;
 
-// Styles
+
 const styles = {
   container: {
+    position: "fixed", // Fixes the position relative to the viewport
+    top: "50%",        // Centers vertically
+    left: "50%",       // Centers horizontally
+    transform: "translate(-50%, -50%)", // Offsets the element to truly center it
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    height: "100vh",
-    backgroundColor: "#f7f7f7",
+    height: "52vh",    // Maintain height relative to viewport height
+    width: "100vw",     // Optional: make it full width
+    /*border: "2px solid black",*/
   },
-  form: {
+  point: {
+    display: 'flex',
+    alignItems: 'center',
+
+  },
+
+
+  form:{
     padding: "20px",
     borderRadius: "8px",
-    boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
     backgroundColor: "#fff",
     width: "300px",
+    height:"400px",
+      
+  },
+
+  
+  select: {
+    marginLeft: '5px', 
+    fontSize:'18px',
+    alignItems:'center',
   },
   header: {
     textAlign: "center",
@@ -179,8 +217,9 @@ const styles = {
     width: "100%",
     padding: "10px",
     border: "none",
+marginTop:"20px",
     borderRadius: "4px",
-    backgroundColor: "#007BFF",
+    backgroundColor: " rgba(54, 183, 183, 0.8)",
     color: "white",
     cursor: "pointer",
     fontSize: "16px",

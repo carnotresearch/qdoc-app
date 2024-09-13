@@ -75,7 +75,16 @@ const ForgotPassword = () => {
           sitekey={process.env.REACT_APP_RECAPTCHA_SITE_KEY}
           onChange={onReCAPTCHAChange}
         />
-        <button type="submit" className="btn btn-primary">
+        <button type="submit" className="btn btn-primary"
+        style={{ border: '2px solid black',
+          marginTop: '14px',
+          marginLeft: '13px',
+          backgroundColor: 'transparent',
+          color: 'black', 
+         transition: 'border-color 0.3s ease' 
+          }}
+onMouseOver={(e) => e.currentTarget.style.borderColor = 'darkgrey'}
+onMouseOut={(e) => e.currentTarget.style.borderColor = 'black'} >
           {isLoading ? (
             <div className="text-center">
               <Spinner animation="border" size="sm" />

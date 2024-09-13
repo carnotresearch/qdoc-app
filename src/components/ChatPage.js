@@ -99,6 +99,7 @@ function ChatPage({ inputLanguage, outputLanguage }) {
       alert("Error fetching sessions, please try again.");
     }
   };
+
   const sendBackgroundMessage = async () => {
     try {
       const token = sessionStorage.getItem("token");
@@ -121,6 +122,7 @@ function ChatPage({ inputLanguage, outputLanguage }) {
     }
   };
   
+
   const handleCopy = (text, index) => {
     navigator.clipboard.writeText(text).then(() => {
       setCopiedIndex(index);
@@ -328,7 +330,16 @@ function ChatPage({ inputLanguage, outputLanguage }) {
         >
           <MenuOutlinedIcon className="menu-icon" fontSize="medium" />
         </Button>
-        {!sidebarCollapsed && <Sidebar files={files} sessions={sessions} setLatestSessionId={setLatestSessionId} latestSessionId={latestSessionId} selectedSessionFiles={selectedSessionFiles} setSelectedSessionFiles={setSelectedSessionFiles} setSessions={setSessions} />}
+        {!sidebarCollapsed && (
+          <Sidebar
+            sessions={sessions}
+            setLatestSessionId={setLatestSessionId}
+            latestSessionId={latestSessionId}
+            selectedSessionFiles={selectedSessionFiles}
+            setSelectedSessionFiles={setSelectedSessionFiles}
+            setSessions={setSessions}
+          />
+        )}
       </div>
       <FileViewer files={files} />
       <div className="chat-content">
@@ -465,6 +476,7 @@ function ChatPage({ inputLanguage, outputLanguage }) {
             onChange={(e) => setMessage(e.target.value)}
             placeholder="Type your message"
             ref={inputRef}
+            style={{ marginRight: "10px" }}
           />
           {showMicrophone && (
             <Button
@@ -477,7 +489,7 @@ function ChatPage({ inputLanguage, outputLanguage }) {
           <IconButton
             type="submit"
             aria-label=""
-            style={{ color: "rgba(54, 183, 183, 0.8)" }}
+            style={{ color: "rgba(54, 183, 183, 0.8)", padding: "0" }}
           >
             <SendIcon />
           </IconButton>
