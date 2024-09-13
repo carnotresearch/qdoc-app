@@ -1,20 +1,76 @@
+.icon {
+  font-size: 5rem; /* Adjusted font-size for icon */
+  cursor: pointer;
+  color: rgba(54, 183, 183, 0.8);
+  position: relative;
+  margin-left: 10px; 
+  right: 5px;
+  transition: color 0.3s ease; /* Smooth transition on hover */
+}
 
-  .icon {
-    font-size: 50rem; 
-    cursor: pointer;
-    color: rgba(54, 183, 183, 0.8);
-    position: relative;
-    margin-left: 30px; 
-    right: 5px; 
-  }
-  
-  .popup {
-    position: absolute;
-    top: 50px;
-    border: 1px solid #ccc;
-    padding: 10px;
-    background-color: white;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    z-index: 9999;
-  }
-  
+.icon:hover {
+  color: rgba(54, 183, 183, 1); /* Slightly brighter on hover */
+}
+
+.popup {
+  position: absolute;
+  top: 50px;
+  border: 1px solid #ccc;
+  padding: 20px;
+  background-color: white;
+  border-radius: 10px; /* Smooth, modern corner rounding */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Soft shadow for a clean look */
+  z-index: 9999;
+  width: 280px; /* Slightly larger for better spacing */
+}
+
+.username {
+  font-weight: bold;
+  font-size: 1.2rem; /* Slightly larger font for better emphasis */
+  color: #333;
+  margin-bottom: 10px;
+  text-align: center; /* Centered text for a polished look */
+}
+
+.payment-status {
+  padding: 8px 10px; /* Padding for better spacing */
+  border-radius: 6px; /* Smooth rounded corners */
+  margin-bottom: 10px;
+  font-weight: bold;
+  text-align: center;
+  font-size: 1rem;
+}
+
+.payment-status.premium {
+  background-color: #54b689; /* Green for premium */
+  color: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Slight shadow for emphasis */
+}
+
+.payment-status.free {
+  background-color: #ffcc00; /* Yellow for free plan */
+  color: #333;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Slight shadow for emphasis */
+}
+
+.plan-expiry {
+  padding: 15px;
+  margin-top: 15px;
+  background-color: #f9f9f9;
+  border-left: 4px solid #54b689;
+  border-radius: 6px;
+  font-style: italic;
+  color: #333;
+}
+
+.plan-expiry p {
+  margin: 5px 0;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.days-left {
+  color: #ff4d4d; /* Highlight in red */
+  font-weight: bold;
+  font-size: 1rem;
+}

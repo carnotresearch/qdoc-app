@@ -99,6 +99,27 @@ function ChatPage({ inputLanguage, outputLanguage }) {
       alert("Error fetching sessions, please try again.");
     }
   };
+  const sendBackgroundMessage = async () => {
+    try {
+      const token = sessionStorage.getItem("token");
+      const response = await axios.post(
+        `${process.env.REACT_APP_BACKEND_URL}/ask`,
+        {
+          sessionId: sessionStorage.getItem("sessionId"),
+          message: "Summarize", 
+          token,
+          inputLanguage,
+          outputLanguage,
+          context: files.length > 0 ? "files" : "",
+          temperature: sessionStorage.getItem("temperature") || 0.2,
+          mode: sessionStorage.getItem("answerMode") || "contextual",
+        }
+      );
+      // No need to handle response or update UI
+    } catch (error) {
+      console.error("Error sending background message:", error);
+    }
+  };
   
   const handleCopy = (text, index) => {
     navigator.clipboard.writeText(text).then(() => {
@@ -131,6 +152,7 @@ function ChatPage({ inputLanguage, outputLanguage }) {
     inputRef.current.focus();
     if (files.length > 0) {
       setSidebarCollapsed(true);
+      sendBackgroundMessage();
     }
   }, [files]);
 
