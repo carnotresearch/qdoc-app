@@ -1,10 +1,12 @@
 import React from "react";
+import "../styles/navbar.css";
+
 
 const LanguageDropdown = ({ label, selectedLanguage, languages, onChange }) => {
   return (
     <li className="nav-item dropdown">
       <button
-        className="btn btn-warning dropdown-toggle"
+        className="btn dropdown-toggle"
         id={`${label}LanguageDropdown`}
         data-bs-toggle="dropdown"
         aria-expanded="false"
@@ -14,6 +16,10 @@ const LanguageDropdown = ({ label, selectedLanguage, languages, onChange }) => {
       <ul
         className="dropdown-menu"
         aria-labelledby={`${label}LanguageDropdown`}
+        style={{
+          maxHeight: "230px", 
+          overflowY: "auto", 
+        }}
       >
         {languages.map((language) => (
           <li key={language.value}>

@@ -17,13 +17,13 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const emailRef = useRef(null);
+  const emailInputRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
-    if (location.state?.focusEmail && emailRef.current) {
-      emailRef.current.focus();
+    if (location.state && location.state.focusEmail) {
+      emailInputRef.current.focus();
     }
   
     const handleScroll = () => {
@@ -169,7 +169,8 @@ const Login = () => {
                 type="text"
                 id="email"
                 placeholder="Email"
-                ref={emailRef}
+
+                ref={emailInputRef}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -197,10 +198,12 @@ const Login = () => {
               </div>
 
               <div className="login-center-options">
-                <a href="/forgot-password" className="forgot-pass-link">
-                  Forgot password?
-                </a>
-              </div>
+  <div className="hover-area">
+    <a href="/forgot-password" className="forgot-pass-link">
+      Forgot password?
+    </a>
+  </div>
+</div>
               <div className="login-center-buttons">
                 <button type="submit" disabled={isLoading}>
                   {isLoading ? (
@@ -237,7 +240,7 @@ const Login = () => {
           </p>
         </div>
       </div>
-    {/* Footer Section */}
+   
 <footer className="login-footer">
   <a className="Licon" href="https://www.linkedin.com/company/carnot-research-pvt-ltd/" target="_blank" rel="noopener noreferrer">
     <LinkedInIcon style={{ color: "#0072b1", marginRight: "2px" }} />
@@ -253,6 +256,11 @@ const Login = () => {
 
   <a href="mailto:contact@carnotresearch.com" className="footer-link">
     Contact us for private/corporate deployment
+  </a>
+  <span className="footer-separator">|</span>
+
+  <a href="https://carnotresearch.com/refund.html" className="footer-link">
+    Refund Policy
   </a>
 </footer>
 

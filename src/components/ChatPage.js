@@ -328,7 +328,16 @@ function ChatPage({ inputLanguage, outputLanguage }) {
         >
           <MenuOutlinedIcon className="menu-icon" fontSize="medium" />
         </Button>
-        {!sidebarCollapsed && <Sidebar files={files} sessions={sessions} setLatestSessionId={setLatestSessionId} latestSessionId={latestSessionId} selectedSessionFiles={selectedSessionFiles} setSelectedSessionFiles={setSelectedSessionFiles} setSessions={setSessions} />}
+        {!sidebarCollapsed && (
+          <Sidebar
+            sessions={sessions}
+            setLatestSessionId={setLatestSessionId}
+            latestSessionId={latestSessionId}
+            selectedSessionFiles={selectedSessionFiles}
+            setSelectedSessionFiles={setSelectedSessionFiles}
+            setSessions={setSessions}
+          />
+        )}
       </div>
       <FileViewer files={files} />
       <div className="chat-content">
@@ -446,7 +455,7 @@ function ChatPage({ inputLanguage, outputLanguage }) {
                 <div className="message-box">
                   <span className={"message-text"}>
                     <p>
-                      Kindly upload files using sidebar.{" "}
+                      Kindly upload files using sidebar or Select an existing knowledge container from the Left Menu.{" "}
                       <FaChevronCircleLeft
                         style={{ cursor: "pointer" }}
                         onClick={() => setSidebarCollapsed(false)}
@@ -465,6 +474,7 @@ function ChatPage({ inputLanguage, outputLanguage }) {
             onChange={(e) => setMessage(e.target.value)}
             placeholder="Type your message"
             ref={inputRef}
+            style={{ marginRight: "10px" }}
           />
           {showMicrophone && (
             <Button
@@ -477,7 +487,7 @@ function ChatPage({ inputLanguage, outputLanguage }) {
           <IconButton
             type="submit"
             aria-label=""
-            style={{ color: "rgba(54, 183, 183, 0.8)" }}
+            style={{ color: "rgba(54, 183, 183, 0.8)", padding: "0" }}
           >
             <SendIcon />
           </IconButton>

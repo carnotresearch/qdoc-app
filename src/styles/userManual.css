@@ -1,0 +1,90 @@
+.user-manual {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+  }
+  
+  .user-manual header {
+    background-color: #15b3cb;
+    color: white;
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .user-manual h1 {
+    margin: 0;
+  }
+  
+  .user-manual .container {
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .user-manual h2,
+  .user-manual h3 {
+    color: #0078d7;
+  }
+  
+  .user-manual ul {
+    padding-left: 20px;
+  }
+  
+  .user-manual li {
+    margin: 10px 0;
+  }
+  
+  .user-manual pre {
+    background-color: #f0f0f0;
+    padding: 10px;
+    border-left: 5px solid #0078d7;
+    overflow-x: auto;
+  }
+  
+  .user-manual .code-button {
+    background-color: #0078d7;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    margin: 5px 0;
+    cursor: pointer;
+  }
+  
+  .user-manual .code-button:hover {
+    background-color: #005fa3;
+  }
+  
+  .user-manual .dark-mode-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #15b3cb;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 50%;
+  }
+  
+  .user-manual .dark-mode-btn:hover {
+    background-color: #005fa3;
+  }
+  
+  .user-manual.dark-mode {
+    background-color: #333;
+    color: white;
+  }
+  
+  .user-manual.dark-mode h2,
+  .user-manual.dark-mode h3 {
+    color: #80d4ff;
+  }
+  
+  .user-manual.dark-mode pre {
+    background-color: #555;
+  }
+  

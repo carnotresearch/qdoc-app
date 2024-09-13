@@ -1,4 +1,4 @@
-import React, { useState, useRef, useContext, useEffect } from "react";
+import React, { useState, useRef, useContext } from "react";
 import { ListGroup, Form, Button, Card, ButtonGroup } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import {
@@ -11,10 +11,13 @@ import {
 import axios from "axios";
 import { FileContext } from "./FileContext";
 import "../styles/sidebar.css";
-
+import {
+  addUploadFiles,
+  fetchFilesFromS3,
+  uploadMultiFiles,
+} from "./utils/presignedUtils";
 
 function Sidebar({
-  files = [],
   sessions = [],
   setLatestSessionId,
   latestSessionId,
@@ -77,38 +80,6 @@ function Sidebar({
     }
   };
 
-  const uploadToS3 = async (files) => {
-    try {
-      const filesArray = Array.from(files);
-      const base64Files = await Promise.all(
-        filesArray.map((file) => {
-          return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () =>
-              resolve({
-                filename: file.name,
-                content: reader.result.split(",")[1],
-              });
-            reader.onerror = (error) => reject(error);
-          });
-        })
-      );
-      const lambdaResponse = await axios.post(
-        `${process.env.REACT_APP_AWS_UPLOAD_URL}`,
-        {
-          token,
-          files: base64Files,
-        },
-        { headers: { "Content-Type": "application/json" } }
-      );
-
-      sessionStorage.setItem("sessionId", lambdaResponse.data.sessionId);
-    } catch (lambdaError) {
-      console.error("Error uploading files to AWS:", lambdaError);
-    }
-  };
-
   const uploadToBackend = async (files) => {
     try {
       const filesArray = Array.from(files);
@@ -163,21 +134,10 @@ function Sidebar({
     handleFileUpload(files);
   };
 
-  const listStyle = {
-    padding: "0.5rem",
-    wordWrap: "break-word",
-    overflow: "hidden",
-    color: "white",
-    backgroundColor: "#7393b6",
-    display: "flex",
-    alignItems: "center",
-  };
-
   const addButtonStyle = {
     color: "white",
-    width: "50%",
-    padding: "0.375rem 0.75rem",
-    margin: "auto",
+    width: "100%",
+    margin: "auto 0.8rem",
     fontSize: "0.875rem",
   };
 
@@ -187,11 +147,16 @@ function Sidebar({
     overflow: "hidden",
     textOverflow: "ellipsis",
     whiteSpace: "nowrap",
+    fontSize: "0.875rem",
   };
 
   const handleFileUpload = async (files) => {
     let size = 0;
     for (let i = 0; i < files.length; i++) {
+      if (files[i].size > 20971520) {
+        alert("Kindly upload files upto 20MB.");
+        return;
+      }
       size += files[i].size;
     }
     // Converting bytes to MB and multiply by 20 for avg
@@ -201,7 +166,7 @@ function Sidebar({
     }
     setIsUploading(true);
     try {
-      await uploadToS3(files);
+      await uploadMultiFiles(token, files);
       await uploadToBackend(files);
       await fetchSessions();
       // Highlight the latest session (New Container)
@@ -214,7 +179,7 @@ function Sidebar({
       setIsUploading(false);
     }
   };
-  
+
   const fetchSessions = async () => {
     try {
       const response = await axios.post(
@@ -265,31 +230,8 @@ function Sidebar({
     }));
 
     try {
-      const base64Files = await Promise.all(
-        newFilesArray.map((file) => {
-          return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () =>
-              resolve({
-                filename: file.name,
-                content: reader.result.split(",")[1],
-              });
-            reader.onerror = (error) => reject(error);
-          });
-        })
-      );
-
-      // Sending the base64 encoded files to AWS Add Session
-      await axios.post(
-        `${process.env.REACT_APP_AWS_ADD_SESSION}`,
-        {
-          sessionId,
-          token: sessionStorage.getItem("token"),
-          files: base64Files,
-        },
-        { headers: { "Content-Type": "application/json" } }
-      );
+      // Upload files to S3
+      addUploadFiles(token, sessionId, newFiles);
 
       // Now sending only the newly added files to the backend
       const formData = new FormData();
@@ -326,48 +268,10 @@ function Sidebar({
     });
   };
 
-  const base64ToBlob = (base64, type = "") => {
-    const byteCharacters = atob(base64);
-    const byteNumbers = new Array(byteCharacters.length);
-    for (let i = 0; i < byteCharacters.length; i++) {
-      byteNumbers[i] = byteCharacters.charCodeAt(i);
-    }
-    const byteArray = new Uint8Array(byteNumbers);
-    return new Blob([byteArray], { type });
-  };
-
-  const transformFetchedFiles = (fetchedFiles) => {
-    return fetchedFiles.map((file) => {
-      const extension = file.key.split(".").pop().toLowerCase();
-      let type = "application/octet-stream";
-
-      switch (extension) {
-        case "txt":
-          type = "text/plain";
-          break;
-        case "docx":
-          type =
-            "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-          break;
-        case "pdf":
-          type = "application/pdf";
-          break;
-        default:
-          type = "none";
-      }
-
-      const blob = base64ToBlob(file.content, type);
-      return new File([blob], file.key.split("/").pop(), {
-        type: type,
-        lastModified: new Date(file.lastModified).getTime(),
-      });
-    });
-  };
-
   const fetchAndAppendSessionFiles = async (session) => {
     try {
       setLatestSessionId(session.id);
-      const updateResponse = axios.post(
+      axios.post(
         `${process.env.REACT_APP_UPDATE_TIMESTAMP}`,
         { token, sessionId: session.id },
         { headers: { "Content-Type": "application/json" } }
@@ -381,16 +285,9 @@ function Sidebar({
         newState[session.id] = true; // Expand the selected session
         return newState;
       });
-
-      const response = await axios.post(
-        `${process.env.REACT_APP_AWS_FETCH_FILES}`,
-        { token, sessionId: session.id },
-        { headers: { "Content-Type": "application/json" } }
-      );
-      const fetchedFiles = response.data.files;
-      const fileObjects = transformFetchedFiles(fetchedFiles);
-      setFiles(fileObjects);
       sessionStorage.setItem("sessionId", session.id);
+      // fetch files from s3
+      setFiles(await fetchFilesFromS3(token, session.id));
     } catch (error) {
       console.error("Error fetching and appending session files:", error);
     }
@@ -465,7 +362,7 @@ function Sidebar({
         {sessions.slice(0, 4).map((session, index) => (
           <div key={index}>
             <ListGroup.Item
-              className={`d-flex justify-content-between align-items-center session-item ${
+              className={`d-flex justify-content-between session-item ${
                 session.id === latestSessionId ? "latest-container" : ""
               }`}
               onClick={() => fetchAndAppendSessionFiles(session)}
@@ -474,36 +371,34 @@ function Sidebar({
               )} - ${session.fileNames.join(", ")}`}
             >
               {session.name}
-              <div className="d-flex align-items-center">
-                <ButtonGroup>
-                  <Button
-                    variant="outline-primary"
-                    size="sm"
-                    onClick={(e) => {
-                      e.stopPropagation(); // Prevents triggering folder selection
-                      handleRenameSession(session.id);
-                    }}
-                  >
-                    <RiEdit2Line />
-                  </Button>
-                  <Button
-                    variant="outline-danger"
-                    size="sm"
-                    onClick={(e) => {
-                      e.stopPropagation(); // Prevents triggering folder selection
-                      handleDeleteSession(session.id);
-                    }}
-                  >
-                    <RiDeleteBinLine />
-                  </Button>
-                </ButtonGroup>
+              <ButtonGroup>
                 <Button
-                  variant="link"
+                  variant="outline-primary"
+                  size="sm"
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevents triggering folder selection
+                    handleRenameSession(session.id);
+                  }}
+                >
+                  <RiEdit2Line />
+                </Button>
+                <Button
+                  variant="outline-danger"
+                  size="sm"
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevents triggering folder selection
+                    handleDeleteSession(session.id);
+                  }}
+                >
+                  <RiDeleteBinLine />
+                </Button>
+                <Button
+                  variant="outline-info"
+                  size="sm"
                   onClick={(e) => {
                     e.stopPropagation();
                     toggleFileVisibility(session.id);
                   }}
-                  style={{ paddingTop: "0", paddingBottom: "0" }}
                 >
                   {visibleFiles[session.id] ? (
                     <RiArrowDropUpLine />
@@ -511,7 +406,7 @@ function Sidebar({
                     <RiArrowDropDownLine />
                   )}
                 </Button>
-              </div>
+              </ButtonGroup>
             </ListGroup.Item>
 
             {visibleFiles[session.id] && (
@@ -529,7 +424,7 @@ function Sidebar({
 
                 {!isUploading && session.id === latestSessionId && (
                   <Button
-                    className="mt-2 bg-secondary"
+                    className="mb-2 bg-secondary"
                     variant="secondary"
                     onClick={() => additionalFileInputRef.current.click()}
                     style={addButtonStyle}
