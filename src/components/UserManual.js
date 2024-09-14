@@ -91,10 +91,6 @@ const UserManual = () => {
           </li>
         </ul>
       </div>
-
-      <button className="dark-mode-btn" onClick={toggleDarkMode}>
-        {darkMode ? "☀️" : "🌙"}
-      </button>
     </div>
   );
 };
