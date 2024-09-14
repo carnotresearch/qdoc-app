@@ -423,14 +423,25 @@ function Sidebar({
                 ))}
 
                 {!isUploading && session.id === latestSessionId && (
-                  <Button
-                    className="mb-2 bg-secondary"
-                    variant="secondary"
-                    onClick={() => additionalFileInputRef.current.click()}
-                    style={addButtonStyle}
-                  >
-                    <big>+</big> Add Files
-                  </Button>
+  <div className="d-flex justify-content-end align-items-center" style={{ width: "100%" }}>
+  <Button
+    className="bg-secondary"
+    variant="secondary"
+    onClick={() => additionalFileInputRef.current.click()}
+    style={{
+      ...addButtonStyle,
+      width: '100px',   // Adjust width as needed
+      height: '30px',   // Adjust height as needed
+      fontSize: '12px', // Adjust font size as needed
+      marginRight: 'auto',
+      marginLeft:'auto',
+      marginTop: '0.5cm' ,
+      marginBottom: '0.5cm' // Aligns the button to the right
+    }}
+  >
+    <small>+</small> Add Files
+  </Button>
+</div>
                 )}
                 <input
                   type="file"
