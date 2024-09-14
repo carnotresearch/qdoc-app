@@ -21,10 +21,10 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import InfoIcon from "@mui/icons-material/Info";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import CloseIcon from "@mui/icons-material/Close";
-import MenuBookIcon from "@mui/icons-material/MenuBook"; // Import Book Icon
+import MenuBookIcon from "@mui/icons-material/MenuBook";
 import "../styles/navbar.css";
 import PaymentForm from "./PaymentForm";
-import UserManual from "./UserManual"; // Import User Manual component
+import UserManual from "./UserManual";
 
 const Navbar = ({
   inputLanguage,
@@ -41,34 +41,30 @@ const Navbar = ({
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const [openUpgradeDialog, setOpenUpgradeDialog] = useState(false);
-  const [openManualDialog, setOpenManualDialog] = useState(false); // State for User Manual dialog
+  const [openManualDialog, setOpenManualDialog] = useState(false);
   const theme = useTheme();
   const isLargeScreen = useMediaQuery(theme.breakpoints.up("lg"));
 
-  // State for the temperature slider, loaded from sessionStorage if available
   const [temperature, setTemperature] = useState(
     sessionStorage.getItem("temperature") || 0.2
   );
   const [mode, setMode] = useState(
     sessionStorage.getItem("answerMode") === "2" ? "creative" : "contextual"
-  ); // Map session storage value to mode
-  const [dropdownOpen, setDropdownOpen] = useState(false); // For settings dropdown
+  );
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  // Save temperature to sessionStorage when it changes
   useEffect(() => {
     sessionStorage.setItem("temperature", temperature);
   }, [temperature]);
 
-  // Save mode to sessionStorage when it changes
   useEffect(() => {
     if (mode === "contextual") {
-      sessionStorage.setItem("answerMode", "1"); // Set to 1 for Contextual Mode
+      sessionStorage.setItem("answerMode", "1");
     } else if (mode === "creative") {
-      sessionStorage.setItem("answerMode", "2"); // Set to 2 for Creative Mode
+      sessionStorage.setItem("answerMode", "2");
     }
   }, [mode]);
 
-  // Close menu when screen size changes
   useEffect(() => {
     if (isLargeScreen) {
       handleCloseMenu();
@@ -79,7 +75,7 @@ const Navbar = ({
     sessionStorage.removeItem("token");
     sessionStorage.removeItem("expiryTime");
     sessionStorage.removeItem("paymentStatus");
-    sessionStorage.removeItem("answerMode"); // Clear mode on logout
+    sessionStorage.removeItem("answerMode");
     navigate("/login");
   };
 
@@ -166,21 +162,9 @@ const Navbar = ({
           Chat
         </Link>
 
-        {/* User Manual Button */}
-        <div className="mx-auto">
-          <Button
-            variant="contained"
-            color="primary"
-            startIcon={<MenuBookIcon />}
-            onClick={handleManualOpen}
-            style={{ backgroundColor: "#000080", color: "#fff", marginLeft: "12cm", marginRight: "12cm" }}
-          >
-            Helpfile
-          </Button>
-        </div>
-
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav ms-auto">
+            {/* About Us Link */}
             <li className="nav-item">
               <a
                 className="nav-link"
@@ -191,11 +175,33 @@ const Navbar = ({
                 About Us
               </a>
             </li>
+
+            {/* User Manual Button */}
+            <li className="nav-item">
+              <Button
+                variant="contained"
+                color="primary"
+                startIcon={<MenuBookIcon />}
+                onClick={handleManualOpen}
+                style={{
+                  backgroundColor: "#000080",
+                  color: "#fff",
+                  margin: "0 8px",
+                  textTransform: "none",
+                  fontSize: "16px",
+                }}
+              >
+                Helpfile
+              </Button>
+            </li>
+
+            {/* Pricing Link */}
             <li className="nav-item">
               <Link className="nav-link" to="/pricing">
                 Pricing
               </Link>
             </li>
+
             {location.pathname === "/" && (
               <>
                 <LanguageDropdown
@@ -220,6 +226,7 @@ const Navbar = ({
                 />
               </>
             )}
+
             {location.pathname === "/" && paid === "0" && (
               <li className="nav-item">
                 <button
@@ -244,6 +251,7 @@ const Navbar = ({
               </button>
               {dropdownOpen && (
                 <div className="dropdown-menu show">
+                  {/* Temperature Slider */}
                   <div className="temperature-slider">
                     <label htmlFor="temperature" className="form-label">
                       Temperature: {temperature}
@@ -262,15 +270,13 @@ const Navbar = ({
                       title="Adjusts how creative the model's responses are. Higher values make responses more varied."
                       arrow
                     >
-                      <InfoIcon
-                        style={{ marginLeft: "5px", cursor: "pointer" }}
-                      />
+                      <InfoIcon style={{ cursor: "pointer" }} />
                     </Tooltip>
                   </div>
 
                   {/* Mode Selection */}
                   <div className="mode-selection">
-                    <label className="form-label">Answer Mode</label>
+                    <label className="form-label">Answer Mode:</label>
                     <div>
                       <input
                         type="radio"
@@ -280,14 +286,12 @@ const Navbar = ({
                         checked={mode === "contextual"}
                         onChange={() => setMode("contextual")}
                       />
-                      <label htmlFor="contextual">Contextual Mode</label>
+                      <label htmlFor="contextual">Contextual</label>
                       <Tooltip
                         title="Contextual Mode: Answers based on provided context, strictly sticking to the information given."
                         arrow
                       >
-                        <InfoIcon
-                          style={{ marginLeft: "5px", cursor: "pointer" }}
-                        />
+                        <InfoIcon style={{ cursor: "pointer" }} />
                       </Tooltip>
                     </div>
                     <div>
@@ -299,14 +303,12 @@ const Navbar = ({
                         checked={mode === "creative"}
                         onChange={() => setMode("creative")}
                       />
-                      <label htmlFor="creative">Creative Answering Mode</label>
+                      <label htmlFor="creative">Creative</label>
                       <Tooltip
-                        title="Creative Answering Mode: Provides more imaginative, inferred responses based on context and creativity."
+                        title="Creative Mode: Provides more imaginative, inferred responses based on context and creativity."
                         arrow
                       >
-                        <InfoIcon
-                          style={{ marginLeft: "5px", cursor: "pointer" }}
-                        />
+                        <InfoIcon style={{ cursor: "pointer" }} />
                       </Tooltip>
                     </div>
                   </div>
@@ -342,6 +344,7 @@ const Navbar = ({
             </li>
           </ul>
         </div>
+
         {/* Navbar toggle button for mobile view */}
         <Button
           className="navbar-toggler d-lg-none"
@@ -386,6 +389,26 @@ const Navbar = ({
           >
             About Us
           </MenuItem>
+
+          {/* User Manual Button */}
+          <MenuItem className="menu-item">
+            <Button
+              variant="contained"
+              color="primary"
+              startIcon={<MenuBookIcon />}
+              onClick={handleManualOpen}
+              style={{
+                backgroundColor: "#000080",
+                color: "#fff",
+                textTransform: "none",
+                fontSize: "16px",
+                width: "100%",
+              }}
+            >
+              Helpfile
+            </Button>
+          </MenuItem>
+
           <MenuItem className="menu-item">
             <Link
               className="menu-item"
@@ -397,18 +420,24 @@ const Navbar = ({
           </MenuItem>
 
           {location.pathname === "/" && [
-            <MenuItem key="input-dropdown" className="menu-item input-dropdown">
+            <MenuItem
+              key="input-dropdown"
+              className="menu-item input-dropdown"
+            >
               <LanguageDropdown
                 label="Input"
                 selectedLanguage={
-                  languages.find((lang) => lang.value === inputLanguage)?.label ||
-                  "English"
+                  languages.find((lang) => lang.value === inputLanguage)
+                    ?.label || "English"
                 }
                 languages={languages}
                 onChange={setInputLanguage}
               />
             </MenuItem>,
-            <MenuItem key="output-dropdown" className="menu-item output-dropdown">
+            <MenuItem
+              key="output-dropdown"
+              className="menu-item output-dropdown"
+            >
               <LanguageDropdown
                 label="Output"
                 selectedLanguage={
@@ -452,9 +481,10 @@ const Navbar = ({
                 position: "relative",
                 backgroundColor: darkMode ? "#424242" : "#f5f5f5",
                 padding: "10px",
-                zIndex: 1400, // Ensure it appears above other elements
+                zIndex: 1400,
               }}
             >
+              {/* Temperature Slider */}
               <div className="temperature-slider">
                 <label htmlFor="temperature" className="form-label">
                   Temperature: {temperature}
@@ -473,51 +503,45 @@ const Navbar = ({
                   title="Adjusts how creative the model's responses are. Higher values make responses more varied."
                   arrow
                 >
-                  <InfoIcon
-                    style={{ marginLeft: "5px", cursor: "pointer" }}
-                  />
+                  <InfoIcon style={{ cursor: "pointer" }} />
                 </Tooltip>
               </div>
 
               {/* Mode Selection */}
               <div className="mode-selection">
-                <label className="form-label">Answer Mode</label>
+                <label className="form-label">Answer Mode:</label>
                 <div>
                   <input
                     type="radio"
-                    id="contextual"
+                    id="contextual-mobile"
                     name="mode"
                     value="contextual"
                     checked={mode === "contextual"}
                     onChange={() => setMode("contextual")}
                   />
-                  <label htmlFor="contextual">Contextual Mode</label>
+                  <label htmlFor="contextual-mobile">Contextual</label>
                   <Tooltip
                     title="Contextual Mode: Answers based on provided context, strictly sticking to the information given."
                     arrow
                   >
-                    <InfoIcon
-                      style={{ marginLeft: "5px", cursor: "pointer" }}
-                    />
+                    <InfoIcon style={{ cursor: "pointer" }} />
                   </Tooltip>
                 </div>
                 <div>
                   <input
                     type="radio"
-                    id="creative"
+                    id="creative-mobile"
                     name="mode"
                     value="creative"
                     checked={mode === "creative"}
                     onChange={() => setMode("creative")}
                   />
-                  <label htmlFor="creative">Creative Answering Mode</label>
+                  <label htmlFor="creative-mobile">Creative</label>
                   <Tooltip
-                    title="Creative Answering Mode: Provides more imaginative, inferred responses based on context and creativity."
+                    title="Creative Mode: Provides more imaginative, inferred responses based on context and creativity."
                     arrow
                   >
-                    <InfoIcon
-                      style={{ marginLeft: "5px", cursor: "pointer" }}
-                    />
+                    <InfoIcon style={{ cursor: "pointer" }} />
                   </Tooltip>
                 </div>
               </div>
