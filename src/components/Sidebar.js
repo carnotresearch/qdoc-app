@@ -37,6 +37,17 @@ function Sidebar({
   const handleRenameSession = async (sessionId) => {
     const newName = prompt("Enter the new name for the session:");
     if (newName && newName.trim() !== "") {
+      // Check if the newName already exists among the sessions
+      const nameExists = sessions.some(
+        (session) => session.name.toLowerCase() === newName.toLowerCase()
+      );
+      if (nameExists) {
+        alert(
+          "A session with this name already exists. Please choose a different name."
+        );
+        return;
+      }
+
       try {
         await axios.post(
           `${process.env.REACT_APP_RENAME}`,
@@ -53,8 +64,12 @@ function Sidebar({
           )
         );
       } catch (error) {
-        console.error("Error renaming session:", error);
-        alert("Failed to rename the session. Please try again.");
+        if (error.response && error.response.status === 400) {
+          alert(error.response.data.message);
+        } else {
+          console.error("Error renaming session:", error);
+          alert("Failed to rename the session. Please try again.");
+        }
       }
     }
   };
@@ -154,7 +169,7 @@ function Sidebar({
     let size = 0;
     for (let i = 0; i < files.length; i++) {
       if (files[i].size > 20971520) {
-        alert("Kindly upload files upto 20MB.");
+        alert("Kindly upload files up to 20MB.");
         return;
       }
       size += files[i].size;
@@ -336,7 +351,7 @@ function Sidebar({
               {isUploading ? (
                 <div className="text-center">
                   <video
-                    src="/container.mp4" // Replace with your loading video path
+                    src="/container.mp4"
                     loop
                     autoPlay
                     muted
@@ -423,25 +438,28 @@ function Sidebar({
                 ))}
 
                 {!isUploading && session.id === latestSessionId && (
-  <div className="d-flex justify-content-end align-items-center" style={{ width: "100%" }}>
-  <Button
-    className="bg-secondary"
-    variant="secondary"
-    onClick={() => additionalFileInputRef.current.click()}
-    style={{
-      ...addButtonStyle,
-      width: '100px',   // Adjust width as needed
-      height: '30px',   // Adjust height as needed
-      fontSize: '12px', // Adjust font size as needed
-      marginRight: 'auto',
-      marginLeft:'auto',
-      marginTop: '0.5cm' ,
-      marginBottom: '0.5cm' // Aligns the button to the right
-    }}
-  >
-    <small>+</small> Add Files
-  </Button>
-</div>
+                  <div
+                    className="d-flex justify-content-end align-items-center"
+                    style={{ width: "100%" }}
+                  >
+                    <Button
+                      className="bg-secondary"
+                      variant="secondary"
+                      onClick={() => additionalFileInputRef.current.click()}
+                      style={{
+                        ...addButtonStyle,
+                        width: "100px",
+                        height: "30px",
+                        fontSize: "12px",
+                        marginRight: "auto",
+                        marginLeft: "auto",
+                        marginTop: "0.5cm",
+                        marginBottom: "0.5cm",
+                      }}
+                    >
+                      <small>+</small> Add Files
+                    </Button>
+                  </div>
                 )}
                 <input
                   type="file"

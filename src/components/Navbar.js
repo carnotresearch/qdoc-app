@@ -1,3 +1,5 @@
+// Navbar.js
+
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import {
@@ -13,7 +15,7 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import LanguageDropdown from "./LanguageDropdown";
+import LanguageGridSelector from "./LanguageGridSelector";
 import Profile from "./Profile";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
@@ -196,7 +198,7 @@ const Navbar = ({
             </li>
 
             {/* Pricing Link */}
-            <li className="nav-item">
+            <li className="nav-item" name="pricinglink">
               <Link className="nav-link" to="/pricing">
                 Pricing
               </Link>
@@ -204,8 +206,7 @@ const Navbar = ({
 
             {location.pathname === "/" && (
               <>
-                <LanguageDropdown
-                  className="className1"
+                <LanguageGridSelector
                   label="Input"
                   selectedLanguage={
                     languages.find((lang) => lang.value === inputLanguage)
@@ -213,9 +214,9 @@ const Navbar = ({
                   }
                   languages={languages}
                   onChange={setInputLanguage}
+                  darkMode={darkMode}
                 />
-                <LanguageDropdown
-                  className="language-dropdown-output"
+                <LanguageGridSelector
                   label="Output"
                   selectedLanguage={
                     languages.find((lang) => lang.value === outputLanguage)
@@ -223,6 +224,7 @@ const Navbar = ({
                   }
                   languages={languages}
                   onChange={setOutputLanguage}
+                  darkMode={darkMode}
                 />
               </>
             )}
@@ -250,31 +252,15 @@ const Navbar = ({
                 <SettingsIcon />
               </button>
               {dropdownOpen && (
-                <div className="dropdown-menu show">
-                  {/* Temperature Slider */}
-                  <div className="temperature-slider">
-                    <label htmlFor="temperature" className="form-label">
-                      Temperature: {temperature}
-                    </label>
-                    <input
-                      type="range"
-                      id="temperature"
-                      className="form-range"
-                      min="0"
-                      max="2"
-                      step="0.1"
-                      value={temperature}
-                      onChange={(e) => setTemperature(e.target.value)}
-                    />
-                    <Tooltip
-                      title="Adjusts how creative the model's responses are. Higher values make responses more varied."
-                      arrow
-                    >
-                      <InfoIcon style={{ cursor: "pointer" }} />
-                    </Tooltip>
-                  </div>
-
-                  {/* Mode Selection */}
+                <div
+                  className="dropdown-menu show"
+                  style={{
+                    position: "absolute",
+                    backgroundColor: darkMode ? "#424242" : "#f5f5f5",
+                    padding: "10px",
+                    zIndex: 1400,
+                  }}
+                >
                   <div className="mode-selection">
                     <label className="form-label">Answer Mode:</label>
                     <div>
@@ -421,31 +407,33 @@ const Navbar = ({
 
           {location.pathname === "/" && [
             <MenuItem
-              key="input-dropdown"
-              className="menu-item input-dropdown"
+              key="input-grid-selector"
+              className="menu-item input-grid-selector"
             >
-              <LanguageDropdown
+              <LanguageGridSelector
                 label="Input"
                 selectedLanguage={
-                  languages.find((lang) => lang.value === inputLanguage)
-                    ?.label || "English"
+                  languages.find((lang) => lang.value === inputLanguage)?.label ||
+                  "English"
                 }
                 languages={languages}
                 onChange={setInputLanguage}
+                darkMode={darkMode}
               />
             </MenuItem>,
             <MenuItem
-              key="output-dropdown"
-              className="menu-item output-dropdown"
+              key="output-grid-selector"
+              className="menu-item output-grid-selector"
             >
-              <LanguageDropdown
+              <LanguageGridSelector
                 label="Output"
                 selectedLanguage={
-                  languages.find((lang) => lang.value === outputLanguage)
-                    ?.label || "English"
+                  languages.find((lang) => lang.value === outputLanguage)?.label ||
+                  "English"
                 }
                 languages={languages}
                 onChange={setOutputLanguage}
+                darkMode={darkMode}
               />
             </MenuItem>,
           ]}
@@ -484,29 +472,6 @@ const Navbar = ({
                 zIndex: 1400,
               }}
             >
-              {/* Temperature Slider */}
-              <div className="temperature-slider">
-                <label htmlFor="temperature" className="form-label">
-                  Temperature: {temperature}
-                </label>
-                <input
-                  type="range"
-                  id="temperature"
-                  className="form-range"
-                  min="0"
-                  max="2"
-                  step="0.1"
-                  value={temperature}
-                  onChange={(e) => setTemperature(e.target.value)}
-                />
-                <Tooltip
-                  title="Adjusts how creative the model's responses are. Higher values make responses more varied."
-                  arrow
-                >
-                  <InfoIcon style={{ cursor: "pointer" }} />
-                </Tooltip>
-              </div>
-
               {/* Mode Selection */}
               <div className="mode-selection">
                 <label className="form-label">Answer Mode:</label>
