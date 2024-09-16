@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Button from "@mui/material/Button";
 import "../styles/pricing.css";
 import { Link, useNavigate } from "react-router-dom";
@@ -52,14 +52,19 @@ const plans = [
 const Pricing = ({ plan, darkMode }) => {
   const [paymentPlan, setPaymentPlan] = useState(2);
   const [email, setEmail] = useState("");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
 
   const paymentPlanOptions = [
     { value: 1, label: "₹19/day", price: 1900 },
     { value: 2, label: "₹59/week", price: 5900 },
     { value: 3, label: " ₹189/month", price: 18900 },
-    { value: 4, label: " ₹479/3 months", price: 47900 },
+    { value: 4, label: " ₹479-3 months", price: 47900 },
   ];
+  useEffect(() => {
+    const token = sessionStorage.getItem("token");
+    setIsLoggedIn(!!token); // Set isLoggedIn to true if token exists
+  }, []);
 
   const loadScript = (src) => {
     return new Promise((resolve) => {
@@ -225,7 +230,44 @@ const Pricing = ({ plan, darkMode }) => {
                 </li>
               ))}
             </ul>
-            {plan.buttonLink ? (
+            {plan.title === "Premium" && isLoggedIn ? (
+              <Button
+                variant="outlined"
+                onClick={plan.buttonAction}
+                sx={{
+                  textTransform: "none",
+                  fontWeight: "bold",
+                  color: "rgba(54, 183, 183, 0.8)",
+                  borderColor: "rgba(54, 183, 183, 0.8)",
+                  "&:hover": {
+                    borderColor: "transparent",
+                    backgroundColor: "",
+                  },
+                  borderWidth: "2px",
+                }}
+              >
+                {plan.buttonText}
+              </Button>
+            ) : plan.title === "Premium" && !isLoggedIn ? (
+              <Link to="/login" style={{ textDecoration: "none" }}>
+                <Button
+                  variant="outlined"
+                  sx={{
+                    textTransform: "none",
+                    fontWeight: "bold",
+                    color: "rgba(54, 183, 183, 0.8)",
+                    borderColor: "rgba(54, 183, 183, 0.8)",
+                    "&:hover": {
+                      borderColor: "transparent",
+                      backgroundColor: "",
+                    },
+                    borderWidth: "2px",
+                  }}
+                >
+                  Login/Sign Up
+                </Button>
+              </Link>
+            ) : plan.buttonLink ? (
               <Link to={plan.buttonLink} style={{ textDecoration: "none" }}>
                 <Button
                   variant="outlined"
@@ -238,7 +280,7 @@ const Pricing = ({ plan, darkMode }) => {
                       borderColor: "transparent",
                       backgroundColor: "",
                     },
-                    borderWidth: "1px",
+                    borderWidth: "2px",
                   }}
                 >
                   {plan.buttonText}
