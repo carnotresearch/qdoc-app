@@ -63,7 +63,7 @@ const Pricing = ({ plan, darkMode }) => {
   ];
   useEffect(() => {
     const token = sessionStorage.getItem("token");
-    setIsLoggedIn(!!token); // Set isLoggedIn to true if token exists
+    setIsLoggedIn(!!token); 
   }, []);
 
   const loadScript = (src) => {
