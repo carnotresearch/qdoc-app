@@ -10,9 +10,6 @@ const UserManual = () => {
 
   return (
     <div className={`user-manual ${darkMode ? "dark-mode" : ""}`}>
-      <header>
-        <h1>iCarKnow Chat User Manual Overview</h1>
-      </header>
 
       <div className="container">
         <h2>User Manual for iCarKnow Chat</h2>

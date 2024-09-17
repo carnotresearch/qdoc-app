@@ -12,12 +12,12 @@ import {
   Tooltip,
   useMediaQuery,
   useTheme,
+  Switch,
 } from "@mui/material";
 import LanguageGridSelector from "./LanguageGridSelector";
 import Profile from "./Profile";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
-import SettingsIcon from "@mui/icons-material/Settings";
 import InfoIcon from "@mui/icons-material/Info";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import CloseIcon from "@mui/icons-material/Close";
@@ -51,7 +51,6 @@ const Navbar = ({
   const [mode, setMode] = useState(
     sessionStorage.getItem("answerMode") === "2" ? "creative" : "contextual"
   );
-  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   useEffect(() => {
     sessionStorage.setItem("temperature", temperature);
@@ -98,10 +97,6 @@ const Navbar = ({
 
   const handleCloseUpgradeDialog = () => {
     setOpenUpgradeDialog(false);
-  };
-
-  const toggleDropdown = () => {
-    setDropdownOpen(!dropdownOpen);
   };
 
   // Handle User Manual Dialog
@@ -164,6 +159,41 @@ const Navbar = ({
 
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav ms-auto">
+            {/* Mode Toggle */}
+            <li className="nav-item">
+              <div
+                className="mode-toggle"
+                style={{
+                  textAlign: "center",
+                  display: "flex",
+                  alignItems: "center",
+                }}
+              >
+                <label style={{ marginRight: "8px" }}>Mode:</label>
+                <Switch
+                  checked={mode === "creative"}
+                  onChange={(e) =>
+                    setMode(e.target.checked ? "creative" : "contextual")
+                  }
+                  name="modeSwitch"
+                  color="primary"
+                />
+                <span>{mode === "creative" ? "Creative" : "Contextual"}</span>
+                <Tooltip
+                  title={
+                    mode === "creative"
+                      ? "Creative Mode: Provides more imaginative, inferred responses based on context and creativity."
+                      : "Contextual Mode: Answers based on provided context, strictly sticking to the information given."
+                  }
+                  arrow
+                >
+                  <InfoIcon
+                    style={{ cursor: "pointer", marginLeft: "4px" }}
+                  />
+                </Tooltip>
+              </div>
+            </li>
+
             {/* About Us Link */}
             <li className="nav-item">
               <a
@@ -244,62 +274,6 @@ const Navbar = ({
               </li>
             )}
 
-            {/* Settings Dropdown */}
-            <li className="nav-item dropdown">
-              <button className="btn" onClick={toggleDropdown}>
-                <SettingsIcon />
-              </button>
-              {dropdownOpen && (
-                <div
-                  className="dropdown-menu show"
-                  style={{
-                    position: "absolute",
-                    backgroundColor: darkMode ? "#424242" : "#f5f5f5",
-                    padding: "10px",
-                    zIndex: 1400,
-                  }}
-                >
-                  <div className="mode-selection">
-                    <label className="form-label">Answer Mode:</label>
-                    <div>
-                      <input
-                        type="radio"
-                        id="contextual"
-                        name="mode"
-                        value="contextual"
-                        checked={mode === "contextual"}
-                        onChange={() => setMode("contextual")}
-                      />
-                      <label htmlFor="contextual">Contextual</label>
-                      <Tooltip
-                        title="Contextual Mode: Answers based on provided context, strictly sticking to the information given."
-                        arrow
-                      >
-                        <InfoIcon style={{ cursor: "pointer" }} />
-                      </Tooltip>
-                    </div>
-                    <div>
-                      <input
-                        type="radio"
-                        id="creative"
-                        name="mode"
-                        value="creative"
-                        checked={mode === "creative"}
-                        onChange={() => setMode("creative")}
-                      />
-                      <label htmlFor="creative">Creative</label>
-                      <Tooltip
-                        title="Creative Mode: Provides more imaginative, inferred responses based on context and creativity."
-                        arrow
-                      >
-                        <InfoIcon style={{ cursor: "pointer" }} />
-                      </Tooltip>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </li>
-
             <li className="nav-item">
               {location.pathname === "/" ? (
                 <button
@@ -364,6 +338,53 @@ const Navbar = ({
             },
           }}
         >
+          {/* Mode Toggle */}
+          <MenuItem className="menu-item">
+            <div
+              className="mode-toggle"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                fontSize: "14px",
+                padding: "0",
+                margin: "0",
+                width: "100%",
+              }}
+            >
+              <label style={{ marginRight: "8px", fontSize: "14px" }}>
+                Mode:
+              </label>
+              <Switch
+                checked={mode === "creative"}
+                onChange={(e) =>
+                  setMode(e.target.checked ? "creative" : "contextual")
+                }
+                name="modeSwitchMobile"
+                color="primary"
+                size="small"
+              />
+              <span style={{ fontSize: "14px" }}>
+                {mode === "creative" ? "Creative" : "Contextual"}
+              </span>
+              <Tooltip
+                title={
+                  mode === "creative"
+                    ? "Creative Mode: Provides more imaginative, inferred responses based on context and creativity."
+                    : "Contextual Mode: Answers based on provided context, strictly sticking to the information given."
+                }
+                arrow
+              >
+                <InfoIcon
+                  style={{
+                    cursor: "pointer",
+                    marginLeft: "4px",
+                    fontSize: "18px",
+                  }}
+                />
+              </Tooltip>
+            </div>
+          </MenuItem>
+
           <MenuItem
             component="a"
             href="https://carnotresearch.com/#section-about"
@@ -426,8 +447,8 @@ const Navbar = ({
               <LanguageGridSelector
                 label="Output"
                 selectedLanguage={
-                  languages.find((lang) => lang.value === outputLanguage)?.label ||
-                  "English"
+                  languages.find((lang) => lang.value === outputLanguage)
+                    ?.label || "English"
                 }
                 languages={languages}
                 onChange={setOutputLanguage}
@@ -451,64 +472,6 @@ const Navbar = ({
                 Upgrade
               </button>
             </MenuItem>
-          )}
-
-          {/* Settings in Mobile Menu */}
-          <MenuItem className="menu-item">
-            <button className="btn" onClick={toggleDropdown}>
-              <SettingsIcon />
-            </button>
-          </MenuItem>
-
-          {dropdownOpen && (
-            <div
-              className="dropdown-menu show"
-              style={{
-                position: "relative",
-                backgroundColor: darkMode ? "#424242" : "#f5f5f5",
-                padding: "10px",
-                zIndex: 1400,
-              }}
-            >
-              {/* Mode Selection */}
-              <div className="mode-selection">
-                <label className="form-label">Answer Mode:</label>
-                <div>
-                  <input
-                    type="radio"
-                    id="contextual-mobile"
-                    name="mode"
-                    value="contextual"
-                    checked={mode === "contextual"}
-                    onChange={() => setMode("contextual")}
-                  />
-                  <label htmlFor="contextual-mobile">Contextual</label>
-                  <Tooltip
-                    title="Contextual Mode: Answers based on provided context, strictly sticking to the information given."
-                    arrow
-                  >
-                    <InfoIcon style={{ cursor: "pointer" }} />
-                  </Tooltip>
-                </div>
-                <div>
-                  <input
-                    type="radio"
-                    id="creative-mobile"
-                    name="mode"
-                    value="creative"
-                    checked={mode === "creative"}
-                    onChange={() => setMode("creative")}
-                  />
-                  <label htmlFor="creative-mobile">Creative</label>
-                  <Tooltip
-                    title="Creative Mode: Provides more imaginative, inferred responses based on context and creativity."
-                    arrow
-                  >
-                    <InfoIcon style={{ cursor: "pointer" }} />
-                  </Tooltip>
-                </div>
-              </div>
-            </div>
           )}
 
           <MenuItem className="menu-item">
