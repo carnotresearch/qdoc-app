@@ -1,5 +1,3 @@
-// Navbar.js
-
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import {
@@ -186,8 +184,8 @@ const Navbar = ({
                 startIcon={<MenuBookIcon />}
                 onClick={handleManualOpen}
                 style={{
-                  backgroundColor: "#000080",
-                  color: "#fff",
+                  backgroundColor: "white",
+                  color: "black",
                   margin: "0 8px",
                   textTransform: "none",
                   fontSize: "16px",
