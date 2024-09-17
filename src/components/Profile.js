@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
-import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
-import "./styles.css";
+import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
+import "../styles/profile.css";
 
 function Profile() {
   const token = sessionStorage.getItem("token");
   const [showPopup, setShowPopup] = useState(false);
   const [username, setUsername] = useState("Not logged in");
-  const [paymentStatus, setPaymentStatus] = useState(null); 
+  const [paymentStatus, setPaymentStatus] = useState(null);
 
   useEffect(() => {
     // Decode the token and extract the username

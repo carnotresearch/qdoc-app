@@ -3,6 +3,7 @@ import Button from "@mui/material/Button";
 import "../styles/pricing.css";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import Footer from "./Footer";
 
 const plans = [
   {
@@ -48,15 +49,16 @@ const plans = [
   },
 ];
 
-const Pricing = ({ plan, darkMode }) => {
+const Pricing = ({ darkMode }) => {
   const [paymentPlan, setPaymentPlan] = useState(2);
-  const [email, setEmail] = useState("");
   const navigate = useNavigate();
+  const token = sessionStorage.getItem("token");
 
   const paymentPlanOptions = [
-    { value: 1, label: "₹59/week", price: 5900 },
-    { value: 2, label: " ₹189/month", price: 18900 },
-    { value: 3, label: " ₹479/quarter", price: 47900 },
+    { value: 0, label: "₹19 /day", price: 1900 },
+    { value: 1, label: "₹59 /week", price: 5900 },
+    { value: 2, label: " ₹189 /month", price: 18900 },
+    { value: 3, label: " ₹479 /3months", price: 47900 },
   ];
 
   const loadScript = (src) => {
@@ -104,7 +106,7 @@ const Pricing = ({ plan, darkMode }) => {
           const response = await axios.post(
             `${process.env.REACT_APP_UPGRADE_ACCOUNT_URL}`,
             {
-              email,
+              token,
               paymentPlan: selectedPlan.value,
             }
           );
@@ -232,6 +234,7 @@ const Pricing = ({ plan, darkMode }) => {
           </div>
         ))}
       </div>
+      <Footer />
     </div>
   );
 };

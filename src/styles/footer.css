@@ -1,0 +1,28 @@
+.login-footer {
+    background-color: rgb(248, 247, 247);
+    padding: 8px 15px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4px; 
+    position: fixed; 
+    font-size: 13px;
+    bottom: 0;
+    width: 100%;
+    height: auto; 
+    color: #151414;
+    box-sizing: border-box;
+    flex-wrap: wrap;
+    word-spacing: -1px;
+  }
+  
+  .login-footer a {
+    gap:0px;
+    color: black;         
+    
+  }
+  
+  .login-footer a:hover {
+    text-decoration: underline;
+  }
