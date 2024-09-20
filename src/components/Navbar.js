@@ -12,7 +12,6 @@ import {
   Tooltip,
   useMediaQuery,
   useTheme,
-  Switch,
 } from "@mui/material";
 import LanguageGridSelector from "./LanguageGridSelector";
 import Profile from "./Profile";
@@ -134,6 +133,10 @@ const Navbar = ({
     { value: "22", label: "Odia" },
   ];
 
+  const toggleMode = () => {
+    setMode((prevMode) => (prevMode === "creative" ? "contextual" : "creative"));
+  };
+
   return (
     <>
       <nav
@@ -161,24 +164,29 @@ const Navbar = ({
           <ul className="navbar-nav ms-auto">
             {/* Mode Toggle */}
             <li className="nav-item">
-              <div
-                className="mode-toggle"
-                style={{
-                  textAlign: "center",
-                  display: "flex",
-                  alignItems: "center",
-                }}
-              >
-                <label style={{ marginRight: "8px" }}>Mode:</label>
-                <Switch
-                  checked={mode === "creative"}
-                  onChange={(e) =>
-                    setMode(e.target.checked ? "creative" : "contextual")
-                  }
-                  name="modeSwitch"
-                  color="primary"
-                />
-                <span>{mode === "creative" ? "Creative" : "Contextual"}</span>
+              <div className="mode-toggle">
+                <div
+                  className={`toggle-container ${mode} ${
+                    darkMode ? "dark-mode" : ""
+                  }`}
+                  onClick={toggleMode}
+                >
+                  <div
+                    className="option contextual-option"
+                    onClick={() => setMode("contextual")}
+                  >
+                    Contextual
+                  </div>
+                  <div className="slider">
+                    <div className="dots"></div>
+                  </div>
+                  <div
+                    className="option creative-option"
+                    onClick={() => setMode("creative")}
+                  >
+                    Creative
+                  </div>
+                </div>
                 <Tooltip
                   title={
                     mode === "creative"
@@ -209,7 +217,6 @@ const Navbar = ({
             {/* User Manual Button */}
             <li className="nav-item">
               <Button
-                variant="contained"
                 color="primary"
                 startIcon={<MenuBookIcon />}
                 onClick={handleManualOpen}
@@ -221,7 +228,7 @@ const Navbar = ({
                   fontSize: "16px",
                 }}
               >
-                Helpfile
+                Help
               </Button>
             </li>
 
@@ -340,32 +347,29 @@ const Navbar = ({
         >
           {/* Mode Toggle */}
           <MenuItem className="menu-item">
-            <div
-              className="mode-toggle"
-              style={{
-                display: "flex",
-                alignItems: "center",
-                fontSize: "14px",
-                padding: "0",
-                margin: "0",
-                width: "100%",
-              }}
-            >
-              <label style={{ marginRight: "8px", fontSize: "14px" }}>
-                Mode:
-              </label>
-              <Switch
-                checked={mode === "creative"}
-                onChange={(e) =>
-                  setMode(e.target.checked ? "creative" : "contextual")
-                }
-                name="modeSwitchMobile"
-                color="primary"
-                size="small"
-              />
-              <span style={{ fontSize: "14px" }}>
-                {mode === "creative" ? "Creative" : "Contextual"}
-              </span>
+            <div className="mode-toggle">
+              <div
+                className={`toggle-container ${mode} ${
+                  darkMode ? "dark-mode" : ""
+                }`}
+                onClick={toggleMode}
+              >
+                <div
+                  className="option contextual-option"
+                  onClick={() => setMode("contextual")}
+                >
+                  Contextual
+                </div>
+                <div className="slider">
+                  <div className="dots"></div>
+                </div>
+                <div
+                  className="option creative-option"
+                  onClick={() => setMode("creative")}
+                >
+                  Creative
+                </div>
+              </div>
               <Tooltip
                 title={
                   mode === "creative"
@@ -398,19 +402,18 @@ const Navbar = ({
           {/* User Manual Button */}
           <MenuItem className="menu-item">
             <Button
-              variant="contained"
               color="primary"
               startIcon={<MenuBookIcon />}
               onClick={handleManualOpen}
               style={{
-                backgroundColor: "#000080",
-                color: "#fff",
+                backgroundColor: "#FFFFFF",
+                color: "#000000",
                 textTransform: "none",
                 fontSize: "16px",
                 width: "100%",
               }}
             >
-              Helpfile
+              Help
             </Button>
           </MenuItem>
 
@@ -447,8 +450,8 @@ const Navbar = ({
               <LanguageGridSelector
                 label="Output"
                 selectedLanguage={
-                  languages.find((lang) => lang.value === outputLanguage)
-                    ?.label || "English"
+                  languages.find((lang) => lang.value === outputLanguage)?.label ||
+                  "English"
                 }
                 languages={languages}
                 onChange={setOutputLanguage}

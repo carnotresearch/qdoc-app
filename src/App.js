@@ -64,7 +64,6 @@ function Content({
         />
       )}
       <Routes>
-        <Route path="/login" element={<Login />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/register" element={<Register />} />
@@ -80,6 +79,7 @@ function Content({
             </ProtectedRoute>
           }
         />
+        <Route path="/login" element={<Login />} />
         <Route path="/cisce" element={<Cisce />} />
       </Routes>
     </div>

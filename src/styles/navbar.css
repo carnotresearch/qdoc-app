@@ -193,3 +193,87 @@ body {
     margin-bottom: 8px;
   }
 }
+/* Mode Toggle Styles */
+.mode-toggle {
+  display: flex;
+  align-items: center;
+}
+
+.mode-toggle .toggle-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 160px;
+  height: 30px;
+  background-color: #e0e0e0;
+  border-radius: 15px;
+  margin-right: 8px;
+  cursor: pointer;
+}
+
+.mode-toggle .toggle-container .option {
+  flex: 1;
+  text-align: center;
+  z-index: 2;
+  font-size: 14px;
+  line-height: 30px;
+  color: #666;
+  user-select: none;
+}
+
+.mode-toggle .toggle-container .slider {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 76px;
+  height: 26px;
+  background-color: #ffffff;
+  border-radius: 13px;
+  transition: left 0.3s;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.mode-toggle .toggle-container.contextual .slider {
+  left: 2px;
+}
+
+.mode-toggle .toggle-container.creative .slider {
+  left: calc(100% - 78px);
+}
+
+.mode-toggle .toggle-container.contextual .contextual-option {
+  color: #000;
+}
+
+.mode-toggle .toggle-container.creative .creative-option {
+  color: #000;
+}
+
+.mode-toggle .toggle-container .option:hover {
+  color: #000;
+}
+
+.mode-toggle .toggle-container.dark-mode {
+  background-color: #424242;
+}
+
+.mode-toggle .toggle-container.dark-mode .slider {
+  background-color: #616161;
+}
+
+.mode-toggle .toggle-container.dark-mode .option {
+  color: #bdbdbd;
+}
+
+.mode-toggle .toggle-container.dark-mode .option:hover {
+  color: #fff;
+}
+
+.mode-toggle .toggle-container.contextual.dark-mode .contextual-option {
+  color: #fff;
+}
+
+.mode-toggle .toggle-container.creative.dark-mode .creative-option {
+  color: #fff;
+}

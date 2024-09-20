@@ -34,6 +34,7 @@ const UserManual = () => {
         <h3>Key Features</h3>
         <h4>To start:</h4>
         <p>To upload a file, click on the 3 lines in the sidebar to expand it:</p>
+        <img src="path_to_your_image/sidebar.png" alt="Sidebar icon" />
         <pre>
           Click on the New Container Button to select and upload a file from your device.
         </pre>
@@ -41,6 +42,7 @@ const UserManual = () => {
           Once you have uploaded a file, it takes a short while to upload depending on the size and
           number of files selected.
         </p>
+        <img src="path_to_your_image/upload_file.png" alt="File upload screen" />
 
         <h4>Once the files have been uploaded:</h4>
         <p>You will see the following message on the chat window:</p>
@@ -58,19 +60,23 @@ const UserManual = () => {
           </li>
           <li>Select your output language from the dropdown shown.</li>
         </ul>
+        <img src="path_to_your_image/language_dropdown.png" alt="Language selection dropdown" />
 
         <h4>To listen to the speech output:</h4>
         <p>Click on the play button at the end of a chat message by the chatbot.</p>
+        <img src="path_to_your_image/play_button.png" alt="Play button" />
 
         <h4>To copy the message:</h4>
         <p>Click on the pointed button:</p>
         <pre>The message will be copied to your clipboard.</pre>
+        <img src="path_to_your_image/copy_button.png" alt="Copy button" />
 
         <h4>To switch between Light and Dark mode:</h4>
         <p>
           Click on the top-right moon icon button to switch to dark mode and click on the sun icon
           in dark mode to switch back to light mode.
         </p>
+        <img src="path_to_your_image/dark_mode_icon.png" alt="Dark mode icon" />
 
         <h4>To handle multiple documents:</h4>
         <ul>
@@ -87,6 +93,7 @@ const UserManual = () => {
             choosing the delete option, helping maintain a clean document collection.
           </li>
         </ul>
+        <img src="path_to_your_image/doc_management.png" alt="Document management example" />
       </div>
     </div>
   );
