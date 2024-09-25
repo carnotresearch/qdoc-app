@@ -34,6 +34,12 @@ function Sidebar({
   const [visibleFiles, setVisibleFiles] = useState({});
   const navigate = useNavigate();
 
+  // Initialize ifScan state from sessionStorage
+  const [ifScan, setIfScan] = useState(() => {
+    const savedIfScan = sessionStorage.getItem("ifscan");
+    return savedIfScan !== null ? parseInt(savedIfScan) : 0;
+  });
+
   const handleRenameSession = async (sessionId) => {
     const newName = prompt("Enter the new name for the session:");
     if (newName && newName.trim() !== "") {
@@ -102,6 +108,7 @@ function Sidebar({
       filesArray.forEach((file) => formData.append("files", file));
       formData.append("token", token);
       formData.append("sessionId", sessionStorage.getItem("sessionId"));
+      formData.append("ifscan", ifScan); // Append ifscan value
       setIsUploading(true);
       await axios.post(
         `${process.env.REACT_APP_BACKEND_URL}/upload`,
@@ -248,11 +255,12 @@ function Sidebar({
       // Upload files to S3
       addUploadFiles(token, sessionId, newFiles);
 
-      // Now sending only the newly added files to the backend
+      // Prepare form data with ifscan
       const formData = new FormData();
       newFilesArray.forEach((file) => formData.append("files", file));
       formData.append("token", sessionStorage.getItem("token"));
       formData.append("sessionId", sessionId);
+      formData.append("ifscan", ifScan); // Append ifscan value
 
       await axios.post(
         `${process.env.REACT_APP_BACKEND_URL}/add-upload`,
@@ -371,6 +379,19 @@ function Sidebar({
               )}
             </Card>
           </div>
+        </Form.Group>
+        {/* Add the checkbox here */}
+        <Form.Group className="mb-3">
+          <Form.Check
+            type="checkbox"
+            label="Enable Scan"
+            checked={ifScan === 1}
+            onChange={(e) => {
+              const newIfScan = e.target.checked ? 1 : 0;
+              setIfScan(newIfScan);
+              sessionStorage.setItem("ifscan", newIfScan);
+            }}
+          />
         </Form.Group>
       </Form>
       <ListGroup>
