@@ -150,7 +150,6 @@ function Sidebar({
   const addButtonStyle = {
     color: "white",
     width: "100%",
-    margin: "auto 0.8rem",
     fontSize: "0.875rem",
   };
 
@@ -437,7 +436,7 @@ function Sidebar({
 
                 {!isUploading && session.id === latestSessionId && (
                   <Button
-                    className="bg-secondary"
+                    className="mb-2 bg-secondary"
                     variant="secondary"
                     onClick={() => additionalFileInputRef.current.click()}
                     style={addButtonStyle}

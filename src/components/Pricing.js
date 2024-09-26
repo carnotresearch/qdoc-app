@@ -238,7 +238,7 @@ const Pricing = ({ darkMode }) => {
                       borderColor: "transparent",
                       backgroundColor: "",
                     },
-                    borderWidth: "2px",
+                    borderWidth: "1px",
                   }}
                 >
                   {plan.buttonText}
@@ -257,7 +257,7 @@ const Pricing = ({ darkMode }) => {
                     borderColor: "transparent",
                     backgroundColor: "",
                   },
-                  borderWidth: "1px",
+                  borderWidth: "2px",
                 }}
               >
                 {plan.buttonText}
