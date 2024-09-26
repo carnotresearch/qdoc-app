@@ -99,6 +99,24 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
       alert("Error fetching sessions, please try again.");
     }
   };
+  const sendBackgroundMessage = async () => {
+    try {
+      const token = sessionStorage.getItem("token");
+      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/ask`, {
+        sessionId: sessionStorage.getItem("sessionId"),
+        message: "Summarize",
+        token,
+        inputLanguage,
+        outputLanguage,
+        context: files.length > 0 ? "files" : "",
+        temperature: sessionStorage.getItem("temperature") || 0.2,
+        mode: sessionStorage.getItem("answerMode") || "contextual",
+      });
+      // No need to handle response or update UI
+    } catch (error) {
+      console.error("Error sending background message:", error);
+    }
+  };
 
   const handleCopy = (text, index) => {
     navigator.clipboard.writeText(text).then(() => {
@@ -131,6 +149,7 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
     inputRef.current.focus();
     if (files.length > 0) {
       setSidebarCollapsed(true);
+      sendBackgroundMessage();
     }
   }, [files]);
 
@@ -207,6 +226,8 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
             inputLanguage,
             outputLanguage,
             context,
+            temperature: 0.8,
+            mode: sessionStorage.getItem("answerMode") || "contextual",
           }
         );
 
@@ -433,7 +454,8 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
                 <div className="message-box">
                   <span className={"message-text"}>
                     <p>
-                      Kindly upload files using sidebar.{" "}
+                      Kindly upload files using sidebar or Select an existing
+                      knowledge container from the Left Menu.{" "}
                       <FaChevronCircleLeft
                         style={{ cursor: "pointer" }}
                         onClick={() => setSidebarCollapsed(false)}

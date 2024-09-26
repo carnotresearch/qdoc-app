@@ -38,6 +38,17 @@ function Sidebar({
   const handleRenameSession = async (sessionId) => {
     const newName = prompt("Enter the new name for the session:");
     if (newName && newName.trim() !== "") {
+      // Check if the newName already exists among the sessions
+      const nameExists = sessions.some(
+        (session) => session.name.toLowerCase() === newName.toLowerCase()
+      );
+      if (nameExists) {
+        alert(
+          "A session with this name already exists. Please choose a different name."
+        );
+        return;
+      }
+
       try {
         await axios.post(
           `${process.env.REACT_APP_RENAME}`,
@@ -139,7 +150,6 @@ function Sidebar({
   const addButtonStyle = {
     color: "white",
     width: "100%",
-    margin: "auto 0.8rem",
     fontSize: "0.875rem",
   };
 
@@ -156,7 +166,7 @@ function Sidebar({
     let size = 0;
     for (let i = 0; i < files.length; i++) {
       if (files[i].size > 20971520) {
-        alert("Kindly upload files upto 20MB.");
+        alert("Kindly upload files up to 20MB.");
         return;
       }
       size += files[i].size;
@@ -338,7 +348,7 @@ function Sidebar({
               {isUploading ? (
                 <div className="text-center">
                   <video
-                    src="/container.mp4" // Replace with your loading video path
+                    src="/container.mp4"
                     loop
                     autoPlay
                     muted

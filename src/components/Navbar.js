@@ -1,15 +1,27 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import LanguageDropdown from "./LanguageDropdown";
+import {
+  IconButton,
+  Button,
+  Menu,
+  MenuItem,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  Tooltip,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
+import LanguageGridSelector from "./LanguageGridSelector";
 import Profile from "./Profile";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
+import InfoIcon from "@mui/icons-material/Info";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import Button from "@mui/material/Button";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
+import CloseIcon from "@mui/icons-material/Close";
+import MenuBookIcon from "@mui/icons-material/MenuBook";
 import "../styles/navbar.css";
-import { useMediaQuery, useTheme } from "@mui/material";
+import UserManual from "./UserManual";
 
 const Navbar = ({
   inputLanguage,
@@ -23,27 +35,41 @@ const Navbar = ({
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+  const [openManualDialog, setOpenManualDialog] = useState(false);
   const theme = useTheme();
   const isLargeScreen = useMediaQuery(theme.breakpoints.up("lg"));
+
+  const [mode, setMode] = useState(
+    sessionStorage.getItem("answerMode") === "2" ? "creative" : "contextual"
+  );
+
+  useEffect(() => {
+    if (mode === "contextual") {
+      sessionStorage.setItem("answerMode", "1");
+    } else if (mode === "creative") {
+      sessionStorage.setItem("answerMode", "2");
+    }
+  }, [mode]);
+
+  useEffect(() => {
+    if (isLargeScreen) {
+      handleCloseMenu();
+    }
+  }, [isLargeScreen]);
 
   const handleLogout = () => {
     sessionStorage.removeItem("token");
     sessionStorage.removeItem("expiryTime");
     sessionStorage.removeItem("paymentStatus");
+    sessionStorage.removeItem("answerMode");
     setIsLoggedIn(false);
     navigate("/login");
   };
 
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
   const handleLoginClick = () => {
-    console.log("login");
-    handleClose();
-
+    handleCloseMenu();
     navigate("/login", { state: { focusEmail: true } });
   };
 
@@ -53,6 +79,15 @@ const Navbar = ({
 
   const handleCloseMenu = () => {
     setAnchorEl(null);
+  };
+
+  // Handle User Manual Dialog
+  const handleManualOpen = () => {
+    setOpenManualDialog(true);
+  };
+
+  const handleManualClose = () => {
+    setOpenManualDialog(false);
   };
 
   const languages = [
@@ -80,6 +115,12 @@ const Navbar = ({
     { value: "21", label: "Gujarati" },
     { value: "22", label: "Odia" },
   ];
+
+  const toggleMode = () => {
+    setMode((prevMode) =>
+      prevMode === "creative" ? "contextual" : "creative"
+    );
+  };
   useEffect(() => {
     if (isLargeScreen) {
       handleCloseMenu();
@@ -93,50 +134,286 @@ const Navbar = ({
   });
 
   return (
-    <nav
-      className={`navbar navbar-expand-lg ${
-        darkMode ? "navbar-dark bg-dark" : "navbar-light bg-light"
-      }`}
-    >
-      <Profile />
-      <Link className="navbar-brand" style={{ marginLeft: "0.5cm" }} to="/">
-        icarKno
-        <span
+    <>
+      <nav
+        className={`navbar navbar-expand-lg ${
+          darkMode ? "navbar-dark bg-dark" : "navbar-light bg-light"
+        }`}
+      >
+        <Profile />
+        <Link className="navbar-brand" style={{ marginLeft: "0.5cm" }} to="/">
+          icarKno
+          <span
+            style={{
+              verticalAlign: "super",
+              fontSize: "0.5rem",
+              top: "-0.2rem",
+              position: "relative",
+            }}
+          >
+            TM
+          </span>{" "}
+          Chat
+        </Link>
+
+        <div className="collapse navbar-collapse" id="navbarNav">
+          <ul className="navbar-nav ms-auto">
+            {/* Mode Toggle */}
+            <li className="nav-item">
+              <div className="mode-toggle">
+                <div
+                  className={`toggle-container ${mode} ${
+                    darkMode ? "dark-mode" : ""
+                  }`}
+                  onClick={toggleMode}
+                >
+                  <div
+                    className="option contextual-option"
+                    onClick={() => setMode("contextual")}
+                  >
+                    Contextual
+                  </div>
+                  <div className="slider">
+                    <div className="dots"></div>
+                  </div>
+                  <div
+                    className="option creative-option"
+                    onClick={() => setMode("creative")}
+                  >
+                    Creative
+                  </div>
+                </div>
+                <Tooltip
+                  title={
+                    mode === "creative"
+                      ? "Creative Mode: Provides more imaginative, inferred responses based on context and creativity."
+                      : "Contextual Mode: Answers based on provided context, strictly sticking to the information given."
+                  }
+                  arrow
+                >
+                  <InfoIcon style={{ cursor: "pointer", marginLeft: "4px" }} />
+                </Tooltip>
+              </div>
+            </li>
+
+            {/* About Us Link */}
+            <li className="nav-item">
+              <a
+                className="nav-link"
+                href="https://carnotresearch.com/#section-about"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                About Us
+              </a>
+            </li>
+
+            {/* User Manual Button */}
+            <li className="nav-item">
+              <Button
+                color="primary"
+                startIcon={<MenuBookIcon />}
+                onClick={handleManualOpen}
+                style={{
+                  backgroundColor: "white",
+                  color: "black",
+                  margin: "0 8px",
+                  textTransform: "none",
+                  fontSize: "16px",
+                }}
+              >
+                Help
+              </Button>
+            </li>
+
+            {/* Pricing Link */}
+            {isLoggedIn && (
+              <li className="nav-item">
+                <Link className="nav-link" to="/pricing">
+                  Pricing
+                </Link>
+              </li>
+            )}
+
+            {location.pathname === "/" && (
+              <>
+                <LanguageGridSelector
+                  label="Input"
+                  selectedLanguage={
+                    languages.find((lang) => lang.value === inputLanguage)
+                      ?.label || "English"
+                  }
+                  languages={languages}
+                  onChange={setInputLanguage}
+                  darkMode={darkMode}
+                />
+                <LanguageGridSelector
+                  label="Output"
+                  selectedLanguage={
+                    languages.find((lang) => lang.value === outputLanguage)
+                      ?.label || "English"
+                  }
+                  languages={languages}
+                  onChange={setOutputLanguage}
+                  darkMode={darkMode}
+                />
+              </>
+            )}
+
+            <li className="nav-item">
+              {isLoggedIn ? (
+                <button
+                  className="btn login-logout-btn"
+                  style={{ cursor: "pointer", marginLeft: "-1px" }}
+                  onClick={handleLogout}
+                >
+                  Logout
+                </button>
+              ) : (
+                <button
+                  className="btn login-logout-btn"
+                  onClick={handleLoginClick}
+                >
+                  Login
+                </button>
+              )}
+            </li>
+            <li className="nav-item">
+              <button
+                className="dark-mode-toggle"
+                onClick={() => setDarkMode(!darkMode)}
+              >
+                {darkMode ? <Brightness7Icon /> : <DarkModeIcon />}
+              </button>
+            </li>
+          </ul>
+        </div>
+
+        {/* Navbar toggle button for mobile view */}
+        <Button
+          className="navbar-toggler d-lg-none"
+          onClick={handleMenuClick}
           style={{
-            verticalAlign: "super",
-            fontSize: "0.5rem",
-            top: "-0.2rem",
-            position: "relative",
+            border: `2px solid ${darkMode ? "white" : "black"}`,
+            borderRadius: "6px",
+            padding: "2px",
+            color: darkMode ? "white" : "black",
           }}
         >
-          TM
-        </span>{" "}
-        Chat
-      </Link>
-      <div className="collapse navbar-collapse " id="navbarNav">
-        <ul className="navbar-nav ms-auto">
-          <li className="nav-item">
-            <a
-              className="nav-link"
-              href="https://carnotresearch.com/#section-about"
-              target="_blank"
-              rel="noopener noreferrer"
+          <ArrowDropDownIcon
+            style={{ fontSize: "2rem", color: darkMode ? "white" : "black" }}
+          />
+        </Button>
+
+        {/* Mobile Menu Dropdown */}
+        <Menu
+          anchorEl={anchorEl}
+          open={open}
+          onClose={handleCloseMenu}
+          PaperProps={{
+            style: {
+              width: "200px",
+              backgroundColor: darkMode ? "#424242" : "#f5f5f5",
+              color: darkMode ? "white" : "black",
+              zIndex: 1300,
+            },
+          }}
+          MenuListProps={{
+            style: {
+              padding: "10px",
+            },
+          }}
+        >
+          {/* Mode Toggle */}
+          <MenuItem className="menu-item">
+            <div className="mode-toggle">
+              <div
+                className={`toggle-container ${mode} ${
+                  darkMode ? "dark-mode" : ""
+                }`}
+                onClick={toggleMode}
+              >
+                <div
+                  className="option contextual-option"
+                  onClick={() => setMode("contextual")}
+                >
+                  Contextual
+                </div>
+                <div className="slider">
+                  <div className="dots"></div>
+                </div>
+                <div
+                  className="option creative-option"
+                  onClick={() => setMode("creative")}
+                >
+                  Creative
+                </div>
+              </div>
+              <Tooltip
+                title={
+                  mode === "creative"
+                    ? "Creative Mode: Provides more imaginative, inferred responses based on context and creativity."
+                    : "Contextual Mode: Answers based on provided context, strictly sticking to the information given."
+                }
+                arrow
+              >
+                <InfoIcon
+                  style={{
+                    cursor: "pointer",
+                    marginLeft: "4px",
+                    fontSize: "18px",
+                  }}
+                />
+              </Tooltip>
+            </div>
+          </MenuItem>
+
+          <MenuItem
+            component="a"
+            href="https://carnotresearch.com/#section-about"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="menu-item"
+          >
+            About Us
+          </MenuItem>
+
+          {/* User Manual Button */}
+          <MenuItem className="menu-item">
+            <Button
+              color="primary"
+              startIcon={<MenuBookIcon />}
+              onClick={handleManualOpen}
+              style={{
+                backgroundColor: "#FFFFFF",
+                color: "#000000",
+                textTransform: "none",
+                fontSize: "16px",
+                width: "100%",
+              }}
             >
-              About Us
-            </a>
-          </li>
+              Help
+            </Button>
+          </MenuItem>
+
           {isLoggedIn && (
-            <li className="nav-item">
-              <Link className="nav-link" to="/pricing">
+            <MenuItem className="menu-item">
+              <Link
+                className="menu-item"
+                to="/pricing"
+                style={{ color: darkMode ? "white" : "black" }}
+              >
                 Pricing
               </Link>
-            </li>
+            </MenuItem>
           )}
-          {location.pathname === "/" && (
-            <>
-              <li className="nav-item"></li>
-              <LanguageDropdown
-                className="className1"
+
+          {location.pathname === "/" && [
+            <MenuItem
+              key="input-grid-selector"
+              className="menu-item input-grid-selector"
+            >
+              <LanguageGridSelector
                 label="Input"
                 selectedLanguage={
                   languages.find((lang) => lang.value === inputLanguage)
@@ -144,9 +421,14 @@ const Navbar = ({
                 }
                 languages={languages}
                 onChange={setInputLanguage}
+                darkMode={darkMode}
               />
-              <LanguageDropdown
-                className="language-dropdown-output"
+            </MenuItem>,
+            <MenuItem
+              key="output-grid-selector"
+              className="menu-item output-grid-selector"
+            >
+              <LanguageGridSelector
                 label="Output"
                 selectedLanguage={
                   languages.find((lang) => lang.value === outputLanguage)
@@ -154,160 +436,77 @@ const Navbar = ({
                 }
                 languages={languages}
                 onChange={setOutputLanguage}
+                darkMode={darkMode}
               />
-            </>
-          )}
+            </MenuItem>,
+          ]}
 
-          <li className="nav-item">
+          <MenuItem className="menu-item">
             {isLoggedIn ? (
-              <button
+              <a
                 className="btn login-logout-btn"
-                style={{ cursor: "pointer", marginLeft: "-1px" }}
                 onClick={handleLogout}
+                style={{
+                  color: darkMode ? "white" : "black",
+                  cursor: "pointer",
+                  marginLeft: "-0.5px",
+                }}
               >
                 Logout
-              </button>
+              </a>
             ) : (
-              <button
+              <a
                 className="btn login-logout-btn"
                 onClick={handleLoginClick}
+                style={{
+                  color: darkMode ? "white" : "black",
+                  cursor: "pointer",
+                  marginLeft: "-0.5px",
+                }}
               >
                 Login
-              </button>
+              </a>
             )}
-          </li>
-          <li className="nav-item">
+          </MenuItem>
+
+          <MenuItem className="menu-item">
             <button
               className="dark-mode-toggle"
               onClick={() => setDarkMode(!darkMode)}
-            >
-              {darkMode ? <Brightness7Icon /> : <DarkModeIcon />}
-            </button>
-          </li>
-        </ul>
-      </div>
-      <Button
-        className="navbar-toggler d-lg-none"
-        onClick={handleMenuClick}
-        style={{
-          border: `2px solid ${darkMode ? "white" : "black"}`,
-          borderRadius: "6px",
-          padding: "2px",
-          color: darkMode ? "white" : "black",
-        }}
-      >
-        <ArrowDropDownIcon
-          style={{ fontSize: "2rem", color: darkMode ? "white" : "black" }}
-        />
-      </Button>
-      <Menu
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleCloseMenu}
-        PaperProps={{
-          style: {
-            width: "200px",
-            backgroundColor: darkMode ? "#424242" : "#f5f5f5",
-            color: darkMode ? "white" : "black",
-            zIndex: 1300,
-          },
-        }}
-        MenuListProps={{
-          style: {
-            padding: "10px",
-          },
-        }}
-      >
-        <MenuItem
-          component="a"
-          href="https://carnotresearch.com/#section-about"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="menu-item"
-        >
-          About Us
-        </MenuItem>
-        {isLoggedIn && (
-          <MenuItem className="menu-item">
-            <Link
-              className="menu-item"
-              to="/pricing"
               style={{ color: darkMode ? "white" : "black" }}
             >
-              Pricing
-            </Link>
+              {darkMode ? (
+                <Brightness7Icon style={{ color: "white" }} />
+              ) : (
+                <DarkModeIcon style={{ color: "black" }} />
+              )}
+            </button>
           </MenuItem>
-        )}
+        </Menu>
 
-        {location.pathname === "/" && [
-          <MenuItem key="input-dropdown" className="menu-item input-dropdown">
-            <LanguageDropdown
-              label="Input"
-              selectedLanguage={
-                languages.find((lang) => lang.value === inputLanguage)?.label ||
-                "English"
-              }
-              languages={languages}
-              onChange={setInputLanguage}
-            />
-          </MenuItem>,
-          <MenuItem key="output-dropdown" className="menu-item output-dropdown">
-            <LanguageDropdown
-              label="Output"
-              selectedLanguage={
-                languages.find((lang) => lang.value === outputLanguage)
-                  ?.label || "English"
-              }
-              languages={languages}
-              onChange={setOutputLanguage}
-            />
-          </MenuItem>,
-        ]}
-
-        <MenuItem className="menu-item">
-          {isLoggedIn ? (
-            <a
-              className="btn login-logout-btn"
-              onClick={handleLogout}
-              style={{
-                color: darkMode ? "white" : "black",
-                cursor: "pointer",
-                marginLeft: "-0.5px",
-              }}
+        {/* User Manual Dialog */}
+        <Dialog
+          open={openManualDialog}
+          onClose={handleManualClose}
+          maxWidth="md"
+          fullWidth
+        >
+          <DialogTitle>
+            iCarKnow Chat User Manual
+            <IconButton
+              aria-label="close"
+              onClick={handleManualClose}
+              style={{ position: "absolute", right: 8, top: 8 }}
             >
-              Logout
-            </a>
-          ) : (
-            <a
-              className="btn login-logout-btn"
-              onClick={handleLoginClick}
-              style={{
-                color: darkMode ? "white" : "black",
-                cursor: "pointer",
-                marginLeft: "-0.5px",
-              }}
-              onClose={handleClose}
-            >
-              Login
-            </a>
-          )}
-        </MenuItem>
-
-        <MenuItem className="menu-item">
-          <button
-            className="dark-mode-toggle"
-            onClick={() => setDarkMode(!darkMode)}
-            style={{ color: darkMode ? "white" : "black" }}
-          >
-            {darkMode ? (
-              <Brightness7Icon style={{ color: "white" }} />
-            ) : (
-              <DarkModeIcon style={{ color: "black" }} />
-            )}
-          </button>
-        </MenuItem>
-      </Menu>
-    </nav>
+              <CloseIcon />
+            </IconButton>
+          </DialogTitle>
+          <DialogContent dividers>
+            <UserManual />
+          </DialogContent>
+        </Dialog>
+      </nav>
+    </>
   );
 };
 

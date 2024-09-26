@@ -1,56 +1,16 @@
 :root {
-  --primary-color-light: white;
-  --primary-color-dark: #333333;
-  --text-color-light: black;
-  --text-color-dark: white;
-  --background-color-light: #ffffff;
-  --background-color-dark: #121212;
- 
-  
-  --btn-hover-border-color: white;
-  --dropdown-background-color-light: #ffffff;
-  --dropdown-background-color-dark: #333333;
-}
-
-.btn-warning {
-  background-color: transparent !important; 
-  color: var(--text-color) !important; 
-  border: none !important; 
-  transition: background-color 0.3s ease, color 0.3s ease; 
-}
-.language-dropdown {
-  color: black; 
-  transition: color 0.3s; 
-}
-
-.btn-btn-warning-dropdown-toggle:hover {
-  color: rgba(54, 183, 183, 0.8);
-}
-
-
-
-
-.dropdown-item:hover {
-  background-color: rgba(255, 255, 255, 0.6) !important; 
-  color: var(--text-color) !important; }
-.btn-warning:hover,
-.btn-warning:focus {
- 
-  color: var(--text-color) !important; 
-}
-
-
-.btn-warning:active {
- /* Background color when clicked */
-  color: var(--text-color) !important;
+  --primary-color: white;
+  --text-color: black;
+  --background-color: #ffffff;
+  --dropdown-background-color: #ffffff;
+  --btn-background-color: transparent;
 }
 
 body.dark-mode {
-  --primary-color: var(--primary-color-dark);
-  --text-color: var(--text-color-dark);
-  --background-color: var(--background-color-dark);
-  --dropdown-background-color: var(--dropdown-background-color-dark);
-  --btn-hover-border-color: var(--secondary-color);
+  --primary-color: #333333;
+  --text-color: white;
+  --background-color: #121212;
+  --dropdown-background-color: #333333;
 }
 
 body {
@@ -60,20 +20,14 @@ body {
 }
 
 .navbar {
-  --primary-color: var(--primary-color-light);;
+  background-color: var(--primary-color);
   width: 100%;
   z-index: 1000;
   transition: background-color 0.3s ease;
-}
-
-.navbar-light {
-  --primary-color: var(--primary-color-light);
-  --text-color: var(--text-color-light);
-}
-
-.navbar-dark {
-  --primary-color: var(--primary-color-dark);
-  --text-color: var(--text-color-dark);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 1rem;
 }
 
 .navbar-brand {
@@ -81,22 +35,14 @@ body {
   color: var(--text-color);
 }
 
-
-.nav-link{
-  top:-2.5px;
-  position: relative;
-}
-.login-logout-btn {
+.navbar-nav .nav-link {
   color: var(--text-color);
   transition: color 0.3s ease;
-  border: none; 
-  top:-1.5px;
-  position: relative;
-  background: none;
 }
 
-.login-logout-btn:hover {
+.navbar-nav .nav-link:hover {
   color: rgba(54, 183, 183, 0.8);
+  text-decoration: underline;
 }
 
 .btn {
@@ -106,19 +52,19 @@ body {
   transition: all 0.3s ease;
 }
 
-.navbar-nav .nav-link:hover {
-  color: rgba(54, 183, 183, 0.8);
+.btn:hover {
+  border-color: var(--btn-hover-border-color);
+  box-shadow: 0 0 10px rgba(54, 183, 183, 0.5);
+  transform: translateY(-2px);
 }
 
 .login-logout-btn {
   color: var(--text-color);
   transition: color 0.3s ease;
-  border: none !important; 
+  border: none;
   background: none;
-  left:-92px;
   position: relative;
 }
-
 
 .login-logout-btn:hover {
   color: rgba(54, 183, 183, 0.8);
@@ -127,45 +73,29 @@ body {
 .language-dropdown .btn {
   color: var(--text-color);
   transition: color 0.3s ease;
-  border: none !important;
+  border: none;
 }
-.dropdown-toggle{
-  color:transparent;
-}
-.nav-item{
+
+.nav-item {
   margin-right: 10px;
 }
 
 .dropdown-item {
-  background-color: rgb(155, 152, 152);
-  color: rgb(4, 4, 4);
-  transition: color 0.3s ease;
+  background-color: var(--dropdown-background-color);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
   padding: 10px 15px;
   width: 100%;
-  top:-8px;
   position: relative;
   box-sizing: border-box;
-  margin: 0; 
-  border: none; 
-  display: block; 
+  margin: 0;
+  border: none;
+  display: block;
 }
 
-/*
-
-.btn:hover {
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-  transform: translateY(-2px);
-  border: 2px solid var(--btn-hover-border-color);
-}
-*/
-
-.navbar-nav .nav-link {
+.dropdown-item:hover {
+  background-color: rgba(54, 183, 183, 0.1);
   color: var(--text-color);
-  transition: color 0.3s ease;
-}
-
-.navbar-nav .nav-link:hover {
-  color: rgba(54, 183, 183, 0.8);
 }
 
 .navbar-toggler {
@@ -173,70 +103,36 @@ body {
   width: 30px;
   height: 40px;
   border: none;
-  left: -3px;
   position: relative;
-}
-
-
-.navbar-toggler:focus {
-  outline: none;
-}
-
-
-
-.btn {
-  background-color: var(--btn-background-color);
   color: var(--text-color);
-left: -13px;
-position: relative;
-  transition: all 0.3s ease;
+  transition: color 0.3s ease;
 }
 
-
-
-
-
-
-.dropdown-menu {
-  background-color: var(--dropdown-background-color);
+.navbar-toggler:hover {
+  color: rgba(54, 183, 183, 0.8);
 }
-dropdown-menushow
-.dropdown-item {
-  color: var(--text-color);
-}
+
 .dark-mode-toggle {
   background: none;
   border: none;
   padding: 0.25rem;
   margin: 0;
-  margin-top: 0.3rem; 
   cursor: pointer;
   color: var(--text-color);
   display: flex;
-  top:-3px;
-  left: -8px;
-  position: relative;
   align-items: center;
   justify-content: center;
+  transition: color 0.3s ease;
 }
 
-.dark-mode-toggle:focus,
-.dark-mode-toggle:active {
-  outline: none;
-  box-shadow: none;
+.dark-mode-toggle:hover {
+  color: rgba(54, 183, 183, 0.8);
 }
 
 .dark-mode-toggle svg {
   width: 1.5rem;
   height: 1.5rem;
   color: inherit;
-}
-
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.5rem 1rem;
 }
 
 .navbar-items {
@@ -246,40 +142,138 @@ dropdown-menushow
 
 .navbar-item {
   margin: 0 1rem;
-  color: inherit; /* Use inherited color */
+  color: inherit;
   text-decoration: none;
-}
-
-.btn.login-logout-btn {
-  margin-left: 1rem;
-}
-
-.navbar-toggler {
-  display: none; 
 }
 
 @media (max-width: 768px) {
   .navbar-items {
-    display: none; 
+    display: none;
   }
 
   .navbar-toggler {
-    display: block; 
+    display: block;
     border-radius: 6px;
     padding: 2px;
     color: var(--text-color);
   }
 }
 
-  .MuiPaper-root.MuiMenu-paper {
-    width: 200px;
-    background-color: var(--dropdown-background-color);
-    color: var(--text-color);
-    z-index: 1300;
-    display: block !important; 
+.MuiPaper-root.MuiMenu-paper {
+  width: 200px;
+  background-color: var(--dropdown-background-color);
+  color: var(--text-color);
+  z-index: 1300;
+  display: block !important;
+}
+
+.MuiList-root.MuiMenu-list {
+  padding: 10px;
+}
+.navbar-nav .nav-link {
+  text-decoration: none;
+}
+
+.navbar-nav .nav-link:hover {
+  text-decoration: none;
+}
+@media (max-width: 768px) {
+  .dropdown-menu.show {
+    flex-direction: column;
+    align-items: flex-start;
   }
 
-  .MuiList-root.MuiMenu-list {
-    padding: 10px;
+  .dropdown-menu.show .temperature-slider,
+  .dropdown-menu.show .mode-selection {
+    margin-right: 0;
+    margin-bottom: 16px;
   }
 
+  .mode-selection > div {
+    margin-bottom: 8px;
+  }
+}
+/* Mode Toggle Styles */
+.mode-toggle {
+  display: flex;
+  align-items: center;
+}
+
+.mode-toggle .toggle-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 160px;
+  height: 30px;
+  background-color: #e0e0e0;
+  border-radius: 15px;
+  margin-right: 8px;
+  cursor: pointer;
+}
+
+.mode-toggle .toggle-container .option {
+  flex: 1;
+  text-align: center;
+  z-index: 2;
+  font-size: 14px;
+  line-height: 30px;
+  color: #666;
+  user-select: none;
+}
+
+.mode-toggle .toggle-container .slider {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 76px;
+  height: 26px;
+  background-color: #ffffff;
+  border-radius: 13px;
+  transition: left 0.3s;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.mode-toggle .toggle-container.contextual .slider {
+  left: 2px;
+}
+
+.mode-toggle .toggle-container.creative .slider {
+  left: calc(100% - 78px);
+}
+
+.mode-toggle .toggle-container.contextual .contextual-option {
+  color: #000;
+}
+
+.mode-toggle .toggle-container.creative .creative-option {
+  color: #000;
+}
+
+.mode-toggle .toggle-container .option:hover {
+  color: #000;
+}
+
+.mode-toggle .toggle-container.dark-mode {
+  background-color: #424242;
+}
+
+.mode-toggle .toggle-container.dark-mode .slider {
+  background-color: #616161;
+}
+
+.mode-toggle .toggle-container.dark-mode .option {
+  color: #bdbdbd;
+}
+
+.mode-toggle .toggle-container.dark-mode .option:hover {
+  color: #fff;
+}
+
+.mode-toggle .toggle-container.contextual.dark-mode .contextual-option {
+  color: #fff;
+}
+
+.mode-toggle .toggle-container.creative.dark-mode .creative-option {
+  color: #fff;
+}
