@@ -35,7 +35,7 @@ const sttSupportedLanguages = {
   15: "ml-IN", // Malayalam
 };
 
-function ChatPage({ inputLanguage, outputLanguage }) {
+function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
   const [chatHistory, setChatHistory] = useState([]);
   const [message, setMessage] = useState("");
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -242,6 +242,7 @@ function ChatPage({ inputLanguage, outputLanguage }) {
         if (error.response && error.response.status === 401) {
           setFiles([]);
           alert("User session is expired!");
+          setIsLoggedIn(false);
           navigate("/login");
         }
         newChatHistory[newChatHistory.length - 1].bot =
@@ -336,6 +337,7 @@ function ChatPage({ inputLanguage, outputLanguage }) {
             selectedSessionFiles={selectedSessionFiles}
             setSelectedSessionFiles={setSelectedSessionFiles}
             setSessions={setSessions}
+            setIsLoggedIn={setIsLoggedIn}
           />
         )}
       </div>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import {jwtDecode} from "jwt-decode"; // Correct import without curly braces
-import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
-import "./styles.css";
+import { jwtDecode } from "jwt-decode";
+import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
+import "../styles/profile.css";
 
 function Profile() {
   const token = sessionStorage.getItem("token");
@@ -32,13 +32,18 @@ function Profile() {
 
         // Format the date into "day Month year"
         const options = { year: "numeric", month: "long", day: "numeric" };
-        const formattedDate = expiryDateObj.toLocaleDateString("en-US", options);
+        const formattedDate = expiryDateObj.toLocaleDateString(
+          "en-US",
+          options
+        );
         setExpiryDateFormatted(formattedDate);
 
         // Calculate days left until expiration
         const currentDate = new Date();
         const timeDifference = expiryDateObj - currentDate;
-        const daysDifference = Math.ceil(timeDifference / (1000 * 60 * 60 * 24)); // Convert milliseconds to days
+        const daysDifference = Math.ceil(
+          timeDifference / (1000 * 60 * 60 * 24)
+        ); // Convert milliseconds to days
 
         setDaysLeft(daysDifference >= 0 ? daysDifference : 0); // Ensure no negative values
       } else {

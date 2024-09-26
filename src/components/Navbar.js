@@ -6,7 +6,6 @@ import {
   Menu,
   MenuItem,
   Dialog,
-  DialogActions,
   DialogContent,
   DialogTitle,
   Tooltip,
@@ -22,7 +21,6 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import CloseIcon from "@mui/icons-material/Close";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import "../styles/navbar.css";
-import PaymentForm from "./PaymentForm";
 import UserManual from "./UserManual";
 
 const Navbar = ({
@@ -32,28 +30,20 @@ const Navbar = ({
   setOutputLanguage,
   darkMode,
   setDarkMode,
+  isLoggedIn,
+  setIsLoggedIn,
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
-
-  const paid = sessionStorage.getItem("paymentStatus");
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
-  const [openUpgradeDialog, setOpenUpgradeDialog] = useState(false);
   const [openManualDialog, setOpenManualDialog] = useState(false);
   const theme = useTheme();
   const isLargeScreen = useMediaQuery(theme.breakpoints.up("lg"));
 
-  const [temperature, setTemperature] = useState(
-    sessionStorage.getItem("temperature") || 0.2
-  );
   const [mode, setMode] = useState(
     sessionStorage.getItem("answerMode") === "2" ? "creative" : "contextual"
   );
-
-  useEffect(() => {
-    sessionStorage.setItem("temperature", temperature);
-  }, [temperature]);
 
   useEffect(() => {
     if (mode === "contextual") {
@@ -74,6 +64,7 @@ const Navbar = ({
     sessionStorage.removeItem("expiryTime");
     sessionStorage.removeItem("paymentStatus");
     sessionStorage.removeItem("answerMode");
+    setIsLoggedIn(false);
     navigate("/login");
   };
 
@@ -88,14 +79,6 @@ const Navbar = ({
 
   const handleCloseMenu = () => {
     setAnchorEl(null);
-  };
-
-  const handleUpgradeClick = () => {
-    setOpenUpgradeDialog(true);
-  };
-
-  const handleCloseUpgradeDialog = () => {
-    setOpenUpgradeDialog(false);
   };
 
   // Handle User Manual Dialog
@@ -134,8 +117,21 @@ const Navbar = ({
   ];
 
   const toggleMode = () => {
-    setMode((prevMode) => (prevMode === "creative" ? "contextual" : "creative"));
+    setMode((prevMode) =>
+      prevMode === "creative" ? "contextual" : "creative"
+    );
   };
+  useEffect(() => {
+    if (isLargeScreen) {
+      handleCloseMenu();
+    }
+  }, [isLargeScreen]);
+  useEffect(() => {
+    const token = sessionStorage.getItem("token");
+    if (token) {
+      setIsLoggedIn(true);
+    }
+  });
 
   return (
     <>
@@ -195,9 +191,7 @@ const Navbar = ({
                   }
                   arrow
                 >
-                  <InfoIcon
-                    style={{ cursor: "pointer", marginLeft: "4px" }}
-                  />
+                  <InfoIcon style={{ cursor: "pointer", marginLeft: "4px" }} />
                 </Tooltip>
               </div>
             </li>
@@ -233,11 +227,13 @@ const Navbar = ({
             </li>
 
             {/* Pricing Link */}
-            <li className="nav-item" name="pricinglink">
-              <Link className="nav-link" to="/pricing">
-                Pricing
-              </Link>
-            </li>
+            {isLoggedIn && (
+              <li className="nav-item">
+                <Link className="nav-link" to="/pricing">
+                  Pricing
+                </Link>
+              </li>
+            )}
 
             {location.pathname === "/" && (
               <>
@@ -264,25 +260,8 @@ const Navbar = ({
               </>
             )}
 
-            {location.pathname === "/" && paid === "0" && (
-              <li className="nav-item">
-                <button
-                  className="btn btn-purple"
-                  style={{
-                    color: darkMode ? "white" : "black",
-                    fontFamily: "Roboto",
-                    textTransform: "none",
-                    fontSize: "16px",
-                  }}
-                  onClick={handleUpgradeClick}
-                >
-                  Upgrade
-                </button>
-              </li>
-            )}
-
             <li className="nav-item">
-              {location.pathname === "/" ? (
+              {isLoggedIn ? (
                 <button
                   className="btn login-logout-btn"
                   style={{ cursor: "pointer", marginLeft: "-1px" }}
@@ -417,15 +396,17 @@ const Navbar = ({
             </Button>
           </MenuItem>
 
-          <MenuItem className="menu-item">
-            <Link
-              className="menu-item"
-              to="/pricing"
-              style={{ color: darkMode ? "white" : "black" }}
-            >
-              Pricing
-            </Link>
-          </MenuItem>
+          {isLoggedIn && (
+            <MenuItem className="menu-item">
+              <Link
+                className="menu-item"
+                to="/pricing"
+                style={{ color: darkMode ? "white" : "black" }}
+              >
+                Pricing
+              </Link>
+            </MenuItem>
+          )}
 
           {location.pathname === "/" && [
             <MenuItem
@@ -435,8 +416,8 @@ const Navbar = ({
               <LanguageGridSelector
                 label="Input"
                 selectedLanguage={
-                  languages.find((lang) => lang.value === inputLanguage)?.label ||
-                  "English"
+                  languages.find((lang) => lang.value === inputLanguage)
+                    ?.label || "English"
                 }
                 languages={languages}
                 onChange={setInputLanguage}
@@ -450,8 +431,8 @@ const Navbar = ({
               <LanguageGridSelector
                 label="Output"
                 selectedLanguage={
-                  languages.find((lang) => lang.value === outputLanguage)?.label ||
-                  "English"
+                  languages.find((lang) => lang.value === outputLanguage)
+                    ?.label || "English"
                 }
                 languages={languages}
                 onChange={setOutputLanguage}
@@ -460,25 +441,8 @@ const Navbar = ({
             </MenuItem>,
           ]}
 
-          {paid === "0" && (
-            <MenuItem className="menu-item">
-              <button
-                className="btn btn-purple"
-                style={{
-                  color: darkMode ? "white" : "black",
-                  fontFamily: "Roboto",
-                  textTransform: "none",
-                  fontSize: "16px",
-                }}
-                onClick={handleUpgradeClick}
-              >
-                Upgrade
-              </button>
-            </MenuItem>
-          )}
-
           <MenuItem className="menu-item">
-            {location.pathname === "/" ? (
+            {isLoggedIn ? (
               <a
                 className="btn login-logout-btn"
                 onClick={handleLogout}
@@ -519,24 +483,6 @@ const Navbar = ({
             </button>
           </MenuItem>
         </Menu>
-
-        {/* Upgrade Dialog */}
-        <Dialog open={openUpgradeDialog} onClose={handleCloseUpgradeDialog}>
-          <IconButton
-            onClick={handleCloseUpgradeDialog}
-            style={{
-              position: "absolute",
-              right: "6px",
-              top: "6px",
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-
-          <PaymentForm />
-
-          <DialogActions></DialogActions>
-        </Dialog>
 
         {/* User Manual Dialog */}
         <Dialog

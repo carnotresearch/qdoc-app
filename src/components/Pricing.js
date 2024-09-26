@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import Button from "@mui/material/Button";
 import "../styles/pricing.css";
 import { Link, useNavigate } from "react-router-dom";
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import axios from "axios";
+import Footer from "./Footer";
 
 const plans = [
   {
@@ -49,21 +50,21 @@ const plans = [
   },
 ];
 
-const Pricing = ({ plan, darkMode }) => {
+const Pricing = ({ darkMode }) => {
   const [paymentPlan, setPaymentPlan] = useState(2);
-  const [email, setEmail] = useState("");
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const token = sessionStorage.getItem("token");
 
   const paymentPlanOptions = [
-    { value: 1, label: "₹19/day", price: 1900 },
-    { value: 2, label: "₹59/week", price: 5900 },
-    { value: 3, label: " ₹189/month", price: 18900 },
-    { value: 4, label: " ₹479-3 months", price: 47900 },
+    { value: 0, label: "₹19 /day", price: 1900 },
+    { value: 1, label: "₹59 /week", price: 5900 },
+    { value: 2, label: " ₹189 /month", price: 18900 },
+    { value: 3, label: " ₹479 /3months", price: 47900 },
   ];
   useEffect(() => {
     const token = sessionStorage.getItem("token");
-    setIsLoggedIn(!!token); 
+    setIsLoggedIn(!!token);
   }, []);
 
   const loadScript = (src) => {
@@ -111,7 +112,7 @@ const Pricing = ({ plan, darkMode }) => {
           const response = await axios.post(
             `${process.env.REACT_APP_UPGRADE_ACCOUNT_URL}`,
             {
-              email,
+              token,
               paymentPlan: selectedPlan.value,
             }
           );
@@ -145,8 +146,7 @@ const Pricing = ({ plan, darkMode }) => {
       <div style={{ textAlign: "center", marginBottom: "5px" }}>
         <Link to="/" style={{ textDecoration: "none" }}>
           <Button
-           
-           startIcon={<ArrowBackIosNewIcon fontSize="small" />} 
+            startIcon={<ArrowBackIosNewIcon fontSize="small" />}
             variant="contained"
             sx={{
               textTransform: "none",
@@ -308,6 +308,7 @@ const Pricing = ({ plan, darkMode }) => {
           </div>
         ))}
       </div>
+      <Footer />
     </div>
   );
 };
