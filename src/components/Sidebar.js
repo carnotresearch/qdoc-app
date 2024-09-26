@@ -65,12 +65,8 @@ function Sidebar({
           )
         );
       } catch (error) {
-        if (error.response && error.response.status === 400) {
-          alert(error.response.data.message);
-        } else {
-          console.error("Error renaming session:", error);
-          alert("Failed to rename the session. Please try again.");
-        }
+        console.error("Error renaming session:", error);
+        alert("Failed to rename the session. Please try again.");
       }
     }
   };
@@ -440,28 +436,14 @@ function Sidebar({
                 ))}
 
                 {!isUploading && session.id === latestSessionId && (
-                  <div
-                    className="d-flex justify-content-end align-items-center"
-                    style={{ width: "100%" }}
+                  <Button
+                    className="bg-secondary"
+                    variant="secondary"
+                    onClick={() => additionalFileInputRef.current.click()}
+                    style={addButtonStyle}
                   >
-                    <Button
-                      className="bg-secondary"
-                      variant="secondary"
-                      onClick={() => additionalFileInputRef.current.click()}
-                      style={{
-                        ...addButtonStyle,
-                        width: "100px",
-                        height: "30px",
-                        fontSize: "12px",
-                        marginRight: "auto",
-                        marginLeft: "auto",
-                        marginTop: "0.5cm",
-                        marginBottom: "0.5cm",
-                      }}
-                    >
-                      <small>+</small> Add Files
-                    </Button>
-                  </div>
+                    <big>+</big> Add Files
+                  </Button>
                 )}
                 <input
                   type="file"

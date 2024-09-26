@@ -102,25 +102,22 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
   const sendBackgroundMessage = async () => {
     try {
       const token = sessionStorage.getItem("token");
-      const response = await axios.post(
-        `${process.env.REACT_APP_BACKEND_URL}/ask`,
-        {
-          sessionId: sessionStorage.getItem("sessionId"),
-          message: "Summarize", 
-          token,
-          inputLanguage,
-          outputLanguage,
-          context: files.length > 0 ? "files" : "",
-          temperature: sessionStorage.getItem("temperature") || 0.2,
-          mode: sessionStorage.getItem("answerMode") || "contextual",
-        }
-      );
+      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/ask`, {
+        sessionId: sessionStorage.getItem("sessionId"),
+        message: "Summarize",
+        token,
+        inputLanguage,
+        outputLanguage,
+        context: files.length > 0 ? "files" : "",
+        temperature: sessionStorage.getItem("temperature") || 0.2,
+        mode: sessionStorage.getItem("answerMode") || "contextual",
+      });
       // No need to handle response or update UI
     } catch (error) {
       console.error("Error sending background message:", error);
     }
   };
-  
+
   const handleCopy = (text, index) => {
     navigator.clipboard.writeText(text).then(() => {
       setCopiedIndex(index);
@@ -230,8 +227,8 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
             outputLanguage,
             context,
             temperature: 0.8,
-            mode:sessionStorage.getItem("answerMode") || "contextual",
-                    }
+            mode: sessionStorage.getItem("answerMode") || "contextual",
+          }
         );
 
         newChatHistory[newChatHistory.length - 1].bot = response.data.answer;
@@ -457,7 +454,8 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
                 <div className="message-box">
                   <span className={"message-text"}>
                     <p>
-                      Kindly upload files using sidebar or Select an existing knowledge container from the Left Menu.{" "}
+                      Kindly upload files using sidebar or Select an existing
+                      knowledge container from the Left Menu.{" "}
                       <FaChevronCircleLeft
                         style={{ cursor: "pointer" }}
                         onClick={() => setSidebarCollapsed(false)}
