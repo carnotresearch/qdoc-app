@@ -1,5 +1,3 @@
-// LanguageGridSelector.js
-
 import React, { useState } from "react";
 import {
   Button,
@@ -9,11 +7,11 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
+import { languages } from "../../constant/data";
 
 const LanguageGridSelector = ({
   label,
   selectedLanguage,
-  languages,
   onChange,
   darkMode,
 }) => {

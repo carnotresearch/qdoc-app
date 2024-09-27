@@ -11,17 +11,17 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import LanguageGridSelector from "./LanguageGridSelector";
 import Profile from "./navbar/Profile";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import CloseIcon from "@mui/icons-material/Close";
 import UserManual from "./UserManual";
-import { languages } from "../constant/data";
 import "../styles/navbar.css";
 import ContextMode from "./navbar/ContextMode";
 import Help from "./navbar/Help";
+import InputLanguage from "./navbar/InputLanguage";
+import OutputLanguage from "./navbar/OutputLanguage";
 
 const Navbar = ({
   inputLanguage,
@@ -102,7 +102,10 @@ const Navbar = ({
           darkMode ? "navbar-dark bg-dark" : "navbar-light bg-light"
         }`}
       >
+        {/* User Profile */}
         <Profile />
+
+        {/* Heading */}
         <Link className="navbar-brand" style={{ marginLeft: "0.5cm" }} to="/">
           icarKno
           <span
@@ -121,7 +124,9 @@ const Navbar = ({
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav ms-auto">
             {/* Mode Toggle */}
-            <ContextMode mode={mode} setMode={setMode} />
+            <li className="nav-item">
+              <ContextMode mode={mode} setMode={setMode} />
+            </li>
 
             {/* About Us Link */}
             <li className="nav-item">
@@ -149,31 +154,23 @@ const Navbar = ({
               </li>
             )}
 
+            {/* Input Output Languages */}
             {location.pathname === "/" && (
               <>
-                <LanguageGridSelector
-                  label="Input"
-                  selectedLanguage={
-                    languages.find((lang) => lang.value === inputLanguage)
-                      ?.label || "English"
-                  }
-                  languages={languages}
-                  onChange={setInputLanguage}
+                <InputLanguage
+                  inputLanguage={inputLanguage}
+                  setInputLanguage={setInputLanguage}
                   darkMode={darkMode}
                 />
-                <LanguageGridSelector
-                  label="Output"
-                  selectedLanguage={
-                    languages.find((lang) => lang.value === outputLanguage)
-                      ?.label || "English"
-                  }
-                  languages={languages}
-                  onChange={setOutputLanguage}
+                <OutputLanguage
+                  outputLanguage={outputLanguage}
+                  setOutputLanguage={setOutputLanguage}
                   darkMode={darkMode}
                 />
               </>
             )}
 
+            {/* Login Logout Button */}
             <li className="nav-item">
               {isLoggedIn ? (
                 <button
@@ -275,14 +272,9 @@ const Navbar = ({
               key="input-grid-selector"
               className="menu-item input-grid-selector"
             >
-              <LanguageGridSelector
-                label="Input"
-                selectedLanguage={
-                  languages.find((lang) => lang.value === inputLanguage)
-                    ?.label || "English"
-                }
-                languages={languages}
-                onChange={setInputLanguage}
+              <InputLanguage
+                inputLanguage={inputLanguage}
+                setInputLanguage={setInputLanguage}
                 darkMode={darkMode}
               />
             </MenuItem>,
@@ -290,14 +282,9 @@ const Navbar = ({
               key="output-grid-selector"
               className="menu-item output-grid-selector"
             >
-              <LanguageGridSelector
-                label="Output"
-                selectedLanguage={
-                  languages.find((lang) => lang.value === outputLanguage)
-                    ?.label || "English"
-                }
-                languages={languages}
-                onChange={setOutputLanguage}
+              <OutputLanguage
+                outputLanguage={outputLanguage}
+                setOutputLanguage={setOutputLanguage}
                 darkMode={darkMode}
               />
             </MenuItem>,
