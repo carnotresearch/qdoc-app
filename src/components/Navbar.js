@@ -8,21 +8,20 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
-  Tooltip,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
 import LanguageGridSelector from "./LanguageGridSelector";
-import Profile from "./Profile";
+import Profile from "./navbar/Profile";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
-import InfoIcon from "@mui/icons-material/Info";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import CloseIcon from "@mui/icons-material/Close";
-import MenuBookIcon from "@mui/icons-material/MenuBook";
 import UserManual from "./UserManual";
 import { languages } from "../constant/data";
 import "../styles/navbar.css";
+import ContextMode from "./navbar/ContextMode";
+import Help from "./navbar/Help";
 
 const Navbar = ({
   inputLanguage,
@@ -41,10 +40,7 @@ const Navbar = ({
   const [openManualDialog, setOpenManualDialog] = useState(false);
   const theme = useTheme();
   const isLargeScreen = useMediaQuery(theme.breakpoints.up("lg"));
-
-  const [mode, setMode] = useState(
-    sessionStorage.getItem("answerMode") === "2" ? "creative" : "contextual"
-  );
+  const [mode, setMode] = useState("contextual");
 
   useEffect(() => {
     if (mode === "contextual") {
@@ -59,6 +55,19 @@ const Navbar = ({
       handleCloseMenu();
     }
   }, [isLargeScreen]);
+
+  useEffect(() => {
+    if (isLargeScreen) {
+      handleCloseMenu();
+    }
+  }, [isLargeScreen]);
+
+  useEffect(() => {
+    const token = sessionStorage.getItem("token");
+    if (token) {
+      setIsLoggedIn(true);
+    }
+  });
 
   const handleLogout = () => {
     sessionStorage.removeItem("token");
@@ -82,31 +91,9 @@ const Navbar = ({
     setAnchorEl(null);
   };
 
-  // Handle User Manual Dialog
-  const handleManualOpen = () => {
-    setOpenManualDialog(true);
-  };
-
   const handleManualClose = () => {
     setOpenManualDialog(false);
   };
-
-  const toggleMode = () => {
-    setMode((prevMode) =>
-      prevMode === "creative" ? "contextual" : "creative"
-    );
-  };
-  useEffect(() => {
-    if (isLargeScreen) {
-      handleCloseMenu();
-    }
-  }, [isLargeScreen]);
-  useEffect(() => {
-    const token = sessionStorage.getItem("token");
-    if (token) {
-      setIsLoggedIn(true);
-    }
-  });
 
   return (
     <>
@@ -134,42 +121,7 @@ const Navbar = ({
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav ms-auto">
             {/* Mode Toggle */}
-            <li className="nav-item">
-              <div className="mode-toggle">
-                <div
-                  className={`toggle-container ${mode} ${
-                    darkMode ? "dark-mode" : ""
-                  }`}
-                  onClick={toggleMode}
-                >
-                  <div
-                    className="option contextual-option"
-                    onClick={() => setMode("contextual")}
-                  >
-                    Contextual
-                  </div>
-                  <div className="slider">
-                    <div className="dots"></div>
-                  </div>
-                  <div
-                    className="option creative-option"
-                    onClick={() => setMode("creative")}
-                  >
-                    Creative
-                  </div>
-                </div>
-                <Tooltip
-                  title={
-                    mode === "creative"
-                      ? "Creative Mode: Provides more imaginative, inferred responses based on context and creativity."
-                      : "Contextual Mode: Answers based on provided context, strictly sticking to the information given."
-                  }
-                  arrow
-                >
-                  <InfoIcon style={{ cursor: "pointer", marginLeft: "4px" }} />
-                </Tooltip>
-              </div>
-            </li>
+            <ContextMode mode={mode} setMode={setMode} />
 
             {/* About Us Link */}
             <li className="nav-item">
@@ -185,20 +137,7 @@ const Navbar = ({
 
             {/* User Manual Button */}
             <li className="nav-item">
-              <Button
-                color="primary"
-                startIcon={<MenuBookIcon />}
-                onClick={handleManualOpen}
-                style={{
-                  backgroundColor: "white",
-                  color: "black",
-                  margin: "0 8px",
-                  textTransform: "none",
-                  fontSize: "16px",
-                }}
-              >
-                Help
-              </Button>
+              <Help setOpenManualDialog={setOpenManualDialog} />
             </li>
 
             {/* Pricing Link */}
@@ -301,46 +240,7 @@ const Navbar = ({
         >
           {/* Mode Toggle */}
           <MenuItem className="menu-item">
-            <div className="mode-toggle">
-              <div
-                className={`toggle-container ${mode} ${
-                  darkMode ? "dark-mode" : ""
-                }`}
-                onClick={toggleMode}
-              >
-                <div
-                  className="option contextual-option"
-                  onClick={() => setMode("contextual")}
-                >
-                  Contextual
-                </div>
-                <div className="slider">
-                  <div className="dots"></div>
-                </div>
-                <div
-                  className="option creative-option"
-                  onClick={() => setMode("creative")}
-                >
-                  Creative
-                </div>
-              </div>
-              <Tooltip
-                title={
-                  mode === "creative"
-                    ? "Creative Mode: Provides more imaginative, inferred responses based on context and creativity."
-                    : "Contextual Mode: Answers based on provided context, strictly sticking to the information given."
-                }
-                arrow
-              >
-                <InfoIcon
-                  style={{
-                    cursor: "pointer",
-                    marginLeft: "4px",
-                    fontSize: "18px",
-                  }}
-                />
-              </Tooltip>
-            </div>
+            <ContextMode mode={mode} setMode={setMode} />
           </MenuItem>
 
           <MenuItem
@@ -355,20 +255,7 @@ const Navbar = ({
 
           {/* User Manual Button */}
           <MenuItem className="menu-item">
-            <Button
-              color="primary"
-              startIcon={<MenuBookIcon />}
-              onClick={handleManualOpen}
-              style={{
-                backgroundColor: "#FFFFFF",
-                color: "#000000",
-                textTransform: "none",
-                fontSize: "16px",
-                width: "100%",
-              }}
-            >
-              Help
-            </Button>
+            <Help setOpenManualDialog={setOpenManualDialog} />
           </MenuItem>
 
           {isLoggedIn && (
