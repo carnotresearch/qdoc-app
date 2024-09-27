@@ -16,7 +16,7 @@ import DarkModeIcon from "@mui/icons-material/DarkMode";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import CloseIcon from "@mui/icons-material/Close";
-import UserManual from "./UserManual";
+import UserManual from "./navbar/UserManual";
 import "../styles/navbar.css";
 import ContextMode from "./navbar/ContextMode";
 import Help from "./navbar/Help";
