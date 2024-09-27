@@ -5,63 +5,12 @@ import { Link, useNavigate } from "react-router-dom";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import axios from "axios";
 import Footer from "./Footer";
-
-const plans = [
-  {
-    title: "Free",
-    features: [
-      { text: "Limited to 20 queries", className: "feature-free" },
-      { text: "Multilingual support including Indian languages" },
-      { text: "Upto 2 containers" },
-      { text: "Upto 2 documents per container" },
-      { text: "10MB/document" },
-      { text: "Upto 400 pages per container" },
-    ],
-    buttonText: "Try for Free",
-    buttonLink: "/",
-    price: "0/month",
-  },
-  {
-    title: "Premium",
-    features: [
-      { text: "Unlimited queries", className: "feature-premium" },
-      { text: "Multilingual support including Indian languages" },
-      { text: "Upto 5 containers" },
-      { text: "Upto 10 documents per container" },
-      { text: "20MB/document" },
-      { text: "Upto 800 pages per container" },
-    ],
-    buttonText: "Pay Now",
-    buttonAction: () => {},
-    price: "",
-  },
-  {
-    title: "Business",
-    features: [
-      { text: "On-premise solution", className: "feature-business" },
-      { text: "Secure private data" },
-      { text: "Containerised Deployment" },
-    ],
-    buttonText: "Contact Us",
-    buttonAction: () => {
-      window.location.href = "mailto:contact@carnotresearch.com";
-    },
-    price: "Custom pricing",
-  },
-];
+import { plans, paymentPlanOptions } from "../constant/data";
 
 const Pricing = ({ darkMode }) => {
   const [paymentPlan, setPaymentPlan] = useState(2);
   const navigate = useNavigate();
   const token = sessionStorage.getItem("token");
-
-  const paymentPlanOptions = [
-    { value: 0, label: "₹19 /day", price: 1900 },
-    { value: 1, label: "₹59 /week", price: 5900 },
-    { value: 2, label: " ₹189 /month", price: 18900 },
-    { value: 3, label: " ₹479 /3months", price: 47900 },
-  ];
-
   const loadScript = (src) => {
     return new Promise((resolve) => {
       const script = document.createElement("script");
@@ -135,6 +84,24 @@ const Pricing = ({ darkMode }) => {
   };
 
   plans[1].buttonAction = handlePayment;
+
+  const headingStyle = {
+    textAlign: "left",
+    marginLeft: "5px",
+    color: darkMode ? "white" : "black",
+  };
+  const buttonStyle = {
+    textTransform: "none",
+    fontWeight: "bold",
+    color: "rgba(54, 183, 183, 0.8)",
+    borderColor: "rgba(54, 183, 183, 0.8)",
+    "&:hover": {
+      borderColor: "transparent",
+      backgroundColor: "",
+    },
+    borderWidth: "2px",
+  };
+
   return (
     <div className={darkMode ? "dark-mode" : ""}>
       <h1 className="page-title">Subscription Plans</h1>
@@ -174,15 +141,7 @@ const Pricing = ({ darkMode }) => {
           <div key={index} className="plan-section">
             <h2>{plan.title}</h2>
             {plan.title === "Free" && (
-              <h5
-                style={{
-                  textAlign: "left",
-                  marginLeft: "5px",
-                  color: darkMode ? "white" : "black",
-                }}
-              >
-                ₹{plan.price}
-              </h5>
+              <h5 style={headingStyle}>₹{plan.price}</h5>
             )}
             {plan.title === "Premium" && (
               <>
@@ -207,15 +166,7 @@ const Pricing = ({ darkMode }) => {
               </>
             )}
             {plan.title === "Business" && (
-              <h5
-                style={{
-                  textAlign: "left",
-                  marginLeft: "5px",
-                  color: darkMode ? "white" : "black",
-                }}
-              >
-                {plan.price}
-              </h5>
+              <h5 style={headingStyle}>{plan.price}</h5>
             )}
             <ul className="features-list">
               {plan.features.map((feature, index) => (
@@ -227,20 +178,7 @@ const Pricing = ({ darkMode }) => {
             </ul>
             {plan.buttonLink ? (
               <Link to={plan.buttonLink} style={{ textDecoration: "none" }}>
-                <Button
-                  variant="outlined"
-                  sx={{
-                    textTransform: "none",
-                    fontWeight: "bold",
-                    color: "rgba(54, 183, 183, 0.8)",
-                    borderColor: "rgba(54, 183, 183, 0.8)",
-                    "&:hover": {
-                      borderColor: "transparent",
-                      backgroundColor: "",
-                    },
-                    borderWidth: "1px",
-                  }}
-                >
+                <Button variant="outlined" sx={buttonStyle}>
                   {plan.buttonText}
                 </Button>
               </Link>
@@ -248,17 +186,7 @@ const Pricing = ({ darkMode }) => {
               <Button
                 variant="outlined"
                 onClick={plan.buttonAction}
-                sx={{
-                  textTransform: "none",
-                  fontWeight: "bold",
-                  color: "rgba(54, 183, 183, 0.8)",
-                  borderColor: "rgba(54, 183, 183, 0.8)",
-                  "&:hover": {
-                    borderColor: "transparent",
-                    backgroundColor: "",
-                  },
-                  borderWidth: "2px",
-                }}
+                sx={buttonStyle}
               >
                 {plan.buttonText}
               </Button>

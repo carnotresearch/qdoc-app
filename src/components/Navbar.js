@@ -20,8 +20,9 @@ import InfoIcon from "@mui/icons-material/Info";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import CloseIcon from "@mui/icons-material/Close";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
-import "../styles/navbar.css";
 import UserManual from "./UserManual";
+import { languages } from "../constant/data";
+import "../styles/navbar.css";
 
 const Navbar = ({
   inputLanguage,
@@ -89,32 +90,6 @@ const Navbar = ({
   const handleManualClose = () => {
     setOpenManualDialog(false);
   };
-
-  const languages = [
-    { value: "23", label: "English" },
-    { value: "1", label: "Hindi" },
-    { value: "2", label: "Gom" },
-    { value: "3", label: "Kannada" },
-    { value: "4", label: "Dogri" },
-    { value: "5", label: "Bodo" },
-    { value: "6", label: "Urdu" },
-    { value: "7", label: "Tamil" },
-    { value: "8", label: "Kashmiri" },
-    { value: "9", label: "Assamese" },
-    { value: "10", label: "Bengali" },
-    { value: "11", label: "Marathi" },
-    { value: "12", label: "Sindhi" },
-    { value: "13", label: "Maithili" },
-    { value: "14", label: "Punjabi" },
-    { value: "15", label: "Malayalam" },
-    { value: "16", label: "Manipuri" },
-    { value: "17", label: "Telugu" },
-    { value: "18", label: "Sanskrit" },
-    { value: "19", label: "Nepali" },
-    { value: "20", label: "Santali" },
-    { value: "21", label: "Gujarati" },
-    { value: "22", label: "Odia" },
-  ];
 
   const toggleMode = () => {
     setMode((prevMode) =>
