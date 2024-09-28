@@ -42,6 +42,7 @@ const Navbar = ({
   const isLargeScreen = useMediaQuery(theme.breakpoints.up("lg"));
   const [mode, setMode] = useState("contextual");
 
+  // creative mode selection
   useEffect(() => {
     if (mode === "contextual") {
       sessionStorage.setItem("answerMode", "1");
@@ -50,12 +51,7 @@ const Navbar = ({
     }
   }, [mode]);
 
-  useEffect(() => {
-    if (isLargeScreen) {
-      handleCloseMenu();
-    }
-  }, [isLargeScreen]);
-
+  // hide menu on large screen
   useEffect(() => {
     if (isLargeScreen) {
       handleCloseMenu();
@@ -121,13 +117,9 @@ const Navbar = ({
           Chat
         </Link>
 
+        {/* Right side items */}
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav ms-auto">
-            {/* Mode Toggle */}
-            <li className="nav-item">
-              <ContextMode mode={mode} setMode={setMode} />
-            </li>
-
             {/* About Us Link */}
             <li className="nav-item">
               <a
@@ -140,35 +132,33 @@ const Navbar = ({
               </a>
             </li>
 
-            {/* User Manual Button */}
-            <li className="nav-item">
-              <Help setOpenManualDialog={setOpenManualDialog} />
-            </li>
-
-            {/* Pricing Link */}
-            {isLoggedIn && (
-              <li className="nav-item">
-                <Link className="nav-link" to="/pricing">
-                  Pricing
-                </Link>
-              </li>
-            )}
-
-            {/* Input Output Languages */}
-            {location.pathname === "/" && (
-              <>
-                <InputLanguage
-                  inputLanguage={inputLanguage}
-                  setInputLanguage={setInputLanguage}
-                  darkMode={darkMode}
-                />
-                <OutputLanguage
-                  outputLanguage={outputLanguage}
-                  setOutputLanguage={setOutputLanguage}
-                  darkMode={darkMode}
-                />
-              </>
-            )}
+            {/* Items displayed only on chat page */}
+            {location.pathname === "/" && [
+              // Pricing Link
+              <Link className="nav-link" to="/pricing" key={1}>
+                Pricing
+              </Link>,
+              // User Manual Button
+              <Help setOpenManualDialog={setOpenManualDialog} key={2} />,
+              // Mode Toggle
+              <li className="nav-item" style={{ marginLeft: "0.5rem" }} key={3}>
+                <ContextMode mode={mode} setMode={setMode} />
+              </li>,
+              // Input Language Button
+              <InputLanguage
+                inputLanguage={inputLanguage}
+                setInputLanguage={setInputLanguage}
+                darkMode={darkMode}
+                key={4}
+              />,
+              // Output Language Button
+              <OutputLanguage
+                outputLanguage={outputLanguage}
+                setOutputLanguage={setOutputLanguage}
+                darkMode={darkMode}
+                key={5}
+              />,
+            ]}
 
             {/* Login Logout Button */}
             <li className="nav-item">
@@ -250,13 +240,9 @@ const Navbar = ({
             About Us
           </MenuItem>
 
-          {/* User Manual Button */}
-          <MenuItem className="menu-item">
-            <Help setOpenManualDialog={setOpenManualDialog} />
-          </MenuItem>
-
-          {isLoggedIn && (
-            <MenuItem className="menu-item">
+          {location.pathname === "/" && [
+            // Pricing Link
+            <MenuItem className="menu-item" key="pricing">
               <Link
                 className="menu-item"
                 to="/pricing"
@@ -264,10 +250,12 @@ const Navbar = ({
               >
                 Pricing
               </Link>
-            </MenuItem>
-          )}
-
-          {location.pathname === "/" && [
+            </MenuItem>,
+            // User Manual Button
+            <MenuItem className="menu-item" key="user-manual">
+              <Help setOpenManualDialog={setOpenManualDialog} />
+            </MenuItem>,
+            // Input Language Button
             <MenuItem
               key="input-grid-selector"
               className="menu-item input-grid-selector"
@@ -278,6 +266,7 @@ const Navbar = ({
                 darkMode={darkMode}
               />
             </MenuItem>,
+            // Output Language button
             <MenuItem
               key="output-grid-selector"
               className="menu-item output-grid-selector"

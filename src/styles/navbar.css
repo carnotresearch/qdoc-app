@@ -76,10 +76,6 @@ body {
   border: none;
 }
 
-.nav-item {
-  margin-right: 10px;
-}
-
 .dropdown-item {
   background-color: var(--dropdown-background-color);
   color: var(--text-color);
@@ -135,11 +131,6 @@ body {
   color: inherit;
 }
 
-.navbar-items {
-  display: flex;
-  align-items: center;
-}
-
 .navbar-item {
   margin: 0 1rem;
   color: inherit;
@@ -147,10 +138,6 @@ body {
 }
 
 @media (max-width: 768px) {
-  .navbar-items {
-    display: none;
-  }
-
   .navbar-toggler {
     display: block;
     border-radius: 6px;

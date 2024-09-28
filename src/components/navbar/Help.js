@@ -10,10 +10,8 @@ const Help = ({ setOpenManualDialog }) => {
   const buttonStyle = {
     backgroundColor: "white",
     color: "black",
-    margin: "0 8px",
     textTransform: "none",
-    fontSize: "16px",
-    width: "100%",
+    fontSize: "1rem",
   };
 
   return (
