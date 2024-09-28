@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
-import "../styles/profile.css";
+import "../../styles/profile.css";
 
 function Profile() {
   const token = sessionStorage.getItem("token");

@@ -76,10 +76,6 @@ body {
   border: none;
 }
 
-.nav-item {
-  margin-right: 10px;
-}
-
 .dropdown-item {
   background-color: var(--dropdown-background-color);
   color: var(--text-color);
@@ -135,11 +131,6 @@ body {
   color: inherit;
 }
 
-.navbar-items {
-  display: flex;
-  align-items: center;
-}
-
 .navbar-item {
   margin: 0 1rem;
   color: inherit;
@@ -147,10 +138,6 @@ body {
 }
 
 @media (max-width: 768px) {
-  .navbar-items {
-    display: none;
-  }
-
   .navbar-toggler {
     display: block;
     border-radius: 6px;
@@ -197,17 +184,16 @@ body {
 .mode-toggle {
   display: flex;
   align-items: center;
+  margin-top: 0.2rem;
 }
 
 .mode-toggle .toggle-container {
   display: flex;
   align-items: center;
   position: relative;
-  width: 160px;
-  height: 30px;
+  width: 10rem;
   background-color: #e0e0e0;
-  border-radius: 15px;
-  margin-right: 8px;
+  border-radius: 1rem;
   cursor: pointer;
 }
 

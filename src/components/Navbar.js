@@ -8,20 +8,20 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
-  Tooltip,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import LanguageGridSelector from "./LanguageGridSelector";
-import Profile from "./Profile";
+import Profile from "./navbar/Profile";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
-import InfoIcon from "@mui/icons-material/Info";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import CloseIcon from "@mui/icons-material/Close";
-import MenuBookIcon from "@mui/icons-material/MenuBook";
+import UserManual from "./navbar/UserManual";
 import "../styles/navbar.css";
-import UserManual from "./UserManual";
+import ContextMode from "./navbar/ContextMode";
+import Help from "./navbar/Help";
+import InputLanguage from "./navbar/InputLanguage";
+import OutputLanguage from "./navbar/OutputLanguage";
 
 const Navbar = ({
   inputLanguage,
@@ -40,11 +40,9 @@ const Navbar = ({
   const [openManualDialog, setOpenManualDialog] = useState(false);
   const theme = useTheme();
   const isLargeScreen = useMediaQuery(theme.breakpoints.up("lg"));
+  const [mode, setMode] = useState("contextual");
 
-  const [mode, setMode] = useState(
-    sessionStorage.getItem("answerMode") === "2" ? "creative" : "contextual"
-  );
-
+  // creative mode selection
   useEffect(() => {
     if (mode === "contextual") {
       sessionStorage.setItem("answerMode", "1");
@@ -53,11 +51,19 @@ const Navbar = ({
     }
   }, [mode]);
 
+  // hide menu on large screen
   useEffect(() => {
     if (isLargeScreen) {
       handleCloseMenu();
     }
   }, [isLargeScreen]);
+
+  useEffect(() => {
+    const token = sessionStorage.getItem("token");
+    if (token) {
+      setIsLoggedIn(true);
+    }
+  });
 
   const handleLogout = () => {
     sessionStorage.removeItem("token");
@@ -81,57 +87,9 @@ const Navbar = ({
     setAnchorEl(null);
   };
 
-  // Handle User Manual Dialog
-  const handleManualOpen = () => {
-    setOpenManualDialog(true);
-  };
-
   const handleManualClose = () => {
     setOpenManualDialog(false);
   };
-
-  const languages = [
-    { value: "23", label: "English" },
-    { value: "1", label: "Hindi" },
-    { value: "2", label: "Gom" },
-    { value: "3", label: "Kannada" },
-    { value: "4", label: "Dogri" },
-    { value: "5", label: "Bodo" },
-    { value: "6", label: "Urdu" },
-    { value: "7", label: "Tamil" },
-    { value: "8", label: "Kashmiri" },
-    { value: "9", label: "Assamese" },
-    { value: "10", label: "Bengali" },
-    { value: "11", label: "Marathi" },
-    { value: "12", label: "Sindhi" },
-    { value: "13", label: "Maithili" },
-    { value: "14", label: "Punjabi" },
-    { value: "15", label: "Malayalam" },
-    { value: "16", label: "Manipuri" },
-    { value: "17", label: "Telugu" },
-    { value: "18", label: "Sanskrit" },
-    { value: "19", label: "Nepali" },
-    { value: "20", label: "Santali" },
-    { value: "21", label: "Gujarati" },
-    { value: "22", label: "Odia" },
-  ];
-
-  const toggleMode = () => {
-    setMode((prevMode) =>
-      prevMode === "creative" ? "contextual" : "creative"
-    );
-  };
-  useEffect(() => {
-    if (isLargeScreen) {
-      handleCloseMenu();
-    }
-  }, [isLargeScreen]);
-  useEffect(() => {
-    const token = sessionStorage.getItem("token");
-    if (token) {
-      setIsLoggedIn(true);
-    }
-  });
 
   return (
     <>
@@ -140,7 +98,10 @@ const Navbar = ({
           darkMode ? "navbar-dark bg-dark" : "navbar-light bg-light"
         }`}
       >
+        {/* User Profile */}
         <Profile />
+
+        {/* Heading */}
         <Link className="navbar-brand" style={{ marginLeft: "0.5cm" }} to="/">
           icarKno
           <span
@@ -156,46 +117,9 @@ const Navbar = ({
           Chat
         </Link>
 
+        {/* Right side items */}
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav ms-auto">
-            {/* Mode Toggle */}
-            <li className="nav-item">
-              <div className="mode-toggle">
-                <div
-                  className={`toggle-container ${mode} ${
-                    darkMode ? "dark-mode" : ""
-                  }`}
-                  onClick={toggleMode}
-                >
-                  <div
-                    className="option contextual-option"
-                    onClick={() => setMode("contextual")}
-                  >
-                    Contextual
-                  </div>
-                  <div className="slider">
-                    <div className="dots"></div>
-                  </div>
-                  <div
-                    className="option creative-option"
-                    onClick={() => setMode("creative")}
-                  >
-                    Creative
-                  </div>
-                </div>
-                <Tooltip
-                  title={
-                    mode === "creative"
-                      ? "Creative Mode: Provides more imaginative, inferred responses based on context and creativity."
-                      : "Contextual Mode: Answers based on provided context, strictly sticking to the information given."
-                  }
-                  arrow
-                >
-                  <InfoIcon style={{ cursor: "pointer", marginLeft: "4px" }} />
-                </Tooltip>
-              </div>
-            </li>
-
             {/* About Us Link */}
             <li className="nav-item">
               <a
@@ -208,58 +132,35 @@ const Navbar = ({
               </a>
             </li>
 
-            {/* User Manual Button */}
-            <li className="nav-item">
-              <Button
-                color="primary"
-                startIcon={<MenuBookIcon />}
-                onClick={handleManualOpen}
-                style={{
-                  backgroundColor: "white",
-                  color: "black",
-                  margin: "0 8px",
-                  textTransform: "none",
-                  fontSize: "16px",
-                }}
-              >
-                Help
-              </Button>
-            </li>
+            {/* Items displayed only on chat page */}
+            {location.pathname === "/" && [
+              // Pricing Link
+              <Link className="nav-link" to="/pricing" key={1}>
+                Pricing
+              </Link>,
+              // User Manual Button
+              <Help setOpenManualDialog={setOpenManualDialog} key={2} />,
+              // Mode Toggle
+              <li className="nav-item" style={{ marginLeft: "0.5rem" }} key={3}>
+                <ContextMode mode={mode} setMode={setMode} />
+              </li>,
+              // Input Language Button
+              <InputLanguage
+                inputLanguage={inputLanguage}
+                setInputLanguage={setInputLanguage}
+                darkMode={darkMode}
+                key={4}
+              />,
+              // Output Language Button
+              <OutputLanguage
+                outputLanguage={outputLanguage}
+                setOutputLanguage={setOutputLanguage}
+                darkMode={darkMode}
+                key={5}
+              />,
+            ]}
 
-            {/* Pricing Link */}
-            {isLoggedIn && (
-              <li className="nav-item">
-                <Link className="nav-link" to="/pricing">
-                  Pricing
-                </Link>
-              </li>
-            )}
-
-            {location.pathname === "/" && (
-              <>
-                <LanguageGridSelector
-                  label="Input"
-                  selectedLanguage={
-                    languages.find((lang) => lang.value === inputLanguage)
-                      ?.label || "English"
-                  }
-                  languages={languages}
-                  onChange={setInputLanguage}
-                  darkMode={darkMode}
-                />
-                <LanguageGridSelector
-                  label="Output"
-                  selectedLanguage={
-                    languages.find((lang) => lang.value === outputLanguage)
-                      ?.label || "English"
-                  }
-                  languages={languages}
-                  onChange={setOutputLanguage}
-                  darkMode={darkMode}
-                />
-              </>
-            )}
-
+            {/* Login Logout Button */}
             <li className="nav-item">
               {isLoggedIn ? (
                 <button
@@ -326,46 +227,7 @@ const Navbar = ({
         >
           {/* Mode Toggle */}
           <MenuItem className="menu-item">
-            <div className="mode-toggle">
-              <div
-                className={`toggle-container ${mode} ${
-                  darkMode ? "dark-mode" : ""
-                }`}
-                onClick={toggleMode}
-              >
-                <div
-                  className="option contextual-option"
-                  onClick={() => setMode("contextual")}
-                >
-                  Contextual
-                </div>
-                <div className="slider">
-                  <div className="dots"></div>
-                </div>
-                <div
-                  className="option creative-option"
-                  onClick={() => setMode("creative")}
-                >
-                  Creative
-                </div>
-              </div>
-              <Tooltip
-                title={
-                  mode === "creative"
-                    ? "Creative Mode: Provides more imaginative, inferred responses based on context and creativity."
-                    : "Contextual Mode: Answers based on provided context, strictly sticking to the information given."
-                }
-                arrow
-              >
-                <InfoIcon
-                  style={{
-                    cursor: "pointer",
-                    marginLeft: "4px",
-                    fontSize: "18px",
-                  }}
-                />
-              </Tooltip>
-            </div>
+            <ContextMode mode={mode} setMode={setMode} />
           </MenuItem>
 
           <MenuItem
@@ -378,26 +240,9 @@ const Navbar = ({
             About Us
           </MenuItem>
 
-          {/* User Manual Button */}
-          <MenuItem className="menu-item">
-            <Button
-              color="primary"
-              startIcon={<MenuBookIcon />}
-              onClick={handleManualOpen}
-              style={{
-                backgroundColor: "#FFFFFF",
-                color: "#000000",
-                textTransform: "none",
-                fontSize: "16px",
-                width: "100%",
-              }}
-            >
-              Help
-            </Button>
-          </MenuItem>
-
-          {isLoggedIn && (
-            <MenuItem className="menu-item">
+          {location.pathname === "/" && [
+            // Pricing Link
+            <MenuItem className="menu-item" key="pricing">
               <Link
                 className="menu-item"
                 to="/pricing"
@@ -405,37 +250,30 @@ const Navbar = ({
               >
                 Pricing
               </Link>
-            </MenuItem>
-          )}
-
-          {location.pathname === "/" && [
+            </MenuItem>,
+            // User Manual Button
+            <MenuItem className="menu-item" key="user-manual">
+              <Help setOpenManualDialog={setOpenManualDialog} />
+            </MenuItem>,
+            // Input Language Button
             <MenuItem
               key="input-grid-selector"
               className="menu-item input-grid-selector"
             >
-              <LanguageGridSelector
-                label="Input"
-                selectedLanguage={
-                  languages.find((lang) => lang.value === inputLanguage)
-                    ?.label || "English"
-                }
-                languages={languages}
-                onChange={setInputLanguage}
+              <InputLanguage
+                inputLanguage={inputLanguage}
+                setInputLanguage={setInputLanguage}
                 darkMode={darkMode}
               />
             </MenuItem>,
+            // Output Language button
             <MenuItem
               key="output-grid-selector"
               className="menu-item output-grid-selector"
             >
-              <LanguageGridSelector
-                label="Output"
-                selectedLanguage={
-                  languages.find((lang) => lang.value === outputLanguage)
-                    ?.label || "English"
-                }
-                languages={languages}
-                onChange={setOutputLanguage}
+              <OutputLanguage
+                outputLanguage={outputLanguage}
+                setOutputLanguage={setOutputLanguage}
                 darkMode={darkMode}
               />
             </MenuItem>,
