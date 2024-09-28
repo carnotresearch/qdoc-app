@@ -16,12 +16,12 @@
   position: absolute;
   top: 50px;
   border: 1px solid #ccc;
-  padding: 10px;
+  padding: 1rem;
   background-color: white;
   border-radius: 10px; /* Smooth, modern corner rounding */
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Soft shadow for a clean look */
   z-index: 9999;
-  width: 10rem; /* Slightly larger for better spacing */
+  width: 18rem; /* Slightly larger for better spacing */
 }
 
 .username {
@@ -29,7 +29,7 @@
   font-size: 1rem; /* Slightly larger font for better emphasis */
   color: #333;
   margin-bottom: 0.5rem;
-  text-align: center; /* Centered text for a polished look */
+  text-align: left; /* Centered text for a polished look */
   word-wrap: break-word; /* Allows long words to break and wrap */
   white-space: normal; /* Ensures the text wraps to a new line if too long */
 }
