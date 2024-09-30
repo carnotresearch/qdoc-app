@@ -5,7 +5,7 @@ import LanguageGridSelector from "./LanguageGridSelector";
 const OutputLanguage = ({ outputLanguage, setOutputLanguage, darkMode }) => {
   return (
     <LanguageGridSelector
-      label="Input"
+      label="Output"
       selectedLanguage={
         languages.find((lang) => lang.value === outputLanguage)?.label ||
         "English"
