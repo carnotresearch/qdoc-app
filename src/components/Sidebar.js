@@ -1,8 +1,7 @@
 import React, { useState, useRef, useContext } from "react";
-import { ListGroup, Form, Button, Card, ButtonGroup } from "react-bootstrap";
+import { ListGroup, Button, ButtonGroup } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import {
-  RiMessage2Fill,
   RiArrowDropDownLine,
   RiArrowDropUpLine,
   RiEdit2Line,
@@ -16,6 +15,7 @@ import {
   fetchFilesFromS3,
   uploadMultiFiles,
 } from "./utils/presignedUtils";
+import Upload from "./sidebar/Upload";
 
 function Sidebar({
   sessions = [],
@@ -27,7 +27,6 @@ function Sidebar({
   setIsLoggedIn,
 }) {
   const { setFiles } = useContext(FileContext);
-  const fileInputRef = useRef(null);
   const additionalFileInputRef = useRef(null);
   const [isUploading, setIsUploading] = useState(false);
   const [processTime, setProcessTime] = useState(10);
@@ -109,17 +108,18 @@ function Sidebar({
       setFiles(filesArray);
       setIsUploading(false);
     } catch (backendError) {
-      if (backendError.response) {
-        if (backendError.response.status === 401) {
-          setFiles([]);
-          alert("User session is expired!");
-          setIsLoggedIn(false);
-          navigate("/login");
-        } else {
-          console.log(
-            "Error uploading files to backend, please check your network connection."
-          );
-        }
+      if (backendError.response && backendError.response.status === 401) {
+        setFiles([]);
+        alert("User session is expired!");
+        setIsLoggedIn(false);
+        navigate("/login");
+      } else if (
+        backendError.response.data &&
+        backendError.response.data.message === "No data was extracted!"
+      ) {
+        alert(
+          "Coudn't extract any data from the document. Kindly upload any other document."
+        );
       } else {
         alert("Error uploading files, please check your network connection.");
       }
@@ -132,19 +132,6 @@ function Sidebar({
     } else {
       handleFileUpload(event.target.files);
     }
-  };
-
-  const handleDragOver = (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-    event.dataTransfer.dropEffect = "copy";
-  };
-
-  const handleDrop = (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-    const files = event.dataTransfer.files;
-    handleFileUpload(files);
   };
 
   const addButtonStyle = {
@@ -315,61 +302,15 @@ function Sidebar({
     return date.toLocaleDateString(undefined, options);
   };
 
-  const marginStyle = { marginTop: "1.5cm" };
-
   return (
     <div>
-      <Form style={marginStyle}>
-        <Form.Group className="mb-3">
-          <div
-            className="custom-file-input"
-            onDragOver={handleDragOver}
-            onDrop={handleDrop}
-            onClick={() => fileInputRef.current.click()}
-            style={{ cursor: "pointer" }}
-          >
-            <input
-              type="file"
-              id="file"
-              accept=".txt,.pdf,.docx"
-              multiple
-              onChange={(event) => handleFileChange(event, false)}
-              ref={fileInputRef}
-              style={{ display: "none" }}
-            />
-            <Card
-              className="p-1"
-              style={{
-                border: "2px dashed #ccc",
-                textAlign: "center",
-                height: "50",
-              }}
-            >
-              {isUploading ? (
-                <div className="text-center">
-                  <video
-                    src="/container.mp4"
-                    loop
-                    autoPlay
-                    muted
-                    style={{ width: "100%", height: "auto" }}
-                  />
-                  <p className="mb-0">
-                    This may take up to {processTime} seconds...
-                  </p>
-                </div>
-              ) : (
-                <div>
-                  <p className="mb-0">
-                    <RiMessage2Fill /> <b>New Container</b>
-                  </p>
-                  <p className="mb-0">Drop files here</p>
-                </div>
-              )}
-            </Card>
-          </div>
-        </Form.Group>
-      </Form>
+      {/* file upload input functionality */}
+      <Upload
+        handleFileUpload={handleFileUpload}
+        handleFileChange={handleFileChange}
+        isUploading={isUploading}
+        processTime={processTime}
+      />
       <ListGroup>
         {sessions.slice(0, 4).map((session, index) => (
           <div key={index}>
