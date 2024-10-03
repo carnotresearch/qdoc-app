@@ -2,7 +2,13 @@ import React, { useState, useEffect, useRef, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import ReactMarkdown from "react-markdown";
-// icons and styles
+// components
+import { FileContext } from "./FileContext";
+import { sttSupportedLanguages, ttsSupportedLanguages } from "../constant/data";
+import LoadingDots from "./chatpage/LoadingDots";
+import FileViewer from "./chatpage/FileViewer";
+import Sidebar from "./Sidebar";
+// icons and style
 import { FaChevronCircleLeft } from "react-icons/fa";
 import { Button, Container, Form } from "react-bootstrap";
 import {
@@ -15,16 +21,10 @@ import {
   faCheck,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import "../styles/chatPage.css";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import SendIcon from "@mui/icons-material/Send";
 import IconButton from "@mui/material/IconButton";
-// components
-import { FileContext } from "./FileContext";
-import { sttSupportedLanguages, ttsSupportedLanguages } from "../constant/data";
-import LoadingDots from "./LoadingDots";
-import FileViewer from "./chatpage/FileViewer";
-import Sidebar from "./Sidebar";
+import "../styles/chatPage.css";
 
 function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
   const [chatHistory, setChatHistory] = useState([]);
