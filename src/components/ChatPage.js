@@ -7,39 +7,27 @@ import React, {
 } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import ReactMarkdown from "react-markdown";
 // components
 import { FileContext } from "./FileContext";
 import { ttsSupportedLanguages } from "../constant/data";
-import LoadingDots from "./chatpage/LoadingDots";
 import FileViewer from "./chatpage/FileViewer";
 import Sidebar from "./Sidebar";
 // icons and style
 import { FaChevronCircleLeft } from "react-icons/fa";
 import { Button, Container } from "react-bootstrap";
-import {
-  faCheckCircle,
-  faPause,
-  faPlay,
-  faRedo,
-  faCopy,
-  faCheck,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import "../styles/chatPage.css";
 import MessageInput from "./chatpage/MessageInput";
+import ChatHistory from "./chatpage/ChatHistory";
 
 function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
   const [chatHistory, setChatHistory] = useState([]);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [currentUtterance, setCurrentUtterance] = useState(null); // currently playing audio
-  const [playingIndex, setPlayingIndex] = useState(null); // Index of currently playing response
-  const [pausedIndex, setPausedIndex] = useState(null); // Index of currently paused response
   const chatHistoryRef = useRef(null);
   const messageInputRef = useRef(null);
   const { files, setFiles } = useContext(FileContext);
-  const [copiedIndex, setCopiedIndex] = useState(null);
   const [isFileUpdated, setIsFileUpdated] = useState(false);
   const [sessions, setSessions] = useState([]);
   const [latestSessionId, setLatestSessionId] = useState("");
@@ -93,14 +81,6 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
   useEffect(() => {
     fetchSessions();
   }, [fetchSessions]);
-
-  // copy message to clipboard
-  const handleCopy = (text, index) => {
-    navigator.clipboard.writeText(text).then(() => {
-      setCopiedIndex(index);
-      setTimeout(() => setCopiedIndex(null), 2000); // Reset after 2 seconds
-    });
-  };
 
   // side bar open on large and collapsed on small screens
   useEffect(() => {
@@ -205,43 +185,6 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
     }
   };
 
-  const handleSpeechOutput = (text, action, index) => {
-    if (!("speechSynthesis" in window)) {
-      console.error("Speech synthesis not supported");
-      return;
-    }
-
-    const voices = window.speechSynthesis.getVoices();
-    let selectedVoice = null;
-    if (outputLanguage === "1") {
-      selectedVoice = voices.find((voice) => voice.lang === "hi-IN");
-    }
-
-    if (action === "restart" || !currentUtterance) {
-      if (currentUtterance) {
-        window.speechSynthesis.cancel();
-      }
-      const utterance = new SpeechSynthesisUtterance(text);
-      if (selectedVoice) {
-        utterance.voice = selectedVoice;
-      }
-      utterance.onend = () => {
-        setCurrentUtterance(null);
-        setPlayingIndex(null); // Reset playing state on end
-      };
-      setCurrentUtterance(utterance);
-      window.speechSynthesis.speak(utterance);
-      setPlayingIndex(index); // Set the playing state
-    } else if (action === "play") {
-      window.speechSynthesis.resume();
-      setPlayingIndex(index); // Set the playing state
-    } else if (action === "pause") {
-      window.speechSynthesis.pause();
-      setPausedIndex(playingIndex);
-      setPlayingIndex(null); // Reset playing state on pause
-    }
-  };
-
   const iconStyles = { color: "green", marginRight: "5px" };
   const startingQuestions = [
     "Summarise the document.",
@@ -304,74 +247,12 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
             </div>
           </div>
           {chatHistory.map((chat, index) => (
-            <div key={index} className="message-wrapper">
-              <div className="message user">
-                <div className="message-box">
-                  <span className="message-text">
-                    <b>Your Query: </b>
-                    {chat.user}
-                  </span>
-                  <span className="message-time">{chat.timestamp}</span>
-                </div>
-              </div>
-              <div className="message bot">
-                <div className="message-box">
-                  <span className={"message-text"}>
-                    <b className="text-success">icarKno: </b>
-                    {chat.loading ? (
-                      <LoadingDots />
-                    ) : (
-                      <ReactMarkdown>{chat.bot}</ReactMarkdown>
-                    )}
-                  </span>
-                  {chat.ttsSupport &&
-                    (playingIndex === index ? (
-                      <>
-                        <Button
-                          onClick={() =>
-                            handleSpeechOutput(chat.bot, "pause", index)
-                          }
-                          variant="link"
-                        >
-                          <FontAwesomeIcon icon={faPause} />
-                        </Button>
-                        <Button
-                          onClick={() =>
-                            handleSpeechOutput(chat.bot, "restart", index)
-                          }
-                          variant="link"
-                        >
-                          <FontAwesomeIcon icon={faRedo} />
-                        </Button>
-                      </>
-                    ) : (
-                      <Button
-                        onClick={() =>
-                          handleSpeechOutput(
-                            chat.bot,
-                            pausedIndex === index ? "play" : "restart",
-                            index
-                          )
-                        }
-                        variant="link"
-                      >
-                        <FontAwesomeIcon icon={faPlay} />
-                      </Button>
-                    ))}
-                  <Button
-                    onClick={() => handleCopy(chat.bot, index)}
-                    variant="link"
-                    style={{ fontSize: "1" }}
-                  >
-                    {copiedIndex === index ? (
-                      <FontAwesomeIcon icon={faCheck} />
-                    ) : (
-                      <FontAwesomeIcon icon={faCopy} />
-                    )}
-                  </Button>
-                </div>
-              </div>
-            </div>
+            <ChatHistory
+              chat={chat}
+              index={index}
+              outputLanguage={outputLanguage}
+              key={index}
+            />
           ))}
           {isFileUpdated &&
             (files.length > 0 ? (
