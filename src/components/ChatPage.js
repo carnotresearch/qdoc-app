@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useAsyncError, useNavigate } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import { FaChevronCircleLeft } from "react-icons/fa";
 import { Button, Container, Form } from "react-bootstrap";
@@ -56,6 +56,9 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
   const [latestSessionId, setLatestSessionId] = useState("");
   const token = sessionStorage.getItem("token");
   const [selectedSessionFiles, setSelectedSessionFiles] = useState({});
+  const [isScannedDocument, setIsScannedDocument] = useState(false);
+  const scannedDocumentWarning =
+    "Unfortunately we couldn't read this document as it seems to be a scanned document. We'll soon allow querying scanned documents through OCR tehnniques.";
   const navigate = useNavigate();
   useEffect(() => {
     fetchSessions();
@@ -222,21 +225,26 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
         if (context_mode && context_mode === "creative") {
           temperature = 0.8;
         }
-        const response = await axios.post(
-          `${process.env.REACT_APP_BACKEND_URL}/ask`,
-          {
-            sessionId: sessionStorage.getItem("sessionId"),
-            message,
-            token,
-            inputLanguage,
-            outputLanguage,
-            context,
-            temperature: temperature,
-            mode: context_mode || "contextual",
-          }
-        );
 
-        newChatHistory[newChatHistory.length - 1].bot = response.data.answer;
+        if (isScannedDocument) {
+          newChatHistory[newChatHistory.length - 1].bot =
+            scannedDocumentWarning;
+        } else {
+          const response = await axios.post(
+            `${process.env.REACT_APP_BACKEND_URL}/ask`,
+            {
+              sessionId: sessionStorage.getItem("sessionId"),
+              message,
+              token,
+              inputLanguage,
+              outputLanguage,
+              context,
+              temperature: temperature,
+              mode: context_mode || "contextual",
+            }
+          );
+          newChatHistory[newChatHistory.length - 1].bot = response.data.answer;
+        }
         newChatHistory[newChatHistory.length - 1].loading = false;
         setChatHistory([...newChatHistory]);
       } catch (error) {
@@ -340,6 +348,7 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
             setSelectedSessionFiles={setSelectedSessionFiles}
             setSessions={setSessions}
             setIsLoggedIn={setIsLoggedIn}
+            setIsScannedDocument={setIsScannedDocument}
           />
         )}
       </div>
@@ -450,7 +459,9 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
                 <div className="message-box">
                   <span className={"message-text"}>
                     <b className="text-success">icarKno: </b>
-                    Your files have been uploaded!
+                    {isScannedDocument
+                      ? scannedDocumentWarning
+                      : "Your files have been uploaded!"}
                   </span>
                 </div>
               </div>

@@ -25,6 +25,7 @@ function Sidebar({
   setSelectedSessionFiles,
   setSessions,
   setIsLoggedIn,
+  setIsScannedDocument,
 }) {
   const { setFiles } = useContext(FileContext);
   const additionalFileInputRef = useRef(null);
@@ -99,11 +100,20 @@ function Sidebar({
       formData.append("token", token);
       formData.append("sessionId", sessionStorage.getItem("sessionId"));
       setIsUploading(true);
-      await axios.post(
+      const response = await axios.post(
         `${process.env.REACT_APP_BACKEND_URL}/upload`,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
+
+      if (
+        response.data.message &&
+        response.data.message === "No data was extracted!"
+      ) {
+        setIsScannedDocument(true);
+      } else {
+        setIsScannedDocument(false);
+      }
 
       setFiles(filesArray);
       setIsUploading(false);
@@ -113,13 +123,6 @@ function Sidebar({
         alert("User session is expired!");
         setIsLoggedIn(false);
         navigate("/login");
-      } else if (
-        backendError.response.data &&
-        backendError.response.data.message === "No data was extracted!"
-      ) {
-        alert(
-          "Coudn't extract any data from the document. Kindly upload any other document."
-        );
       } else {
         alert("Error uploading files, please check your network connection.");
       }
@@ -287,6 +290,7 @@ function Sidebar({
       sessionStorage.setItem("sessionId", session.id);
       // fetch files from s3
       setFiles(await fetchFilesFromS3(token, session.id));
+      setIsScannedDocument(false);
     } catch (error) {
       console.error("Error fetching and appending session files:", error);
     }
