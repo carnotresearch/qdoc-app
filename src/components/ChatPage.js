@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
-import { useAsyncError, useNavigate } from "react-router-dom";
-import Sidebar from "./Sidebar";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import ReactMarkdown from "react-markdown";
+// icons and styles
 import { FaChevronCircleLeft } from "react-icons/fa";
 import { Button, Container, Form } from "react-bootstrap";
 import {
@@ -13,34 +15,23 @@ import {
   faCheck,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import ReactMarkdown from "react-markdown";
-import FileViewer from "./FileViewer";
-import { FileContext } from "./FileContext";
 import "../styles/chatPage.css";
-import axios from "axios";
-import LoadingDots from "./LoadingDots";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import SendIcon from "@mui/icons-material/Send";
 import IconButton from "@mui/material/IconButton";
-
-const sttSupportedLanguages = {
-  23: "", // English
-  1: "hi-IN", // Hindi
-  11: "mr-IN", // Marathi
-  10: "bn-IN", // Bengali
-  7: "ta-IN", // Tamil
-  17: "te-IN", // Telugu
-  3: "kn-IN", // Kannada
-  21: "gu-IN", // Gujarati
-  15: "ml-IN", // Malayalam
-};
+// components
+import { FileContext } from "./FileContext";
+import { sttSupportedLanguages, ttsSupportedLanguages } from "../constant/data";
+import LoadingDots from "./LoadingDots";
+import FileViewer from "./chatpage/FileViewer";
+import Sidebar from "./Sidebar";
 
 function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
   const [chatHistory, setChatHistory] = useState([]);
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState(""); // user message
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [recognizing, setRecognizing] = useState(false);
-  const [currentUtterance, setCurrentUtterance] = useState(null);
+  const [recognizing, setRecognizing] = useState(false); // voice recognizer
+  const [currentUtterance, setCurrentUtterance] = useState(null); // currently playing audio
   const [playingIndex, setPlayingIndex] = useState(null); // Index of currently playing response
   const [pausedIndex, setPausedIndex] = useState(null); // Index of currently paused response
   const [showMicrophone, setShowMicrophone] = useState(true);
@@ -48,7 +39,6 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
   const recognition = useRef(null);
   const inputRef = useRef(null);
   const sttSupportedLanguagesRef = useRef(sttSupportedLanguages);
-  const ttsSupportedLanguages = ["1", "23"];
   const { files, setFiles } = useContext(FileContext);
   const [copiedIndex, setCopiedIndex] = useState(null);
   const [isFileUpdated, setIsFileUpdated] = useState(false);
@@ -57,8 +47,10 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
   const token = sessionStorage.getItem("token");
   const [selectedSessionFiles, setSelectedSessionFiles] = useState({});
   const [isScannedDocument, setIsScannedDocument] = useState(false);
-  const scannedDocumentWarning =
-    "Unfortunately we couldn't read this document as it seems to be a scanned document. We'll soon allow querying scanned documents through OCR tehnniques.";
+  const scannedDocumentWarning = (documentName) =>
+    "Unfortunately we couldn't read document: '" +
+    documentName +
+    "', as it seems to be a scanned document. Kindly upload a readable document.";
   const navigate = useNavigate();
   useEffect(() => {
     fetchSessions();
@@ -102,24 +94,6 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
       alert("Error fetching sessions, please try again.");
     }
   };
-  const sendBackgroundMessage = async () => {
-    try {
-      const token = sessionStorage.getItem("token");
-      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/ask`, {
-        sessionId: sessionStorage.getItem("sessionId"),
-        message: "Summarize",
-        token,
-        inputLanguage,
-        outputLanguage,
-        context: files.length > 0 ? "files" : "",
-        temperature: sessionStorage.getItem("temperature") || 0.2,
-        mode: sessionStorage.getItem("answerMode") || "contextual",
-      });
-      // No need to handle response or update UI
-    } catch (error) {
-      console.error("Error sending background message:", error);
-    }
-  };
 
   const handleCopy = (text, index) => {
     navigator.clipboard.writeText(text).then(() => {
@@ -152,7 +126,6 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
     inputRef.current.focus();
     if (files.length > 0) {
       setSidebarCollapsed(true);
-      sendBackgroundMessage();
     }
   }, [files]);
 
@@ -227,8 +200,9 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
         }
 
         if (isScannedDocument) {
+          console.log(files);
           newChatHistory[newChatHistory.length - 1].bot =
-            scannedDocumentWarning;
+            scannedDocumentWarning(files[0].name);
         } else {
           const response = await axios.post(
             `${process.env.REACT_APP_BACKEND_URL}/ask`,
@@ -256,7 +230,7 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
           navigate("/login");
         }
         newChatHistory[newChatHistory.length - 1].bot =
-          "Error! Kindly try again";
+          "Couldn't fetch response, kindly reload the page.";
         newChatHistory[newChatHistory.length - 1].loading = false;
         setChatHistory([...newChatHistory]);
       }
@@ -460,7 +434,7 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
                   <span className={"message-text"}>
                     <b className="text-success">icarKno: </b>
                     {isScannedDocument
-                      ? scannedDocumentWarning
+                      ? scannedDocumentWarning(files[0].name)
                       : "Your files have been uploaded!"}
                   </span>
                 </div>
