@@ -217,6 +217,11 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
       const token = sessionStorage.getItem("token");
       const context = files.length > 0 ? "files" : "";
       try {
+        let temperature = 0.1;
+        const context_mode = sessionStorage.getItem("answerMode");
+        if (context_mode && context_mode === "creative") {
+          temperature = 0.8;
+        }
         const response = await axios.post(
           `${process.env.REACT_APP_BACKEND_URL}/ask`,
           {
@@ -226,8 +231,8 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
             inputLanguage,
             outputLanguage,
             context,
-            temperature: 0.8,
-            mode: sessionStorage.getItem("answerMode") || "contextual",
+            temperature: temperature,
+            mode: context_mode || "contextual",
           }
         );
 
