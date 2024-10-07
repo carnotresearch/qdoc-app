@@ -14,7 +14,6 @@ import LoadingDots from "./LoadingDots";
 const ChatHistory = ({ chat, index, outputLanguage }) => {
   const [currentUtterance, setCurrentUtterance] = useState(null); // currently playing audio
   const [playingIndex, setPlayingIndex] = useState(null); // Index of currently playing response
-  const [pausedIndex, setPausedIndex] = useState(null); // Index of currently paused response
   const [copiedIndex, setCopiedIndex] = useState(null);
 
   // copy message to clipboard
@@ -37,7 +36,15 @@ const ChatHistory = ({ chat, index, outputLanguage }) => {
       selectedVoice = voices.find((voice) => voice.lang === "hi-IN");
     }
 
-    if (action === "restart" || !currentUtterance) {
+    const lastPlayedIndex = sessionStorage.getItem("lastPlayedIndex");
+    if (action === "pause") {
+      window.speechSynthesis.pause();
+      setPlayingIndex(null); // Reset playing state on pause
+    } else if (
+      action === "restart" ||
+      !currentUtterance ||
+      index !== lastPlayedIndex
+    ) {
       if (currentUtterance) {
         window.speechSynthesis.cancel();
       }
@@ -52,13 +59,10 @@ const ChatHistory = ({ chat, index, outputLanguage }) => {
       setCurrentUtterance(utterance);
       window.speechSynthesis.speak(utterance);
       setPlayingIndex(index); // Set the playing state
+      sessionStorage.setItem("lastPlayedIndex", index);
     } else if (action === "play") {
       window.speechSynthesis.resume();
       setPlayingIndex(index); // Set the playing state
-    } else if (action === "pause") {
-      window.speechSynthesis.pause();
-      setPausedIndex(playingIndex);
-      setPlayingIndex(null); // Reset playing state on pause
     }
   };
 
@@ -101,13 +105,7 @@ const ChatHistory = ({ chat, index, outputLanguage }) => {
               </>
             ) : (
               <Button
-                onClick={() =>
-                  handleSpeechOutput(
-                    chat.bot,
-                    pausedIndex === index ? "play" : "restart",
-                    index
-                  )
-                }
+                onClick={() => handleSpeechOutput(chat.bot, "play", index)}
                 variant="link"
               >
                 <FontAwesomeIcon icon={faPlay} />
