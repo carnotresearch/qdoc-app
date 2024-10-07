@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import PdfViewer from "../PdfViewer";
+import PdfViewer from "./PdfViewer";
 import { renderAsync } from "docx-preview";
 import "../../styles/fileViewer.css";
 
