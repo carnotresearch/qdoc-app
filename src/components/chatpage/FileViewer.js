@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import PdfViewer from "./PdfViewer";
 import { renderAsync } from "docx-preview";
-import "../styles/fileViewer.css";
+import "../../styles/fileViewer.css";
 
 function FileViewer({ files }) {
   const [fileContents, setFileContents] = useState([]);

@@ -111,6 +111,7 @@ function Sidebar({
         response.data.message === "No data was extracted!"
       ) {
         setIsScannedDocument(true);
+        handleDeleteSession(sessionStorage.getItem("sessionId"));
       } else {
         setIsScannedDocument(false);
       }

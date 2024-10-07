@@ -74,3 +74,17 @@ export const languages = [
   { value: "21", label: "Gujarati" },
   { value: "22", label: "Odia" },
 ];
+
+export const sttSupportedLanguages = {
+  23: "", // English
+  1: "hi-IN", // Hindi
+  11: "mr-IN", // Marathi
+  10: "bn-IN", // Bengali
+  7: "ta-IN", // Tamil
+  17: "te-IN", // Telugu
+  3: "kn-IN", // Kannada
+  21: "gu-IN", // Gujarati
+  15: "ml-IN", // Malayalam
+};
+
+export const ttsSupportedLanguages = ["1", "23"];
