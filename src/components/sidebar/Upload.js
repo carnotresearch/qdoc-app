@@ -41,7 +41,7 @@ const Upload = ({
           <input
             type="file"
             id="file"
-            accept=".txt,.pdf,.docx"
+            accept=".txt,.pdf,.docx,.xlsx,.csv"
             multiple
             onChange={(event) => handleFileChange(event, false)}
             ref={fileInputRef}

@@ -155,13 +155,13 @@ function Sidebar({
 
   const handleFileUpload = async (files) => {
     let size = 0;
-    for (let i = 0; i < files.length; i++) {
-      if (files[i].size > 20971520) {
-        alert("Kindly upload files up to 20MB.");
-        return;
-      }
-      size += files[i].size;
-    }
+    // for (let i = 0; i < files.length; i++) {
+    //   if (files[i].size > 20971520) {
+    //     alert("Kindly upload files up to 20MB.");
+    //     return;
+    //   }
+    //   size += files[i].size;
+    // }
     // Converting bytes to MB and multiply by 20 for avg
     const estimated_time = Math.floor(size / (1024 * 1024)) * 20;
     if (estimated_time > 10) {
@@ -393,7 +393,7 @@ function Sidebar({
                 <input
                   type="file"
                   id="additional-file"
-                  accept=".txt,.pdf,.docx"
+                  accept=".txt,.pdf,.docx, .xlsx, .csv"
                   multiple
                   onChange={(event) => handleFileChange(event, true)}
                   ref={additionalFileInputRef}
