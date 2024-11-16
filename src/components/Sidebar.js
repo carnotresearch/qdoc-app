@@ -38,7 +38,6 @@ function Sidebar({
   const handleRenameSession = async (sessionId) => {
     const newName = prompt("Enter the new name for the session:");
     if (newName && newName.trim() !== "") {
-      // Check if the newName already exists among the sessions
       const nameExists = sessions.some(
         (session) => session.name.toLowerCase() === newName.toLowerCase()
       );
@@ -131,10 +130,24 @@ function Sidebar({
   };
 
   const handleFileChange = (event, isAdditionalUpload = false) => {
+    const files = Array.from(event.target.files);
+    const pdfTxtDocxFiles = files.filter((file) =>
+      /\.(pdf|txt|docx)$/i.test(file.name)
+    );
+    const xlsxCsvFiles = files.filter((file) =>
+      /\.(xlsx|csv)$/i.test(file.name)
+    );
+
+    // Validate file types
+    if (pdfTxtDocxFiles.length > 0 && xlsxCsvFiles.length > 0) {
+      alert("Please upload either docx, txt, pdf files OR xlsx, csv files only.");
+      return;
+    }
+
     if (isAdditionalUpload) {
-      handleAdditionalFileUpload(event.target.files);
+      handleAdditionalFileUpload(files);
     } else {
-      handleFileUpload(event.target.files);
+      handleFileUpload(files);
     }
   };
 
@@ -155,14 +168,6 @@ function Sidebar({
 
   const handleFileUpload = async (files) => {
     let size = 0;
-    // for (let i = 0; i < files.length; i++) {
-    //   if (files[i].size > 20971520) {
-    //     alert("Kindly upload files up to 20MB.");
-    //     return;
-    //   }
-    //   size += files[i].size;
-    // }
-    // Converting bytes to MB and multiply by 20 for avg
     const estimated_time = Math.floor(size / (1024 * 1024)) * 20;
     if (estimated_time > 10) {
       setProcessTime(estimated_time);
@@ -172,7 +177,6 @@ function Sidebar({
       await uploadMultiFiles(token, files);
       await uploadToBackend(files);
       await fetchSessions();
-      // Highlight the latest session (New Container)
       const newSessionId = sessionStorage.getItem("sessionId");
       setLatestSessionId(newSessionId);
     } catch (error) {
@@ -226,17 +230,14 @@ function Sidebar({
     setIsUploading(true);
     const sessionId = latestSessionId || sessionStorage.getItem("sessionId");
 
-    // Set the updated files array for the session
     setSelectedSessionFiles((prevState) => ({
       ...prevState,
       [sessionId]: [...(prevState[sessionId] || []), ...newFilesArray],
     }));
 
     try {
-      // Upload files to S3
       addUploadFiles(token, sessionId, newFiles);
 
-      // Now sending only the newly added files to the backend
       const formData = new FormData();
       newFilesArray.forEach((file) => formData.append("files", file));
       formData.append("token", sessionStorage.getItem("token"));
@@ -248,7 +249,6 @@ function Sidebar({
         { headers: { "Content-Type": "multipart/form-data" } }
       );
 
-      // Update the local files state with the new files added
       setFiles((prevFiles) => [...prevFiles, ...newFilesArray]);
     } catch (error) {
       console.error("Error uploading files:", error);
@@ -279,17 +279,15 @@ function Sidebar({
         { token, sessionId: session.id },
         { headers: { "Content-Type": "application/json" } }
       );
-      // Auto-expand the selected session
       setVisibleFiles((prevState) => {
         const newState = { ...prevState };
         for (const key in newState) {
-          newState[key] = false; // Collapse all other sessions
+          newState[key] = false;
         }
-        newState[session.id] = true; // Expand the selected session
+        newState[session.id] = true;
         return newState;
       });
       sessionStorage.setItem("sessionId", session.id);
-      // fetch files from s3
       setFiles(await fetchFilesFromS3(token, session.id));
       setIsScannedDocument(false);
     } catch (error) {
@@ -309,7 +307,6 @@ function Sidebar({
 
   return (
     <div>
-      {/* file upload input functionality */}
       <Upload
         handleFileUpload={handleFileUpload}
         handleFileChange={handleFileChange}
@@ -334,7 +331,7 @@ function Sidebar({
                   variant="outline-primary"
                   size="sm"
                   onClick={(e) => {
-                    e.stopPropagation(); // Prevents triggering folder selection
+                    e.stopPropagation();
                     handleRenameSession(session.id);
                   }}
                 >
@@ -344,7 +341,7 @@ function Sidebar({
                   variant="outline-danger"
                   size="sm"
                   onClick={(e) => {
-                    e.stopPropagation(); // Prevents triggering folder selection
+                    e.stopPropagation();
                     handleDeleteSession(session.id);
                   }}
                 >
