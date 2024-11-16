@@ -80,15 +80,15 @@ const Login = ({ setIsLoggedIn }) => {
       return;
     }
     try {
-      const response = await axios.post(`${process.env.REACT_APP_LOGIN_URL}`, {
-        email,
-        password,
-      });
+      // const response = await axios.post(`${process.env.REACT_APP_LOGIN_URL}`, {
+      //   email,
+      //   password,
+      // });
       const expiryTime = Date.now() + 3600 * 1000;
-      sessionStorage.setItem("token", response.data.token);
-      if (response.data.expiryDate) {
-        sessionStorage.setItem("expiryDate", response.data.expiryDate);
-      }
+      sessionStorage.setItem("token", "123.123.123");
+      // if (response.data.expiryDate) {
+        sessionStorage.setItem("expiryDate", expiryTime);
+      // }
       sessionStorage.setItem("expiryTime", expiryTime.toString());
       setIsLoading(false);
       setFiles([]);

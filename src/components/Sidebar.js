@@ -168,7 +168,7 @@ function Sidebar({
     }
     setIsUploading(true);
     try {
-      await uploadMultiFiles(token, files);
+      // await uploadMultiFiles(token, files);
       await uploadToBackend(files);
       await fetchSessions();
       // Highlight the latest session (New Container)

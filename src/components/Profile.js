@@ -12,8 +12,8 @@ function Profile() {
   useEffect(() => {
     // Decode the token and extract the username
     if (token) {
-      const { email } = jwtDecode(token);
-      setUsername(email);
+      // const { email } = jwtDecode(token);
+      setUsername("email");
 
       const expiryDate = sessionStorage.getItem("expiryDate");
       if (expiryDate) {
