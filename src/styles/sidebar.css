@@ -26,3 +26,7 @@
     background-color: #f0ad4e; /* Example color, you can choose your preferred color */
     color: white;
   }
+
+  .custom-file-input {
+    cursor: pointer;
+  }

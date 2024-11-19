@@ -1,8 +1,7 @@
 import React, { useState, useRef, useContext } from "react";
-import { ListGroup, Form, Button, Card, ButtonGroup } from "react-bootstrap";
+import { ListGroup, Button, ButtonGroup } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import {
-  RiMessage2Fill,
   RiArrowDropDownLine,
   RiArrowDropUpLine,
   RiEdit2Line,
@@ -16,6 +15,7 @@ import {
   fetchFilesFromS3,
   uploadMultiFiles,
 } from "./utils/presignedUtils";
+import Upload from "./sidebar/Upload";
 
 function Sidebar({
   sessions = [],
@@ -25,9 +25,9 @@ function Sidebar({
   setSelectedSessionFiles,
   setSessions,
   setIsLoggedIn,
+  setIsScannedDocument,
 }) {
   const { setFiles } = useContext(FileContext);
-  const fileInputRef = useRef(null);
   const additionalFileInputRef = useRef(null);
   const [isUploading, setIsUploading] = useState(false);
   const [processTime, setProcessTime] = useState(10);
@@ -38,6 +38,16 @@ function Sidebar({
   const handleRenameSession = async (sessionId) => {
     const newName = prompt("Enter the new name for the session:");
     if (newName && newName.trim() !== "") {
+      const nameExists = sessions.some(
+        (session) => session.name.toLowerCase() === newName.toLowerCase()
+      );
+      if (nameExists) {
+        alert(
+          "A session with this name already exists. Please choose a different name."
+        );
+        return;
+      }
+
       try {
         await axios.post(
           `${process.env.REACT_APP_RENAME}`,
@@ -89,26 +99,30 @@ function Sidebar({
       formData.append("token", token);
       formData.append("sessionId", sessionStorage.getItem("sessionId"));
       setIsUploading(true);
-      await axios.post(
+      const response = await axios.post(
         `${process.env.REACT_APP_BACKEND_URL}/upload`,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
 
+      if (
+        response.data.message &&
+        response.data.message === "No data was extracted!"
+      ) {
+        setIsScannedDocument(true);
+        handleDeleteSession(sessionStorage.getItem("sessionId"));
+      } else {
+        setIsScannedDocument(false);
+      }
+
       setFiles(filesArray);
       setIsUploading(false);
     } catch (backendError) {
-      if (backendError.response) {
-        if (backendError.response.status === 401) {
-          setFiles([]);
-          alert("User session is expired!");
-          setIsLoggedIn(false);
-          navigate("/login");
-        } else {
-          console.log(
-            "Error uploading files to backend, please check your network connection."
-          );
-        }
+      if (backendError.response && backendError.response.status === 401) {
+        setFiles([]);
+        alert("User session is expired!");
+        setIsLoggedIn(false);
+        navigate("/login");
       } else {
         alert("Error uploading files, please check your network connection.");
       }
@@ -116,30 +130,30 @@ function Sidebar({
   };
 
   const handleFileChange = (event, isAdditionalUpload = false) => {
-    if (isAdditionalUpload) {
-      handleAdditionalFileUpload(event.target.files);
-    } else {
-      handleFileUpload(event.target.files);
+    const files = Array.from(event.target.files);
+    const pdfTxtDocxFiles = files.filter((file) =>
+      /\.(pdf|txt|docx)$/i.test(file.name)
+    );
+    const xlsxCsvFiles = files.filter((file) =>
+      /\.(xlsx|csv)$/i.test(file.name)
+    );
+
+    // Validate file types
+    if (pdfTxtDocxFiles.length > 0 && xlsxCsvFiles.length > 0) {
+      alert("Please upload either docx, txt, pdf files OR xlsx, csv files only.");
+      return;
     }
-  };
 
-  const handleDragOver = (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-    event.dataTransfer.dropEffect = "copy";
-  };
-
-  const handleDrop = (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-    const files = event.dataTransfer.files;
-    handleFileUpload(files);
+    if (isAdditionalUpload) {
+      handleAdditionalFileUpload(files);
+    } else {
+      handleFileUpload(files);
+    }
   };
 
   const addButtonStyle = {
     color: "white",
     width: "100%",
-    margin: "auto 0.8rem",
     fontSize: "0.875rem",
   };
 
@@ -154,14 +168,6 @@ function Sidebar({
 
   const handleFileUpload = async (files) => {
     let size = 0;
-    for (let i = 0; i < files.length; i++) {
-      if (files[i].size > 20971520) {
-        alert("Kindly upload files upto 20MB.");
-        return;
-      }
-      size += files[i].size;
-    }
-    // Converting bytes to MB and multiply by 20 for avg
     const estimated_time = Math.floor(size / (1024 * 1024)) * 20;
     if (estimated_time > 10) {
       setProcessTime(estimated_time);
@@ -171,7 +177,6 @@ function Sidebar({
       // await uploadMultiFiles(token, files);
       await uploadToBackend(files);
       await fetchSessions();
-      // Highlight the latest session (New Container)
       const newSessionId = sessionStorage.getItem("sessionId");
       setLatestSessionId(newSessionId);
     } catch (error) {
@@ -225,17 +230,14 @@ function Sidebar({
     setIsUploading(true);
     const sessionId = latestSessionId || sessionStorage.getItem("sessionId");
 
-    // Set the updated files array for the session
     setSelectedSessionFiles((prevState) => ({
       ...prevState,
       [sessionId]: [...(prevState[sessionId] || []), ...newFilesArray],
     }));
 
     try {
-      // Upload files to S3
       addUploadFiles(token, sessionId, newFiles);
 
-      // Now sending only the newly added files to the backend
       const formData = new FormData();
       newFilesArray.forEach((file) => formData.append("files", file));
       formData.append("token", sessionStorage.getItem("token"));
@@ -247,7 +249,6 @@ function Sidebar({
         { headers: { "Content-Type": "multipart/form-data" } }
       );
 
-      // Update the local files state with the new files added
       setFiles((prevFiles) => [...prevFiles, ...newFilesArray]);
     } catch (error) {
       console.error("Error uploading files:", error);
@@ -278,18 +279,17 @@ function Sidebar({
         { token, sessionId: session.id },
         { headers: { "Content-Type": "application/json" } }
       );
-      // Auto-expand the selected session
       setVisibleFiles((prevState) => {
         const newState = { ...prevState };
         for (const key in newState) {
-          newState[key] = false; // Collapse all other sessions
+          newState[key] = false;
         }
-        newState[session.id] = true; // Expand the selected session
+        newState[session.id] = true;
         return newState;
       });
       sessionStorage.setItem("sessionId", session.id);
-      // fetch files from s3
       setFiles(await fetchFilesFromS3(token, session.id));
+      setIsScannedDocument(false);
     } catch (error) {
       console.error("Error fetching and appending session files:", error);
     }
@@ -305,61 +305,14 @@ function Sidebar({
     return date.toLocaleDateString(undefined, options);
   };
 
-  const marginStyle = { marginTop: "1.5cm" };
-
   return (
     <div>
-      <Form style={marginStyle}>
-        <Form.Group className="mb-3">
-          <div
-            className="custom-file-input"
-            onDragOver={handleDragOver}
-            onDrop={handleDrop}
-            onClick={() => fileInputRef.current.click()}
-            style={{ cursor: "pointer" }}
-          >
-            <input
-              type="file"
-              id="file"
-              accept=".txt,.pdf,.docx"
-              multiple
-              onChange={(event) => handleFileChange(event, false)}
-              ref={fileInputRef}
-              style={{ display: "none" }}
-            />
-            <Card
-              className="p-1"
-              style={{
-                border: "2px dashed #ccc",
-                textAlign: "center",
-                height: "50",
-              }}
-            >
-              {isUploading ? (
-                <div className="text-center">
-                  <video
-                    src="/container.mp4" // Replace with your loading video path
-                    loop
-                    autoPlay
-                    muted
-                    style={{ width: "100%", height: "auto" }}
-                  />
-                  <p className="mb-0">
-                    This may take up to {processTime} seconds...
-                  </p>
-                </div>
-              ) : (
-                <div>
-                  <p className="mb-0">
-                    <RiMessage2Fill /> <b>New Container</b>
-                  </p>
-                  <p className="mb-0">Drop files here</p>
-                </div>
-              )}
-            </Card>
-          </div>
-        </Form.Group>
-      </Form>
+      <Upload
+        handleFileUpload={handleFileUpload}
+        handleFileChange={handleFileChange}
+        isUploading={isUploading}
+        processTime={processTime}
+      />
       <ListGroup>
         {sessions.slice(0, 4).map((session, index) => (
           <div key={index}>
@@ -378,7 +331,7 @@ function Sidebar({
                   variant="outline-primary"
                   size="sm"
                   onClick={(e) => {
-                    e.stopPropagation(); // Prevents triggering folder selection
+                    e.stopPropagation();
                     handleRenameSession(session.id);
                   }}
                 >
@@ -388,7 +341,7 @@ function Sidebar({
                   variant="outline-danger"
                   size="sm"
                   onClick={(e) => {
-                    e.stopPropagation(); // Prevents triggering folder selection
+                    e.stopPropagation();
                     handleDeleteSession(session.id);
                   }}
                 >
@@ -437,7 +390,7 @@ function Sidebar({
                 <input
                   type="file"
                   id="additional-file"
-                  accept=".txt,.pdf,.docx"
+                  accept=".txt,.pdf,.docx, .xlsx, .csv"
                   multiple
                   onChange={(event) => handleFileChange(event, true)}
                   ref={additionalFileInputRef}
