@@ -1,4 +1,4 @@
-import React, { useState, useRef, useContext } from "react";
+import React, { useState, useRef, useContext, useEffect } from "react";
 import { ListGroup, Button, ButtonGroup } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import {
@@ -34,6 +34,25 @@ function Sidebar({
   const token = sessionStorage.getItem("token");
   const [visibleFiles, setVisibleFiles] = useState({});
   const navigate = useNavigate();
+
+  // Function to update session CSV/XLSX status
+  const updateSessionCsvXlsxStatus = (files) => {
+    const hasCsvOrXlsx = files.some((file) => /\.(xlsx|csv)$/i.test(file.name));
+    sessionStorage.setItem("currentSessionHasCsvOrXlsx", hasCsvOrXlsx);
+  };
+
+  // Check CSV/XLSX on page load
+  useEffect(() => {
+    const initializeCsvXlsxStatus = async () => {
+      const sessionId = sessionStorage.getItem("sessionId");
+      if (sessionId) {
+        const files = await fetchFilesFromS3(token, sessionId);
+        updateSessionCsvXlsxStatus(files);
+      }
+    };
+
+    initializeCsvXlsxStatus();
+  }, [token]);
 
   const handleRenameSession = async (sessionId) => {
     const newName = prompt("Enter the new name for the session:");
@@ -117,6 +136,9 @@ function Sidebar({
 
       setFiles(filesArray);
       setIsUploading(false);
+
+      // Update session CSV/XLSX status
+      updateSessionCsvXlsxStatus(filesArray);
     } catch (backendError) {
       if (backendError.response && backendError.response.status === 401) {
         setFiles([]);
@@ -151,21 +173,6 @@ function Sidebar({
     }
   };
 
-  const addButtonStyle = {
-    color: "white",
-    width: "100%",
-    fontSize: "0.875rem",
-  };
-
-  const listItemStyle = {
-    flexGrow: 1,
-    marginRight: "1rem",
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    whiteSpace: "nowrap",
-    fontSize: "0.875rem",
-  };
-
   const handleFileUpload = async (files) => {
     let size = 0;
     const estimated_time = Math.floor(size / (1024 * 1024)) * 20;
@@ -179,6 +186,9 @@ function Sidebar({
       await fetchSessions();
       const newSessionId = sessionStorage.getItem("sessionId");
       setLatestSessionId(newSessionId);
+
+      // Update session CSV/XLSX status after upload
+      updateSessionCsvXlsxStatus(files);
     } catch (error) {
       console.error("Error uploading files:", error);
       alert("Error uploading files, please try again.");
@@ -250,6 +260,9 @@ function Sidebar({
       );
 
       setFiles((prevFiles) => [...prevFiles, ...newFilesArray]);
+
+      // Update session CSV/XLSX status after additional upload
+      updateSessionCsvXlsxStatus(newFilesArray);
     } catch (error) {
       console.error("Error uploading files:", error);
       alert("Error uploading files, please try again.");
@@ -288,7 +301,12 @@ function Sidebar({
         return newState;
       });
       sessionStorage.setItem("sessionId", session.id);
-      setFiles(await fetchFilesFromS3(token, session.id));
+      const files = await fetchFilesFromS3(token, session.id);
+      setFiles(files);
+
+      // Update session CSV/XLSX status
+      updateSessionCsvXlsxStatus(files);
+
       setIsScannedDocument(false);
     } catch (error) {
       console.error("Error fetching and appending session files:", error);
@@ -303,6 +321,21 @@ function Sidebar({
     );
     const options = { day: "numeric", month: "short" };
     return date.toLocaleDateString(undefined, options);
+  };
+
+  const addButtonStyle = {
+    color: "white",
+    width: "100%",
+    fontSize: "0.875rem",
+  };
+
+  const listItemStyle = {
+    flexGrow: 1,
+    marginRight: "1rem",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+    fontSize: "0.875rem",
   };
 
   return (

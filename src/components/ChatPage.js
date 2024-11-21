@@ -125,7 +125,7 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
         hour: "2-digit",
         minute: "2-digit",
       });
-
+  
       const ttsSupport = ttsSupportedLanguages.includes(outputLanguage);
       const newChatHistory = [
         ...chatHistory,
@@ -140,13 +140,18 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
       setChatHistory(newChatHistory);
       const token = sessionStorage.getItem("token");
       const context = files.length > 0 ? "files" : "";
+  
+      // Fetch the browser variable indicating the presence of .csv or .xlsx files
+      const hasCsvOrXlsx =
+        sessionStorage.getItem("currentSessionHasCsvOrXlsx") === "true";
+  
       try {
         let temperature = 0.1;
         const context_mode = sessionStorage.getItem("answerMode");
         if (context_mode && context_mode === "creative") {
           temperature = 0.8;
         }
-
+  
         if (isScannedDocument) {
           console.log(files);
           newChatHistory[newChatHistory.length - 1].bot =
@@ -163,6 +168,7 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
               context,
               temperature: temperature,
               mode: context_mode || "contextual",
+              hasCsvOrXlsx, // Append the browser variable here
             }
           );
           newChatHistory[newChatHistory.length - 1].bot = response.data.answer;
@@ -184,7 +190,7 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
       }
     }
   };
-
+  
   const iconStyles = { color: "green", marginRight: "5px" };
   const startingQuestions = [
     "Summarise the document.",
