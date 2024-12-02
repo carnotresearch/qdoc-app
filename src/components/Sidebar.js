@@ -1,4 +1,4 @@
-import React, { useState, useRef, useContext, useEffect } from "react";
+import React, { useState, useRef, useContext} from "react";
 import { ListGroup, Button, ButtonGroup } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import {
@@ -41,18 +41,18 @@ function Sidebar({
     sessionStorage.setItem("currentSessionHasCsvOrXlsx", hasCsvOrXlsx);
   };
 
-  // Check CSV/XLSX on page load
-  useEffect(() => {
-    const initializeCsvXlsxStatus = async () => {
-      const sessionId = sessionStorage.getItem("sessionId");
-      if (sessionId) {
-        const files = await fetchFilesFromS3(token, sessionId);
-        updateSessionCsvXlsxStatus(files);
-      }
-    };
+  // // Check CSV/XLSX on page load
+  // useEffect(() => {
+  //   const initializeCsvXlsxStatus = async () => {
+  //     const sessionId = sessionStorage.getItem("sessionId");
+  //     if (sessionId) {
+  //       const files = await fetchFilesFromS3(token, sessionId);
+  //       updateSessionCsvXlsxStatus(files);
+  //     }
+  //   };
 
-    initializeCsvXlsxStatus();
-  }, [token]);
+  //   initializeCsvXlsxStatus();
+  // }, [token]);
 
   const handleRenameSession = async (sessionId) => {
     const newName = prompt("Enter the new name for the session:");
