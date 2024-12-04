@@ -40,20 +40,7 @@ function Sidebar({
     const hasCsvOrXlsx = files.some((file) => /\.(xlsx|csv)$/i.test(file.name));
     sessionStorage.setItem("currentSessionHasCsvOrXlsx", hasCsvOrXlsx);
   };
-
-  // // Check CSV/XLSX on page load
-  // useEffect(() => {
-  //   const initializeCsvXlsxStatus = async () => {
-  //     const sessionId = sessionStorage.getItem("sessionId");
-  //     if (sessionId) {
-  //       const files = await fetchFilesFromS3(token, sessionId);
-  //       updateSessionCsvXlsxStatus(files);
-  //     }
-  //   };
-
-  //   initializeCsvXlsxStatus();
-  // }, [token]);
-
+  
   const handleRenameSession = async (sessionId) => {
     const newName = prompt("Enter the new name for the session:");
     if (newName && newName.trim() !== "") {
@@ -174,11 +161,23 @@ function Sidebar({
   };
 
   const handleFileUpload = async (files) => {
-    let size = 0;
-    const estimated_time = Math.floor(size / (1024 * 1024)) * 20;
+    const allowedExtensions = /\.(csv|xlsx?|pdf|docx?|txt)$/i; // Regular expression for allowed extensions
+    const filesArray = Array.from(files);
+  
+    // Filter out invalid files
+    const invalidFiles = filesArray.filter(file => !allowedExtensions.test(file.name));
+    if (invalidFiles.length > 0) {
+      alert("Some files have invalid extensions. Only CSV, Excel, PDF, Docx, and Txt files are supported.");
+      return; // Exit the function if invalid files are detected
+    }
+  
+    // Calculate the total size for the provided files
+    const size = filesArray.reduce((total, file) => total + file.size, 0);
+    const estimated_time = Math.floor(size / (1024 * 1024)) * 20; // Estimation formula
     if (estimated_time > 10) {
       setProcessTime(estimated_time);
     }
+  
     setIsUploading(true);
     try {
       await uploadMultiFiles(token, files);
@@ -186,7 +185,7 @@ function Sidebar({
       await fetchSessions();
       const newSessionId = sessionStorage.getItem("sessionId");
       setLatestSessionId(newSessionId);
-
+  
       // Update session CSV/XLSX status after upload
       updateSessionCsvXlsxStatus(files);
     } catch (error) {
@@ -196,7 +195,7 @@ function Sidebar({
       setIsUploading(false);
     }
   };
-
+  
   const fetchSessions = async () => {
     try {
       const response = await axios.post(
@@ -239,28 +238,60 @@ function Sidebar({
     const newFilesArray = Array.from(newFiles);
     setIsUploading(true);
     const sessionId = latestSessionId || sessionStorage.getItem("sessionId");
-
+  
+    // Get the existing files for the current session
+    const existingSessionFiles = selectedSessionFiles[sessionId] || [];
+  
+    // Helper function to determine file types
+    const isCsvOrExcel = (file) =>
+      /\.(csv|xlsx?)$/i.test(file.name);
+    const isPdfDocTxt = (file) =>
+      /\.(pdf|docx?|txt)$/i.test(file.name);
+  
+    // Check if existing files contain conflicting types
+    const hasCsvOrExcel = existingSessionFiles.some(isCsvOrExcel);
+    const hasPdfDocTxt = existingSessionFiles.some(isPdfDocTxt);
+  
+    // Validate new files
+    const isInvalidUpload = newFilesArray.some((file) => {
+      if (isCsvOrExcel(file) && hasPdfDocTxt) {
+        alert("Cannot upload CSV/Excel files when PDF/Docx/Txt files already exist.");
+        return true;
+      }
+      if (isPdfDocTxt(file) && hasCsvOrExcel) {
+        alert("Cannot upload PDF/Docx/Txt files when CSV/Excel files already exist.");
+        return true;
+      }
+      return false;
+    });
+  
+    if (isInvalidUpload) {
+      setIsUploading(false);
+      return;
+    }
+  
+    // Proceed with file upload if validation passes
     setSelectedSessionFiles((prevState) => ({
       ...prevState,
       [sessionId]: [...(prevState[sessionId] || []), ...newFilesArray],
     }));
-
+  
     try {
       addUploadFiles(token, sessionId, newFiles);
-
+  
       const formData = new FormData();
       newFilesArray.forEach((file) => formData.append("files", file));
       formData.append("token", sessionStorage.getItem("token"));
       formData.append("sessionId", sessionId);
-
+  
       await axios.post(
         `${process.env.REACT_APP_BACKEND_URL}/add-upload`,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
-
+  
       setFiles((prevFiles) => [...prevFiles, ...newFilesArray]);
-
+  
       // Update session CSV/XLSX status after additional upload
       updateSessionCsvXlsxStatus(newFilesArray);
     } catch (error) {
@@ -270,7 +301,7 @@ function Sidebar({
       setIsUploading(false);
     }
   };
-
+  
   const toggleFileVisibility = (session) => {
     setVisibleFiles((prevState) => {
       const newState = { ...prevState };

@@ -227,3 +227,15 @@ body.dark-mode .loading-dots span {
     transform: scale(1);
   }
 }
+.download-button-container {
+  display: flex;
+  justify-content: center;
+  padding-bottom: 20px;
+}
+
+.download-button-container .btn-primary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px;
+}

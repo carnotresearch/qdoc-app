@@ -5,6 +5,7 @@ import React, {
   useContext,
   useCallback,
 } from "react";
+import { FaDownload } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 // components
@@ -21,7 +22,7 @@ import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import "../styles/chatPage.css";
 import MessageInput from "./chatpage/MessageInput";
 import ChatHistory from "./chatpage/ChatHistory";
-
+import jsPDF from "jspdf";
 function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
   const [chatHistory, setChatHistory] = useState([]);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -78,14 +79,13 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
       alert("Error fetching sessions, please try again.");
     }
   }, []);
+
   useEffect(() => {
     fetchSessions();
   }, [fetchSessions]);
 
-  // side bar open on large and collapsed on small screens
   useEffect(() => {
     setChatHistory([]);
-    // initial state based on the screen size
     const handleResize = () => {
       if (window.innerWidth <= 768) {
         setSidebarCollapsed(true);
@@ -94,15 +94,12 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
       }
     };
     handleResize();
-    // event listener to handle window resize
     window.addEventListener("resize", handleResize);
-    // Clean up the event listener on component unmount
     return () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
 
-  // cursor on input query field when files are updated
   useEffect(() => {
     setIsFileUpdated(true);
     messageInputRef.current.focus();
@@ -111,7 +108,6 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
     }
   }, [files]);
 
-  // auto scroll down to latest chat response
   useEffect(() => {
     if (chatHistoryRef.current) {
       chatHistoryRef.current.scrollTop = chatHistoryRef.current.scrollHeight;
@@ -125,7 +121,7 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
         hour: "2-digit",
         minute: "2-digit",
       });
-  
+
       const ttsSupport = ttsSupportedLanguages.includes(outputLanguage);
       const newChatHistory = [
         ...chatHistory,
@@ -140,18 +136,17 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
       setChatHistory(newChatHistory);
       const token = sessionStorage.getItem("token");
       const context = files.length > 0 ? "files" : "";
-  
-      // Fetch the browser variable indicating the presence of .csv or .xlsx files
+
       const hasCsvOrXlsx =
         sessionStorage.getItem("currentSessionHasCsvOrXlsx") === "true";
-  
+
       try {
         let temperature = 0.1;
         const context_mode = sessionStorage.getItem("answerMode");
         if (context_mode && context_mode === "creative") {
           temperature = 0.8;
         }
-  
+
         if (isScannedDocument) {
           console.log(files);
           newChatHistory[newChatHistory.length - 1].bot =
@@ -168,7 +163,7 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
               context,
               temperature: temperature,
               mode: context_mode || "contextual",
-              hasCsvOrXlsx, // Append the browser variable here
+              hasCsvOrXlsx,
             }
           );
           newChatHistory[newChatHistory.length - 1].bot = response.data.answer;
@@ -190,7 +185,54 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
       }
     }
   };
+
+  const handleDownloadChat = () => {
+    const chatText = chatHistory
+      .map(
+        (chat) =>
+          `User: ${chat.user}\n\nBot: ${chat.bot}`
+      )
+      .join("\n---\n");
   
+    // Initialize jsPDF
+    const doc = new jsPDF();
+  
+    // Add text to the PDF (handle multi-line text)
+    const pageHeight = doc.internal.pageSize.height; // Get page height
+    const margin = 10; // Define margin
+    const lineHeight = 10; // Height between lines
+    let cursorY = margin; // Start position for text
+    const lines = doc.splitTextToSize(chatText, doc.internal.pageSize.width - 2 * margin);
+  
+    lines.forEach((line) => {
+      if (cursorY + lineHeight > pageHeight - margin) {
+        doc.addPage(); // Add new page if text exceeds the page height
+        cursorY = margin; // Reset cursor to the top of the new page
+      }
+      doc.text(line, margin, cursorY);
+      cursorY += lineHeight;
+    });
+  
+    // Save the PDF
+    doc.save("chat_history.pdf");
+  
+    // Check if Web Share API is supported
+    if (navigator.share) {
+      const pdfBlob = doc.output("blob"); // Get the PDF as a blob
+      const file = new File([pdfBlob], "chat_history.pdf", { type: "application/pdf" });
+  
+      navigator
+        .share({
+          title: "Chat History",
+          text: "Here is the chat history I downloaded from icarKno-chat.",
+          files: [file], // Share the file
+        })
+        .then(() => console.log("Share successful"))
+        .catch((error) => console.error("Error sharing:", error));
+    } else {
+      alert("Your browser does not support sharing files. Please use a modern browser.");
+    }
+  };
   const iconStyles = { color: "green", marginRight: "5px" };
   const startingQuestions = [
     "Summarise the document.",
@@ -264,12 +306,7 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
             (files.length > 0 ? (
               <div className="message bot">
                 <div className="message-box">
-                  <span className={"message-text"}>
-                    <b className="text-success">icarKno: </b>
-                    {isScannedDocument
-                      ? scannedDocumentWarning(files[0].name)
-                      : "Your files have been uploaded!"}
-                  </span>
+                  <span className={"message-text"}>Your files have been uploaded!</span>
                 </div>
               </div>
             ) : (
@@ -289,6 +326,22 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
               </div>
             ))}
         </div>
+        <div className="download-button-container">
+          <Button
+            variant="primary"
+            onClick={handleDownloadChat}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              margin: "20px auto",
+              padding: "10px 20px",
+              gap: "10px",
+            }}
+          >
+            <FaDownload /> Download Chat History
+          </Button>
+        </div>
         <MessageInput
           inputLanguage={inputLanguage}
           messageInputRef={messageInputRef}
@@ -298,4 +351,5 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
     </Container>
   );
 }
+
 export default ChatPage;
