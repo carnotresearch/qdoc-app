@@ -230,7 +230,7 @@ body.dark-mode .loading-dots span {
 .download-button-container {
   display: flex;
   justify-content: center;
-  padding-bottom: 20px;
+  padding-bottom: 5px;
 }
 
 .download-button-container .btn-primary {

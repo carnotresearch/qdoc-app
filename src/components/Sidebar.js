@@ -140,18 +140,12 @@ function Sidebar({
 
   const handleFileChange = (event, isAdditionalUpload = false) => {
     const files = Array.from(event.target.files);
-    const pdfTxtDocxFiles = files.filter((file) =>
-      /\.(pdf|txt|docx)$/i.test(file.name)
-    );
-    const xlsxCsvFiles = files.filter((file) =>
-      /\.(xlsx|csv)$/i.test(file.name)
-    );
 
-    // Validate file types
-    if (pdfTxtDocxFiles.length > 0 && xlsxCsvFiles.length > 0) {
-      alert("Please upload either docx, txt, pdf files OR xlsx, csv files only.");
-      return;
-    }
+    // // Validate file types
+    // if (pdfTxtDocxFiles.length > 0 && xlsxCsvFiles.length > 0) {
+    //   alert("Please upload either docx, txt, pdf files OR xlsx, csv files only.");
+    //   return;
+    // }
 
     if (isAdditionalUpload) {
       handleAdditionalFileUpload(files);
@@ -238,39 +232,7 @@ function Sidebar({
     const newFilesArray = Array.from(newFiles);
     setIsUploading(true);
     const sessionId = latestSessionId || sessionStorage.getItem("sessionId");
-  
-    // Get the existing files for the current session
-    const existingSessionFiles = selectedSessionFiles[sessionId] || [];
-  
-    // Helper function to determine file types
-    const isCsvOrExcel = (file) =>
-      /\.(csv|xlsx?)$/i.test(file.name);
-    const isPdfDocTxt = (file) =>
-      /\.(pdf|docx?|txt)$/i.test(file.name);
-  
-    // Check if existing files contain conflicting types
-    const hasCsvOrExcel = existingSessionFiles.some(isCsvOrExcel);
-    const hasPdfDocTxt = existingSessionFiles.some(isPdfDocTxt);
-  
-    // Validate new files
-    const isInvalidUpload = newFilesArray.some((file) => {
-      if (isCsvOrExcel(file) && hasPdfDocTxt) {
-        alert("Cannot upload CSV/Excel files when PDF/Docx/Txt files already exist.");
-        return true;
-      }
-      if (isPdfDocTxt(file) && hasCsvOrExcel) {
-        alert("Cannot upload PDF/Docx/Txt files when CSV/Excel files already exist.");
-        return true;
-      }
-      return false;
-    });
-  
-    if (isInvalidUpload) {
-      setIsUploading(false);
-      return;
-    }
-  
-    // Proceed with file upload if validation passes
+
     setSelectedSessionFiles((prevState) => ({
       ...prevState,
       [sessionId]: [...(prevState[sessionId] || []), ...newFilesArray],
