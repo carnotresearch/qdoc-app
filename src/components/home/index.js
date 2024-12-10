@@ -19,6 +19,7 @@ import LeftMenu from "./LeftMenu";
 import Popup from "./Popup";
 import Features from "./Features";
 import ChatContent from "./ChatContent";
+import MiddleBlock from "./MiddleBlock";
 
 function Home() {
   const inputLanguage = "23";
@@ -189,7 +190,17 @@ function Home() {
         )}
       </div>
       {showFeatures && !isFileUpdated ? (
-        <Features />
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            marginTop: "2rem",
+          }}
+        >
+          <MiddleBlock setSidebarCollapsed={setSidebarCollapsed} />
+          <Features />
+        </div>
       ) : (
         <>
           {files && <FileViewer files={files} />}

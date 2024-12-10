@@ -91,6 +91,8 @@ const Navbar = ({
     setOpenManualDialog(false);
   };
 
+  const iconStyles = { height: "2.5rem", cursor: "pointer", margin: "0" };
+
   return (
     <>
       <nav
@@ -99,7 +101,18 @@ const Navbar = ({
         }`}
       >
         {/* User Profile */}
-        <Profile />
+        {isLoggedIn ? (
+          <Profile />
+        ) : (
+          <div>
+            <img
+              src="./logo.png"
+              alt=""
+              style={iconStyles}
+              onClick={() => navigate("/")}
+            />
+          </div>
+        )}
 
         {/* Heading */}
         <Link className="navbar-brand" style={{ marginLeft: "0.5cm" }} to="/">

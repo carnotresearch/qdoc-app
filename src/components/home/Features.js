@@ -15,11 +15,11 @@ function Features() {
     {
       top: "Ingestion",
       header: "Unstructured Data",
-      body: " icarKno Chat can ingest structured and unstructured data from various sources (PDF, DOCX, TXT, CSV)",
+      body: "Ingest structured and unstructured data from various sources (excel, csv, word, pdf, text)",
     },
   ];
   return (
-    <div className="container mt-3">
+    <div className="container mt-4">
       <div className="row mt-2">
         {features.map((feature, index) => (
           <div className="col-lg-4 col-md-6 col-sm-12 mb-4" key={index}>
