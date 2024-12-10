@@ -13,22 +13,18 @@ import { ttsSupportedLanguages } from "../../constant/data";
 import FileViewer from "../chatpage/FileViewer";
 // icons and style
 import { Button, Container } from "react-bootstrap";
-import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import "../../styles/chatPage.css";
-import MessageInput from "../chatpage/MessageInput";
-import ChatHistory from "../chatpage/ChatHistory";
 import LeftMenu from "./LeftMenu";
 import Popup from "./Popup";
 import Features from "./Features";
+import ChatContent from "./ChatContent";
 
 function Home() {
   const inputLanguage = "23";
   const outputLanguage = "23";
   const [chatHistory, setChatHistory] = useState([]);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const chatHistoryRef = useRef(null);
   const messageInputRef = useRef(null);
   const { files } = useContext(FileContext);
   const [isFileUpdated, setIsFileUpdated] = useState(false);
@@ -36,11 +32,11 @@ function Home() {
   const [sessions, setSessions] = useState([]);
   const [selectedSessionFiles, setSelectedSessionFiles] = useState([]);
   const [chatCount, setChatCount] = useState(0);
-  const [isFileUploaded, setIsFileUploaded] = useState(true);
+  const [showFeatures, setShowFeatures] = useState(true);
   const navigate = useNavigate();
   const popupText = "Kindly login to ask further questions.";
   const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InByYW5hdkBjYXJub3RyZXNlYXJjaC5jb20iLCJpYXQiOjE3MzM3NTY5MjIsImV4cCI6MTczMzc2MDUyMn0.8ngRubqw8MbKHeJkRdxxeZRpEzT_WXGXotZXoN5iBmU";
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InByYW5hdmthbmlyZUBnbWFpbC5jb20iLCJpYXQiOjE3MzM4MTU2NDgsImV4cCI6MTczMzgxOTI0OH0.vwUvLsOziesVg6uQ4XPpUq1QVrZKD4E2juCBH95yZYA";
 
   const fetchSessions = useCallback(async () => {
     try {
@@ -105,25 +101,23 @@ function Home() {
   }, []);
 
   // cursor on input query field when files are updated
-  // useEffect(() => {
-  //   setIsFileUpdated(true);
-  //   messageInputRef.current.focus();
-  //   if (files.length > 0) {
-  //     setSidebarCollapsed(true);
-  //   }
-  // }, [files]);
-
-  // auto scroll down to latest chat response
   useEffect(() => {
-    if (chatHistoryRef.current) {
-      chatHistoryRef.current.scrollTop = chatHistoryRef.current.scrollHeight;
+    console.log("here");
+    if (files.length > 0) {
+      setShowFeatures(false);
+      console.log("here2");
+      setSidebarCollapsed(true);
+      setIsFileUpdated(true);
+      if (messageInputRef.current) {
+        messageInputRef.current.focus();
+      }
     }
-  }, [chatHistory]);
+  }, [files]);
 
   const handleSendMessage = async (message) => {
     setIsFileUpdated(false);
     if (message.trim()) {
-      if (chatCount >= 1) {
+      if (chatCount >= 10) {
         setShowPopup(true);
         return;
       }
@@ -177,13 +171,6 @@ function Home() {
     }
   };
 
-  const iconStyles = { color: "green", marginRight: "5px" };
-  const startingQuestions = [
-    "Summarise the document.",
-    "Give me any five silent issues highlighted in the document.",
-    "Explain one feature mentioned in the document.",
-  ];
-
   return (
     <Container fluid className="chat-container">
       <div className={`sidebar ${sidebarCollapsed ? "collapsed" : ""}`}>
@@ -198,70 +185,25 @@ function Home() {
           <LeftMenu
             sessions={sessions}
             selectedSessionFiles={selectedSessionFiles}
-            setIsFileUploaded={setIsFileUploaded}
           />
         )}
       </div>
-      {files && <FileViewer files={files} />}
-      {/* {isFileUploaded ? (
+      {showFeatures && !isFileUpdated ? (
         <Features />
-      ) : ( */}
-      <div className="chat-content">
-        <div className="chat-history" ref={chatHistoryRef}>
-          <div className="message bot">
-            <div className="message-box">
-              <span className="message-text">
-                <b>Welcome to icarKno-chat</b>
-                <p style={{ marginBottom: "0" }}>
-                  icarKno-chat is a knowledge agent that allows you to query
-                  multiple documents in diverse languages.
-                </p>
-                {files.length > 0 && (
-                  <>
-                    You can interact with the application by typing in questions
-                    such as:
-                    <ul className="custom-list">
-                      {startingQuestions.map((question, index) => (
-                        <li key={index}>
-                          <FontAwesomeIcon
-                            icon={faCheckCircle}
-                            style={iconStyles}
-                          />
-                          {question}
-                        </li>
-                      ))}
-                    </ul>
-                  </>
-                )}
-              </span>
-            </div>
-          </div>
-          {chatHistory.map((chat, index) => (
-            <ChatHistory
-              chat={chat}
-              index={index}
-              outputLanguage={outputLanguage}
-              key={index}
-            />
-          ))}
-          {isFileUpdated && (
-            <div className="message bot">
-              <div className="message-box">
-                <span className={"message-text"}>
-                  <b className="text-success">icarKno: </b>
-                  Your files have been uploaded!
-                </span>
-              </div>
-            </div>
-          )}
-        </div>
-        <MessageInput
-          inputLanguage={inputLanguage}
-          messageInputRef={messageInputRef}
-          handleSendMessage={handleSendMessage}
-        />
-      </div>
-      {/* )} */}
+      ) : (
+        <>
+          {files && <FileViewer files={files} />}
+          <ChatContent
+            chatHistory={chatHistory}
+            files={files}
+            handleSendMessage={handleSendMessage}
+            inputLanguage={inputLanguage}
+            outputLanguage={outputLanguage}
+            messageInputRef={messageInputRef}
+            isFileUpdated={isFileUpdated}
+          />
+        </>
+      )}
       {/** Popup for login */}
       <Popup
         showPopup={showPopup}

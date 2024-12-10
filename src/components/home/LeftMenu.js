@@ -12,11 +12,11 @@ import { fetchFilesFromS3 } from "../utils/presignedUtils";
 import DisabledUpload from "./DisabledUpload";
 import axios from "axios";
 
-function LeftMenu({ sessions, selectedSessionFiles, setIsFileUploaded }) {
+function LeftMenu({ sessions, selectedSessionFiles }) {
   const { setFiles } = useContext(FileContext);
   const additionalFileInputRef = useRef(null);
   const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InByYW5hdkBjYXJub3RyZXNlYXJjaC5jb20iLCJpYXQiOjE3MzM3NTY5MjIsImV4cCI6MTczMzc2MDUyMn0.8ngRubqw8MbKHeJkRdxxeZRpEzT_WXGXotZXoN5iBmU";
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InByYW5hdmthbmlyZUBnbWFpbC5jb20iLCJpYXQiOjE3MzM4MTU2NDgsImV4cCI6MTczMzgxOTI0OH0.vwUvLsOziesVg6uQ4XPpUq1QVrZKD4E2juCBH95yZYA";
   const [visibleFiles, setVisibleFiles] = useState({});
   const [latestSessionId, setLatestSessionId] = useState("");
 
@@ -69,7 +69,6 @@ function LeftMenu({ sessions, selectedSessionFiles, setIsFileUploaded }) {
       // fetch files from s3
       const files = await fetchFilesFromS3(token, session.id);
       setFiles(files);
-      setIsFileUploaded(true);
     } catch (error) {
       console.error("Error fetching and appending session files:", error);
     }
