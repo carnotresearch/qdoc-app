@@ -1,12 +1,7 @@
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  useContext,
-  useCallback,
-} from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import FingerprintJS from "@fingerprintjs/fingerprintjs";
 // components
 import { FileContext } from "../FileContext";
 import { ttsSupportedLanguages } from "../../constant/data";
@@ -30,56 +25,12 @@ function Home() {
   const { files } = useContext(FileContext);
   const [isFileUpdated, setIsFileUpdated] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
-  const [sessions, setSessions] = useState([]);
-  const [selectedSessionFiles, setSelectedSessionFiles] = useState([]);
   const [chatCount, setChatCount] = useState(0);
   const [showFeatures, setShowFeatures] = useState(true);
   const navigate = useNavigate();
   const popupText = "Kindly login to ask further questions.";
   const token =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InByYW5hdmthbmlyZUBnbWFpbC5jb20iLCJpYXQiOjE3MzM4MTU2NDgsImV4cCI6MTczMzgxOTI0OH0.vwUvLsOziesVg6uQ4XPpUq1QVrZKD4E2juCBH95yZYA";
-
-  const fetchSessions = useCallback(async () => {
-    try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_AWS_FETCH_SESSIONS}`,
-        { token },
-        { headers: { "Content-Type": "application/json" } }
-      );
-
-      const data = response.data.data;
-      if (!data || !data.sessions || data.sessions.length === 0) {
-        console.log("No sessions available.");
-        return;
-      }
-
-      const sessionsData = data.sessions;
-
-      const sessions = sessionsData.map((session) => ({
-        id: session.session_id,
-        timestamp: session.timestamp,
-        fileNames: session.file_names,
-        name: session.name,
-      }));
-
-      // console.log(sessions);
-      const files = sessionsData.reduce((acc, session) => {
-        acc[session.session_id] = session.file_names.map((fileName) => ({
-          name: fileName,
-          size: 0,
-        }));
-        return acc;
-      }, {});
-
-      setSessions(sessions);
-      setSelectedSessionFiles(files);
-    } catch (error) {
-      console.error("Error fetching sessions", error);
-    }
-  }, []);
-  useEffect(() => {
-    fetchSessions();
-  }, [fetchSessions]);
 
   // side bar open on large and collapsed on small screens
   useEffect(() => {
@@ -101,12 +52,22 @@ function Home() {
     };
   }, []);
 
+  useEffect(() => {
+    // Generate a fingerprint
+    const fpPromise = FingerprintJS.load();
+
+    fpPromise
+      .then((fp) => fp.get())
+      .then((result) => {
+        const fingerprint = result.visitorId; // Unique ID for the browser/device
+        localStorage.setItem("fingerprint", fingerprint);
+      });
+  }, []);
+
   // cursor on input query field when files are updated
   useEffect(() => {
-    console.log("here");
     if (files.length > 0) {
       setShowFeatures(false);
-      console.log("here2");
       setSidebarCollapsed(true);
       setIsFileUpdated(true);
       if (messageInputRef.current) {
@@ -182,12 +143,7 @@ function Home() {
         >
           <MenuOutlinedIcon className="menu-icon" fontSize="medium" />
         </Button>
-        {!sidebarCollapsed && (
-          <LeftMenu
-            sessions={sessions}
-            selectedSessionFiles={selectedSessionFiles}
-          />
-        )}
+        {!sidebarCollapsed && <LeftMenu />}
       </div>
       {showFeatures && !isFileUpdated ? (
         <div

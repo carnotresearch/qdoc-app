@@ -1,4 +1,4 @@
-import React, { useState, useRef, useContext } from "react";
+import React, { useState } from "react";
 import { ListGroup, ButtonGroup, Button } from "react-bootstrap";
 import {
   RiArrowDropDownLine,
@@ -6,19 +6,15 @@ import {
   RiEdit2Line,
   RiDeleteBinLine,
 } from "react-icons/ri";
-import { FileContext } from "../FileContext";
 import "../../styles/sidebar.css";
-import { fetchFilesFromS3 } from "../utils/presignedUtils";
-import DisabledUpload from "./DisabledUpload";
-import axios from "axios";
+import RestrictedUpload from "./RestrictedUpload";
+import Popup from "./Popup";
 
-function LeftMenu({ sessions, selectedSessionFiles }) {
-  const { setFiles } = useContext(FileContext);
-  const additionalFileInputRef = useRef(null);
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InByYW5hdmthbmlyZUBnbWFpbC5jb20iLCJpYXQiOjE3MzM4MTU2NDgsImV4cCI6MTczMzgxOTI0OH0.vwUvLsOziesVg6uQ4XPpUq1QVrZKD4E2juCBH95yZYA";
+function LeftMenu() {
   const [visibleFiles, setVisibleFiles] = useState({});
-  const [latestSessionId, setLatestSessionId] = useState("");
+  const [showPopup, setShowPopup] = useState(false);
+  const sessions = [];
+  const selectedSessionFiles = [];
 
   const addButtonStyle = {
     color: "white",
@@ -48,63 +44,31 @@ function LeftMenu({ sessions, selectedSessionFiles }) {
     });
   };
 
-  const fetchAndAppendSessionFiles = async (session) => {
-    try {
-      setLatestSessionId(session.id);
-      axios.post(
-        `${process.env.REACT_APP_UPDATE_TIMESTAMP}`,
-        { token, sessionId: session.id },
-        { headers: { "Content-Type": "application/json" } }
-      );
-      // Auto-expand the selected session
-      setVisibleFiles((prevState) => {
-        const newState = { ...prevState };
-        for (const key in newState) {
-          newState[key] = false; // Collapse all other sessions
-        }
-        newState[session.id] = true; // Expand the selected session
-        return newState;
-      });
-      sessionStorage.setItem("sessionId", session.id);
-      // fetch files from s3
-      const files = await fetchFilesFromS3(token, session.id);
-      setFiles(files);
-    } catch (error) {
-      console.error("Error fetching and appending session files:", error);
-    }
-  };
-
-  const formatSessionDate = (sessionId) => {
-    const date = new Date(
-      sessionId.slice(0, 4),
-      sessionId.slice(4, 6) - 1,
-      sessionId.slice(6, 8)
-    );
-    const options = { day: "numeric", month: "short" };
-    return date.toLocaleDateString(undefined, options);
-  };
-
   return (
     <div>
-      <DisabledUpload />
+      <RestrictedUpload />
       <ListGroup>
         {sessions.slice(0, 4).map((session, index) => (
           <div key={index}>
             <ListGroup.Item
-              className={`d-flex justify-content-between session-item ${
-                session.id === latestSessionId ? "latest-container" : ""
-              }`}
-              onClick={() => fetchAndAppendSessionFiles(session)}
-              title={`${formatSessionDate(
-                session.id
-              )} - ${session.fileNames.join(", ")}`}
+              className={`d-flex justify-content-between session-item`}
+              disabled={true}
+              title={`${session.fileNames.join(", ")}`}
             >
               {session.name}
               <ButtonGroup>
-                <Button variant="outline-primary" size="sm" disabled={true}>
+                <Button
+                  variant="outline-primary"
+                  size="sm"
+                  onClick={() => setShowPopup(true)}
+                >
                   <RiEdit2Line />
                 </Button>
-                <Button variant="outline-danger" size="sm" disabled={true}>
+                <Button
+                  variant="outline-danger"
+                  size="sm"
+                  onClick={() => setShowPopup(true)}
+                >
                   <RiDeleteBinLine />
                 </Button>
                 <Button
@@ -138,21 +102,20 @@ function LeftMenu({ sessions, selectedSessionFiles }) {
                   </ListGroup.Item>
                 ))}
 
-                {session.id === latestSessionId && (
-                  <Button
-                    className="mb-2 bg-secondary"
-                    variant="secondary"
-                    onClick={() => additionalFileInputRef.current.click()}
-                    style={addButtonStyle}
-                  >
-                    <big>+</big> Add Files
-                  </Button>
-                )}
+                <Button
+                  className="mb-2 bg-secondary"
+                  variant="secondary"
+                  onClick={() => setShowPopup(true)}
+                  style={addButtonStyle}
+                >
+                  <big>+</big> Add Files
+                </Button>
               </ListGroup>
             )}
           </div>
         ))}
       </ListGroup>
+      <Popup showPopup={showPopup} setShowPopup={setShowPopup} />
     </div>
   );
 }
