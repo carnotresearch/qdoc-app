@@ -15,6 +15,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Login from "./components/Login";
 import Pricing from "./components/Pricing";
 import Cisce from "./components/Cisce";
+import Home from "./components/home";
 
 function App() {
   const [inputLanguage, setInputLanguage] = useState("23");
@@ -89,13 +90,17 @@ function Content({
         <Route
           path="/"
           element={
-            <ProtectedRoute>
-              <ChatPage
-                inputLanguage={inputLanguage}
-                outputLanguage={outputLanguage}
-                setIsLoggedIn={setIsLoggedIn}
-              />
-            </ProtectedRoute>
+            isLoggedIn ? (
+              <ProtectedRoute>
+                <ChatPage
+                  inputLanguage={inputLanguage}
+                  outputLanguage={outputLanguage}
+                  setIsLoggedIn={setIsLoggedIn}
+                />
+              </ProtectedRoute>
+            ) : (
+              <Home />
+            )
           }
         />
         <Route path="/cisce" element={<Cisce />} />

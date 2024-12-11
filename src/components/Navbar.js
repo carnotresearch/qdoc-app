@@ -91,6 +91,8 @@ const Navbar = ({
     setOpenManualDialog(false);
   };
 
+  const iconStyles = { height: "2.5rem", cursor: "pointer", margin: "0" };
+
   return (
     <>
       <nav
@@ -99,7 +101,18 @@ const Navbar = ({
         }`}
       >
         {/* User Profile */}
-        <Profile />
+        {isLoggedIn ? (
+          <Profile />
+        ) : (
+          <div>
+            <img
+              src="./logo.png"
+              alt=""
+              style={iconStyles}
+              onClick={() => navigate("/")}
+            />
+          </div>
+        )}
 
         {/* Heading */}
         <Link className="navbar-brand" style={{ marginLeft: "0.5cm" }} to="/">
@@ -133,32 +146,37 @@ const Navbar = ({
             </li>
 
             {/* Items displayed only on chat page */}
-            {location.pathname === "/" && [
-              // Pricing Link
-              <Link className="nav-link" to="/pricing" key={1}>
-                Pricing
-              </Link>,
-              // User Manual Button
-              <Help setOpenManualDialog={setOpenManualDialog} key={2} />,
-              // Mode Toggle
-              <li className="nav-item" style={{ marginLeft: "0.5rem" }} key={3}>
-                <ContextMode mode={mode} setMode={setMode} />
-              </li>,
-              // Input Language Button
-              <InputLanguage
-                inputLanguage={inputLanguage}
-                setInputLanguage={setInputLanguage}
-                darkMode={darkMode}
-                key={4}
-              />,
-              // Output Language Button
-              <OutputLanguage
-                outputLanguage={outputLanguage}
-                setOutputLanguage={setOutputLanguage}
-                darkMode={darkMode}
-                key={5}
-              />,
-            ]}
+            {location.pathname === "/" &&
+              isLoggedIn && [
+                // Pricing Link
+                <Link className="nav-link" to="/pricing" key={1}>
+                  Pricing
+                </Link>,
+                // User Manual Button
+                <Help setOpenManualDialog={setOpenManualDialog} key={2} />,
+                // Mode Toggle
+                <li
+                  className="nav-item"
+                  style={{ marginLeft: "0.5rem" }}
+                  key={3}
+                >
+                  <ContextMode mode={mode} setMode={setMode} />
+                </li>,
+                // Input Language Button
+                <InputLanguage
+                  inputLanguage={inputLanguage}
+                  setInputLanguage={setInputLanguage}
+                  darkMode={darkMode}
+                  key={4}
+                />,
+                // Output Language Button
+                <OutputLanguage
+                  outputLanguage={outputLanguage}
+                  setOutputLanguage={setOutputLanguage}
+                  darkMode={darkMode}
+                  key={5}
+                />,
+              ]}
 
             {/* Login Logout Button */}
             <li className="nav-item">
@@ -281,7 +299,7 @@ const Navbar = ({
 
           <MenuItem className="menu-item">
             {isLoggedIn ? (
-              <a
+              <button
                 className="btn login-logout-btn"
                 onClick={handleLogout}
                 style={{
@@ -291,9 +309,9 @@ const Navbar = ({
                 }}
               >
                 Logout
-              </a>
+              </button>
             ) : (
-              <a
+              <button
                 className="btn login-logout-btn"
                 onClick={handleLoginClick}
                 style={{
@@ -303,7 +321,7 @@ const Navbar = ({
                 }}
               >
                 Login
-              </a>
+              </button>
             )}
           </MenuItem>
 
