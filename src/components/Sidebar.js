@@ -140,13 +140,6 @@ function Sidebar({
 
   const handleFileChange = (event, isAdditionalUpload = false) => {
     const files = Array.from(event.target.files);
-
-    // // Validate file types
-    // if (pdfTxtDocxFiles.length > 0 && xlsxCsvFiles.length > 0) {
-    //   alert("Please upload either docx, txt, pdf files OR xlsx, csv files only.");
-    //   return;
-    // }
-
     if (isAdditionalUpload) {
       handleAdditionalFileUpload(files);
     } else {
