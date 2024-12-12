@@ -217,7 +217,6 @@ function Sidebar({
       setSelectedSessionFiles(files);
     } catch (error) {
       console.error("Error fetching sessions", error);
-      alert("Error fetching sessions, please try again.");
     }
   };
 
