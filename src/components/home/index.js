@@ -29,8 +29,6 @@ function Home() {
   const [showFeatures, setShowFeatures] = useState(true);
   const navigate = useNavigate();
   const popupText = "Kindly login to ask further questions.";
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InByYW5hdmthbmlyZUBnbWFpbC5jb20iLCJpYXQiOjE3MzM4MTU2NDgsImV4cCI6MTczMzgxOTI0OH0.vwUvLsOziesVg6uQ4XPpUq1QVrZKD4E2juCBH95yZYA";
 
   // side bar open on large and collapsed on small screens
   useEffect(() => {
@@ -101,27 +99,19 @@ function Home() {
         },
       ];
       setChatHistory(newChatHistory);
-      const context = files.length > 0 ? "files" : "";
       try {
-        let temperature = 0.1;
-        const context_mode = sessionStorage.getItem("answerMode");
-        if (context_mode && context_mode === "creative") {
-          temperature = 0.8;
-        }
-
         const response = await axios.post(
-          `${process.env.REACT_APP_BACKEND_URL}/ask`,
+          `${process.env.REACT_APP_BACKEND_URL}/trialAsk`,
           {
-            sessionId: sessionStorage.getItem("sessionId"),
             message,
-            token,
+            fingerprint: localStorage.getItem("fingerprint"),
             inputLanguage,
             outputLanguage,
-            context,
-            temperature: temperature,
-            mode: context_mode || "contextual",
+            context: "files",
+            mode: "contextual",
           }
         );
+        console.log(response);
         newChatHistory[newChatHistory.length - 1].bot = response.data.answer;
         newChatHistory[newChatHistory.length - 1].loading = false;
         setChatHistory([...newChatHistory]);
