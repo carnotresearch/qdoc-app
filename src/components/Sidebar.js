@@ -1,4 +1,4 @@
-import React, { useState, useRef, useContext } from "react";
+import React, { useState, useRef, useContext} from "react";
 import { ListGroup, Button, ButtonGroup } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import {
@@ -35,10 +35,15 @@ function Sidebar({
   const [visibleFiles, setVisibleFiles] = useState({});
   const navigate = useNavigate();
 
+  // Function to update session CSV/XLSX status
+  const updateSessionCsvXlsxStatus = (files) => {
+    const hasCsvOrXlsx = files.some((file) => /\.(xlsx|csv)$/i.test(file.name));
+    sessionStorage.setItem("currentSessionHasCsvOrXlsx", hasCsvOrXlsx);
+  };
+  
   const handleRenameSession = async (sessionId) => {
     const newName = prompt("Enter the new name for the session:");
     if (newName && newName.trim() !== "") {
-      // Check if the newName already exists among the sessions
       const nameExists = sessions.some(
         (session) => session.name.toLowerCase() === newName.toLowerCase()
       );
@@ -118,6 +123,9 @@ function Sidebar({
 
       setFiles(filesArray);
       setIsUploading(false);
+
+      // Update session CSV/XLSX status
+      updateSessionCsvXlsxStatus(filesArray);
     } catch (backendError) {
       if (backendError.response && backendError.response.status === 401) {
         setFiles([]);
@@ -131,50 +139,42 @@ function Sidebar({
   };
 
   const handleFileChange = (event, isAdditionalUpload = false) => {
+    const files = Array.from(event.target.files);
     if (isAdditionalUpload) {
-      handleAdditionalFileUpload(event.target.files);
+      handleAdditionalFileUpload(files);
     } else {
-      handleFileUpload(event.target.files);
+      handleFileUpload(files);
     }
-  };
-
-  const addButtonStyle = {
-    color: "white",
-    width: "100%",
-    fontSize: "0.875rem",
-  };
-
-  const listItemStyle = {
-    flexGrow: 1,
-    marginRight: "1rem",
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    whiteSpace: "nowrap",
-    fontSize: "0.875rem",
   };
 
   const handleFileUpload = async (files) => {
-    let size = 0;
-    for (let i = 0; i < files.length; i++) {
-      if (files[i].size > 20971520) {
-        alert("Kindly upload files up to 20MB.");
-        return;
-      }
-      size += files[i].size;
+    const allowedExtensions = /\.(csv|xlsx?|pdf|docx?|txt)$/i; // Regular expression for allowed extensions
+    const filesArray = Array.from(files);
+  
+    // Filter out invalid files
+    const invalidFiles = filesArray.filter(file => !allowedExtensions.test(file.name));
+    if (invalidFiles.length > 0) {
+      alert("Some files have invalid extensions. Only CSV, Excel, PDF, Docx, and Txt files are supported.");
+      return; // Exit the function if invalid files are detected
     }
-    // Converting bytes to MB and multiply by 20 for avg
-    const estimated_time = Math.floor(size / (1024 * 1024)) * 20;
+  
+    // Calculate the total size for the provided files
+    const size = filesArray.reduce((total, file) => total + file.size, 0);
+    const estimated_time = Math.floor(size / (1024 * 1024)) * 20; // Estimation formula
     if (estimated_time > 10) {
       setProcessTime(estimated_time);
     }
+  
     setIsUploading(true);
     try {
       await uploadMultiFiles(token, files);
       await uploadToBackend(files);
       await fetchSessions();
-      // Highlight the latest session (New Container)
       const newSessionId = sessionStorage.getItem("sessionId");
       setLatestSessionId(newSessionId);
+  
+      // Update session CSV/XLSX status after upload
+      updateSessionCsvXlsxStatus(files);
     } catch (error) {
       console.error("Error uploading files:", error);
       alert("Error uploading files, please try again.");
@@ -182,7 +182,7 @@ function Sidebar({
       setIsUploading(false);
     }
   };
-
+  
   const fetchSessions = async () => {
     try {
       const response = await axios.post(
@@ -225,30 +225,29 @@ function Sidebar({
     setIsUploading(true);
     const sessionId = latestSessionId || sessionStorage.getItem("sessionId");
 
-    // Set the updated files array for the session
     setSelectedSessionFiles((prevState) => ({
       ...prevState,
       [sessionId]: [...(prevState[sessionId] || []), ...newFilesArray],
     }));
-
+  
     try {
-      // Upload files to S3
       addUploadFiles(token, sessionId, newFiles);
-
-      // Now sending only the newly added files to the backend
+  
       const formData = new FormData();
       newFilesArray.forEach((file) => formData.append("files", file));
       formData.append("token", sessionStorage.getItem("token"));
       formData.append("sessionId", sessionId);
-
+  
       await axios.post(
         `${process.env.REACT_APP_BACKEND_URL}/add-upload`,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
-
-      // Update the local files state with the new files added
+  
       setFiles((prevFiles) => [...prevFiles, ...newFilesArray]);
+  
+      // Update session CSV/XLSX status after additional upload
+      updateSessionCsvXlsxStatus(newFilesArray);
     } catch (error) {
       console.error("Error uploading files:", error);
       alert("Error uploading files, please try again.");
@@ -256,7 +255,7 @@ function Sidebar({
       setIsUploading(false);
     }
   };
-
+  
   const toggleFileVisibility = (session) => {
     setVisibleFiles((prevState) => {
       const newState = { ...prevState };
@@ -278,18 +277,21 @@ function Sidebar({
         { token, sessionId: session.id },
         { headers: { "Content-Type": "application/json" } }
       );
-      // Auto-expand the selected session
       setVisibleFiles((prevState) => {
         const newState = { ...prevState };
         for (const key in newState) {
-          newState[key] = false; // Collapse all other sessions
+          newState[key] = false;
         }
-        newState[session.id] = true; // Expand the selected session
+        newState[session.id] = true;
         return newState;
       });
       sessionStorage.setItem("sessionId", session.id);
-      // fetch files from s3
-      setFiles(await fetchFilesFromS3(token, session.id));
+      const files = await fetchFilesFromS3(token, session.id);
+      setFiles(files);
+
+      // Update session CSV/XLSX status
+      updateSessionCsvXlsxStatus(files);
+
       setIsScannedDocument(false);
     } catch (error) {
       console.error("Error fetching and appending session files:", error);
@@ -306,9 +308,23 @@ function Sidebar({
     return date.toLocaleDateString(undefined, options);
   };
 
+  const addButtonStyle = {
+    color: "white",
+    width: "100%",
+    fontSize: "0.875rem",
+  };
+
+  const listItemStyle = {
+    flexGrow: 1,
+    marginRight: "1rem",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+    fontSize: "0.875rem",
+  };
+
   return (
     <div>
-      {/* file upload input functionality */}
       <Upload
         handleFileUpload={handleFileUpload}
         handleFileChange={handleFileChange}
@@ -333,7 +349,7 @@ function Sidebar({
                   variant="outline-primary"
                   size="sm"
                   onClick={(e) => {
-                    e.stopPropagation(); // Prevents triggering folder selection
+                    e.stopPropagation();
                     handleRenameSession(session.id);
                   }}
                 >
@@ -343,7 +359,7 @@ function Sidebar({
                   variant="outline-danger"
                   size="sm"
                   onClick={(e) => {
-                    e.stopPropagation(); // Prevents triggering folder selection
+                    e.stopPropagation();
                     handleDeleteSession(session.id);
                   }}
                 >
@@ -392,7 +408,7 @@ function Sidebar({
                 <input
                   type="file"
                   id="additional-file"
-                  accept=".txt,.pdf,.docx"
+                  accept=".txt,.pdf,.docx, .xlsx, .csv"
                   multiple
                   onChange={(event) => handleFileChange(event, true)}
                   ref={additionalFileInputRef}

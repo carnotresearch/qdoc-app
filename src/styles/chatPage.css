@@ -227,3 +227,49 @@ body.dark-mode .loading-dots span {
     transform: scale(1);
   }
 }
+/* Download button container */
+.download-button-container {
+  display: flex;
+  justify-content: center; /* Center the button horizontally */
+  align-items: center; /* Center the button vertically */
+  margin-top: 15px; /* Reduce spacing above the button */
+  margin-bottom: 10px; /* Reduce spacing below the button */
+}
+
+/* Download button */
+.download-button-container button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px; /* Reduce space between the icon and text */
+  background-color: #053568; /* Primary button color */
+  color: white; /* Text and icon color */
+  border: none; /* Remove border */
+  border-radius: 4px; /* Rounded corners */
+  padding: 6px 15px; /* Reduce padding around the button */
+  font-size: 14px; /* Smaller button text size */
+  font-weight: 500; /* Slightly lighter font weight */
+  cursor: pointer; /* Show pointer cursor on hover */
+  transition: background-color 0.3s ease; /* Smooth hover effect */
+}
+
+/* Hover effect for button */
+.download-button-container button:hover {
+  background-color: #050505; /* Darker shade of blue on hover */
+}
+
+/* Focus effect for button */
+.download-button-container button:focus {
+  outline: 2px solid #0056b3; /* Outline for accessibility */
+}
+
+/* Active button effect */
+.download-button-container button:active {
+  background-color: #004085; /* Even darker shade of blue when clicked */
+  transform: scale(0.97); /* Slightly shrink the button on click */
+}
+
+/* Icon inside the button */
+.download-button-container button svg {
+  font-size: 16px; /* Smaller icon size */
+}

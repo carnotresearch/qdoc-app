@@ -14,9 +14,9 @@
   .file-page {
     margin-bottom: 20px;
     padding: 10px;
-    border: 1px solid #ddd;
+    border: 1px solid #ffffff;
     border-radius: 5px;
-    background-color: #f9f9f9;
+    background-color: #ffffff;
     overflow-wrap: break-word;
   }
   
@@ -55,3 +55,26 @@
     display: block;
   }
   
+  /* Add styles for the table */
+.spreadsheet-viewer table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.spreadsheet-viewer th,
+.spreadsheet-viewer td {
+  border: 1px solid black; /* Add border to cells */
+  padding: 8px; /* Add padding inside cells */
+  text-align: left; /* Align text to the left */
+  white-space: nowrap; /* Prevent long text from wrapping */
+}
+
+.spreadsheet-viewer tr:nth-child(even) {
+  background-color: #f2f2f2; /* Alternate row background for readability */
+}
+
+.spreadsheet-viewer th {
+  background-color: #4CAF50; /* Header row background color */
+  color: white; /* Header row text color */
+}

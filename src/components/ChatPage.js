@@ -5,6 +5,7 @@ import React, {
   useContext,
   useCallback,
 } from "react";
+import { FaDownload } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 // components
@@ -21,7 +22,7 @@ import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import "../styles/chatPage.css";
 import MessageInput from "./chatpage/MessageInput";
 import ChatHistory from "./chatpage/ChatHistory";
-
+import { handleDownloadChat } from "./utils/chatUtils";
 function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
   const [chatHistory, setChatHistory] = useState([]);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -78,14 +79,13 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
       alert("Error fetching sessions, please try again.");
     }
   }, []);
+
   useEffect(() => {
     fetchSessions();
   }, [fetchSessions]);
 
-  // side bar open on large and collapsed on small screens
   useEffect(() => {
     setChatHistory([]);
-    // initial state based on the screen size
     const handleResize = () => {
       if (window.innerWidth <= 768) {
         setSidebarCollapsed(true);
@@ -94,15 +94,12 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
       }
     };
     handleResize();
-    // event listener to handle window resize
     window.addEventListener("resize", handleResize);
-    // Clean up the event listener on component unmount
     return () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
 
-  // cursor on input query field when files are updated
   useEffect(() => {
     setIsFileUpdated(true);
     messageInputRef.current.focus();
@@ -111,7 +108,6 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
     }
   }, [files]);
 
-  // auto scroll down to latest chat response
   useEffect(() => {
     if (chatHistoryRef.current) {
       chatHistoryRef.current.scrollTop = chatHistoryRef.current.scrollHeight;
@@ -140,6 +136,10 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
       setChatHistory(newChatHistory);
       const token = sessionStorage.getItem("token");
       const context = files.length > 0 ? "files" : "";
+
+      const hasCsvOrXlsx =
+        sessionStorage.getItem("currentSessionHasCsvOrXlsx") === "true";
+
       try {
         let temperature = 0.1;
         const context_mode = sessionStorage.getItem("answerMode");
@@ -163,6 +163,7 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
               context,
               temperature: temperature,
               mode: context_mode || "contextual",
+              hasCsvOrXlsx,
             }
           );
           newChatHistory[newChatHistory.length - 1].bot = response.data.answer;
@@ -185,6 +186,10 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
     }
   };
 
+
+    const downloadChat = () => {
+      handleDownloadChat(chatHistory); // Call the function with chatHistory
+    };
   const iconStyles = { color: "green", marginRight: "5px" };
   const startingQuestions = [
     "Summarise the document.",
@@ -258,12 +263,7 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
             (files.length > 0 ? (
               <div className="message bot">
                 <div className="message-box">
-                  <span className={"message-text"}>
-                    <b className="text-success">icarKno: </b>
-                    {isScannedDocument
-                      ? scannedDocumentWarning(files[0].name)
-                      : "Your files have been uploaded!"}
-                  </span>
+                  <span className={"message-text"}>Your files have been uploaded!</span>
                 </div>
               </div>
             ) : (
@@ -283,6 +283,11 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
               </div>
             ))}
         </div>
+        <div className="download-button-container">
+        <button onClick={downloadChat}>
+        <FaDownload /> Download Chat History
+      </button>
+        </div>
         <MessageInput
           inputLanguage={inputLanguage}
           messageInputRef={messageInputRef}
@@ -292,4 +297,5 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
     </Container>
   );
 }
+
 export default ChatPage;
