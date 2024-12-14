@@ -111,7 +111,9 @@ function Home() {
             mode: "contextual",
           }
         );
-        console.log(response);
+        if (response?.data?.message === "Free Trial limit is exhausted") {
+          setShowPopup(true);
+        }
         newChatHistory[newChatHistory.length - 1].bot = response.data.answer;
         newChatHistory[newChatHistory.length - 1].loading = false;
         setChatHistory([...newChatHistory]);
