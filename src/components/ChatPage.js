@@ -161,7 +161,6 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
               inputLanguage,
               outputLanguage,
               context,
-              temperature: temperature,
               mode: context_mode || "contextual",
               hasCsvOrXlsx,
             }

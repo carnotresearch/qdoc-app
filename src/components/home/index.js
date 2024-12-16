@@ -7,10 +7,8 @@ import { FileContext } from "../FileContext";
 import { ttsSupportedLanguages } from "../../constant/data";
 import FileViewer from "../chatpage/FileViewer";
 // icons and style
-import { Button, Container } from "react-bootstrap";
-import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
+import { Container } from "react-bootstrap";
 import "../../styles/chatPage.css";
-import LeftMenu from "./LeftMenu";
 import Popup from "./Popup";
 import Features from "./Features";
 import ChatContent from "./ChatContent";
@@ -20,7 +18,6 @@ function Home() {
   const inputLanguage = "23";
   const outputLanguage = "23";
   const [chatHistory, setChatHistory] = useState([]);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const messageInputRef = useRef(null);
   const { files } = useContext(FileContext);
   const [isFileUpdated, setIsFileUpdated] = useState(false);
@@ -30,43 +27,19 @@ function Home() {
   const navigate = useNavigate();
   const popupText = "Kindly login to ask further questions.";
 
-  // side bar open on large and collapsed on small screens
   useEffect(() => {
-    setChatHistory([]);
-    // initial state based on the screen size
-    const handleResize = () => {
-      if (window.innerWidth <= 768) {
-        setSidebarCollapsed(true);
-      } else {
-        setSidebarCollapsed(false);
-      }
-    };
-    handleResize();
-    // event listener to handle window resize
-    window.addEventListener("resize", handleResize);
-    // Clean up the event listener on component unmount
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
-  useEffect(() => {
-    // Generate a fingerprint
     const fpPromise = FingerprintJS.load();
-
     fpPromise
       .then((fp) => fp.get())
       .then((result) => {
-        const fingerprint = result.visitorId; // Unique ID for the browser/device
+        const fingerprint = result.visitorId;
         localStorage.setItem("fingerprint", fingerprint);
       });
   }, []);
 
-  // cursor on input query field when files are updated
   useEffect(() => {
     if (files.length > 0) {
       setShowFeatures(false);
-      setSidebarCollapsed(true);
       setIsFileUpdated(true);
       if (messageInputRef.current) {
         messageInputRef.current.focus();
@@ -126,50 +99,79 @@ function Home() {
   };
 
   return (
-    <Container fluid className="chat-container">
-      <div className={`sidebar ${sidebarCollapsed ? "collapsed" : ""}`}>
-        <Button
-          variant="secondary"
-          className="sidebar-toggle-btn"
-          onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-        >
-          <MenuOutlinedIcon className="menu-icon" fontSize="medium" />
-        </Button>
-        {!sidebarCollapsed && <LeftMenu />}
+    <Container fluid className="chat-container" style={{ padding: 0, margin: 0 }}>
+  {showFeatures && !isFileUpdated ? (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "row", // Default for larger screens
+        height: "100vh",
+        margin: 0,
+        padding: 0,
+        width: "100%",
+        overflowY: "auto",
+      }}
+      className="responsive-layout"
+    >
+      <style>
+        {`
+          @media (max-width: 768px) {
+            .responsive-layout {
+              flex-direction: column; /* Stack vertically on mobile */
+              height: auto; /* Allow scrolling if needed */
+            }
+          }
+        `}
+      </style>
+
+      {/* Left Section: MiddleBlock */}
+      <div
+        style={{
+          flex: 1,
+          display: "flex",
+          alignItems: "center", // Center vertically
+          justifyContent: "center", // Center horizontally
+          backgroundColor: "#f9f9f9",
+          padding: "1rem",
+          height: "100%", // Ensure it takes the full height
+        }}
+      >
+        <MiddleBlock />
       </div>
-      {showFeatures && !isFileUpdated ? (
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            marginTop: "2rem",
-          }}
-        >
-          <MiddleBlock setSidebarCollapsed={setSidebarCollapsed} />
-          <Features />
-        </div>
-      ) : (
-        <>
-          {files && <FileViewer files={files} />}
-          <ChatContent
-            chatHistory={chatHistory}
-            files={files}
-            handleSendMessage={handleSendMessage}
-            inputLanguage={inputLanguage}
-            outputLanguage={outputLanguage}
-            messageInputRef={messageInputRef}
-            isFileUpdated={isFileUpdated}
-          />
-        </>
-      )}
-      {/** Popup for login */}
-      <Popup
-        showPopup={showPopup}
-        setShowPopup={setShowPopup}
-        popupText={popupText}
+
+      {/* Right Section: Features */}
+      <div
+        style={{
+          flex: 1,
+          display: "flex",
+          alignItems: "center", // Center vertically
+          justifyContent: "center", // Center horizontally
+          backgroundColor: "#ffffff",
+          padding: "1rem",
+          height: "100%", // Ensure it takes the full height
+        }}
+      >
+        <Features />
+      </div>
+    </div>
+  ) : (
+    <>
+      {files && <FileViewer files={files} />}
+      <ChatContent
+        chatHistory={chatHistory}
+        files={files}
+        handleSendMessage={handleSendMessage}
+        inputLanguage={inputLanguage}
+        outputLanguage={outputLanguage}
+        messageInputRef={messageInputRef}
+        isFileUpdated={isFileUpdated}
       />
-    </Container>
+    </>
+  )}
+  <Popup showPopup={showPopup} setShowPopup={setShowPopup} popupText={popupText} />
+</Container>
+
   );
 }
+
 export default Home;
