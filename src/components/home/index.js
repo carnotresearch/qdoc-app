@@ -12,7 +12,6 @@ import Popup from "./Popup";
 import Features from "./Features";
 import ChatContent from "./ChatContent";
 import MiddleBlock from "./MiddleBlock";
-import LeftMenu from "./LeftMenu";
 
 function Home() {
   const inputLanguage = "23";
@@ -100,7 +99,6 @@ function Home() {
 
   return (
     <Container fluid className="chat-container" style={{ padding: 0, margin: 0 }}>
-      {files.length > 0 && <LeftMenu />} {/* Render sidebar only if files exist */}
 
       {showFeatures && !isFileUpdated ? (
         <div
