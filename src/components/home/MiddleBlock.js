@@ -4,9 +4,9 @@ import { useNavigate } from "react-router-dom";
 import RestrictedUpload from "./RestrictedUpload";
 import { BsArrowRight } from "react-icons/bs"; // Import arrow icon
 
-const iconStyles = { height: "7cm", cursor: "pointer", margin: "0" };
+const iconStyles = { height: "7rem", cursor: "pointer", margin: "0" };
 
-const MiddleBlock = ({ setSidebarCollapsed }) => {
+const MiddleBlock = () => {
   const navigate = useNavigate();
 
   const handleLoginClick = () => {
@@ -32,6 +32,7 @@ const MiddleBlock = ({ setSidebarCollapsed }) => {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+    margin: "0 auto",
   };
 
   const listStyles = {
@@ -40,63 +41,43 @@ const MiddleBlock = ({ setSidebarCollapsed }) => {
   };
 
   return (
-    <MiddleBlockSection
-      style={{
-        height: "100%",
-        overflow: "hidden",
-        margin: 0,
-        padding: "2rem 0 0 0", // Add padding on top
-        border: "none",
-      }}
-    >
-      <Row
-        justify="center"
-        align="middle"
-        style={{
-          margin: 0,
-          padding: 0,
-          width: "100%",
-        }}
-      >
-        <ContentWrapper style={{ margin: 0, padding: 0 }}>
-          <Col lg={24} md={24} sm={24} xs={24}>
-            <div>
-              <img
-                src="./logo.png"
-                alt="logo"
-                style={iconStyles}
-                onClick={() => navigate("/")}
-              />
-            </div>
-            <h2>
+    <MiddleBlockSection>
+      <Row justify="center" align="middle">
+        <ContentWrapper>
+          <div
+            style={{ display: "flex", flexDirection: "row", margin: "0 auto" }}
+          >
+            <img
+              src="./logo.png"
+              alt="logo"
+              style={iconStyles}
+              onClick={() => navigate("/")}
+            />
+            <h2 style={{ margin: "auto 0" }}>
               <b>
                 icarKno
                 <span style={tmStyles}>TM</span> Chat
               </b>
             </h2>
-            <Content>{content}</Content>
-            <div
-              style={{
-                alignItems: "center",
-                display: "flex",
-                justifyContent: "center", // Space above the buttons
-              }}
-            >
-              {/* Restricted Upload */}
-              <RestrictedUpload />
+          </div>
+          <Content>{content}</Content>
+          <div
+            style={{
+              alignItems: "center",
+              display: "flex",
+              justifyContent: "center", // Space above the buttons
+            }}
+          >
+            {/* Restricted Upload */}
+            <RestrictedUpload />
 
-              {/* Go To Login Button */}
-
-            </div>
-            <Button
-                name="submit"
-                onClick={handleLoginClick}
-                style={buttonStyles}
-              >
-                Go To Login <BsArrowRight />
-              </Button>
-            <div style={{ textAlign: "left", marginTop: "2rem" }}>
-              <center>
+            {/* Go To Login Button */}
+          </div>
+          <Button name="submit" onClick={handleLoginClick} style={buttonStyles}>
+            Go To Login <BsArrowRight />
+          </Button>
+          <div style={{ textAlign: "left", marginTop: "2rem" }}>
+            <center>
               <ul style={listStyles}>
                 <li>
                   Your info remains safe and not shared externally with anyone
@@ -106,9 +87,8 @@ const MiddleBlock = ({ setSidebarCollapsed }) => {
                   use-cases
                 </li>
               </ul>
-              </center>
-            </div>
-          </Col>
+            </center>
+          </div>
         </ContentWrapper>
       </Row>
     </MiddleBlockSection>
