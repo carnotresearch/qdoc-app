@@ -2,6 +2,7 @@ import React, { useContext, useState, useRef } from "react";
 import { Form, Card } from "react-bootstrap";
 import { RiMessage2Fill } from "react-icons/ri";
 import { FileContext } from "../FileContext";
+import axios from "axios";
 import Popup from "./Popup";
 
 const RestrictedUpload = () => {
@@ -42,20 +43,27 @@ const RestrictedUpload = () => {
     }
 
     if (files && files.length === 1) {
-      const file = files[0];
       setIsUploading(true);
       try {
+        const fingerprint = localStorage.getItem("fingerprint");
+        const filesArray = Array.from(files);
         const formData = new FormData();
-        formData.append("file", file);
-        setFiles([file]);
+        filesArray.forEach((file) => formData.append("files", file));
+        formData.append("fingerprint", fingerprint);
 
-        // TODO
-        // API call to backend
-        // const response = await axios.post("/api/upload", formData, {
-        //   headers: {
-        //     "Content-Type": "multipart/form-data",
-        //   },
-        // });
+        const response = await axios.post(
+          `${process.env.REACT_APP_BACKEND_URL}/freeTrial`,
+          formData,
+          { headers: { "Content-Type": "multipart/form-data" } }
+        );
+        if (
+          response.data.message &&
+          response.data.message === "No data was extracted!"
+        ) {
+          alert("Kindly loign to upload scanned documents");
+          return;
+        }
+        setFiles(filesArray);
       } catch (error) {
         console.error("Error uploading file:", error);
       } finally {
