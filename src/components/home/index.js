@@ -12,6 +12,7 @@ import Popup from "./Popup";
 import Features from "./Features";
 import ChatContent from "./ChatContent";
 import MiddleBlock from "./MiddleBlock";
+import WelcomePopup from "./WelcomePopup";
 
 function Home() {
   const inputLanguage = "23";
@@ -21,6 +22,7 @@ function Home() {
   const { files } = useContext(FileContext);
   const [isFileUpdated, setIsFileUpdated] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
+  const [welcomPopop, setWelcomePopup] = useState(false);
   const [chatCount, setChatCount] = useState(0);
   const [showFeatures, setShowFeatures] = useState(true);
   const navigate = useNavigate();
@@ -34,6 +36,13 @@ function Home() {
         const fingerprint = result.visitorId;
         localStorage.setItem("fingerprint", fingerprint);
       });
+  }, []);
+
+  useEffect(() => {
+    const trialUsed = localStorage.getItem("trialUsed");
+    if (!trialUsed) {
+      setWelcomePopup(true);
+    }
   }, []);
 
   useEffect(() => {
@@ -98,7 +107,11 @@ function Home() {
   };
 
   return (
-    <Container fluid className="chat-container" style={{ padding: 0, margin: 0 }}>
+    <Container
+      fluid
+      className="chat-container"
+      style={{ padding: 0, margin: 0 }}
+    >
       {showFeatures && !isFileUpdated ? (
         <div
           style={{
@@ -171,7 +184,12 @@ function Home() {
           />
         </>
       )}
-      <Popup showPopup={showPopup} setShowPopup={setShowPopup} popupText={popupText} />
+      <Popup
+        showPopup={showPopup}
+        setShowPopup={setShowPopup}
+        popupText={popupText}
+      />
+      <WelcomePopup showPopup={welcomPopop} setShowPopup={setWelcomePopup} />
     </Container>
   );
 }
