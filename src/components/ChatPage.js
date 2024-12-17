@@ -141,11 +141,7 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
         sessionStorage.getItem("currentSessionHasCsvOrXlsx") === "true";
 
       try {
-        let temperature = 0.1;
         const context_mode = sessionStorage.getItem("answerMode");
-        if (context_mode && context_mode === "creative") {
-          temperature = 0.8;
-        }
 
         if (isScannedDocument) {
           console.log(files);
@@ -185,10 +181,9 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
     }
   };
 
-
-    const downloadChat = () => {
-      handleDownloadChat(chatHistory); // Call the function with chatHistory
-    };
+  const downloadChat = () => {
+    handleDownloadChat(chatHistory); // Call the function with chatHistory
+  };
   const iconStyles = { color: "green", marginRight: "5px" };
   const startingQuestions = [
     "Summarise the document.",
@@ -262,7 +257,9 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
             (files.length > 0 ? (
               <div className="message bot">
                 <div className="message-box">
-                  <span className={"message-text"}>Your files have been uploaded!</span>
+                  <span className={"message-text"}>
+                    Your files have been uploaded!
+                  </span>
                 </div>
               </div>
             ) : (
@@ -283,9 +280,9 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
             ))}
         </div>
         <div className="download-button-container">
-        <button onClick={downloadChat}>
-        <FaDownload /> Download Chat History
-      </button>
+          <button onClick={downloadChat}>
+            <FaDownload /> Download Chat History
+          </button>
         </div>
         <MessageInput
           inputLanguage={inputLanguage}

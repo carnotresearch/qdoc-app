@@ -273,17 +273,3 @@ body.dark-mode .loading-dots span {
 .download-button-container button svg {
   font-size: 16px; /* Smaller icon size */
 }
-
-.responsive-layout {
-  display: flex;
-  flex-direction: row; /* Default for larger screens */
-  height: 100vh;
-  width: 100%;
-}
-
-@media (max-width: 768px) {
-  .responsive-layout {
-    flex-direction: column; /* Stack vertically on mobile */
-    height: auto; /* Allow scrolling if needed */
-  }
-}

@@ -115,7 +115,7 @@ function Home() {
           style={{
             display: "flex",
             flexDirection: "row",
-            height: "100vh",
+            // height: "100vh",
             margin: 0,
             padding: 0,
             width: "100%",

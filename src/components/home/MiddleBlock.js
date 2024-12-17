@@ -1,4 +1,4 @@
-import { Button, Row, Col } from "react-bootstrap";
+import { Button, Row } from "react-bootstrap";
 import { MiddleBlockSection, Content, ContentWrapper } from "./styles";
 import { useNavigate } from "react-router-dom";
 import RestrictedUpload from "./RestrictedUpload";
