@@ -44,13 +44,12 @@ function Features() {
   // Styles
   const containerStyle = {
     width: "100%",
-    height: "100vh",
+    height: "87.5vh",
     overflow: "hidden",
     position: "relative",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#FFF", // Black background
   };
 
   const mediaStyle = {

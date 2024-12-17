@@ -141,22 +141,7 @@ function Home() {
             `}
           </style>
 
-          {/* Left Section: MiddleBlock */}
-          <div
-            className="left-container"
-            style={{
-              alignItems: "center",
-              justifyContent: "center",
-              backgroundColor: "#f9f9f9",
-              padding: "1rem",
-              height: "100%",
-              width: "50%",
-            }}
-          >
-            <MiddleBlock />
-          </div>
-
-          {/* Right Section: Features */}
+          {/* Left Section: Features */}
           <div
             className="hide-on-mobile"
             style={{
@@ -164,12 +149,24 @@ function Home() {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              backgroundColor: "#ffffff",
+              backgroundColor: "#f9f9f9",
               padding: "1rem",
-              height: "100%",
             }}
           >
             <Features />
+          </div>
+          {/* Right Section: MiddleBlock */}
+          <div
+            className="left-container"
+            style={{
+              alignItems: "center",
+              justifyContent: "center",
+              padding: "1rem",
+              height: "100%",
+              width: "50%",
+            }}
+          >
+            <MiddleBlock />
           </div>
         </div>
       ) : (

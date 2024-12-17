@@ -35,7 +35,8 @@ const RestrictedUpload = () => {
     margin: "0 auto", // Center horizontally
     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", // Subtle shadow for better appearance
     borderRadius: "8px", // Optional: Rounded corners
-    width: "10cm", // Optional: Full width
+    width: "10rem", // Optional: Full width
+    height: "8rem",
   };
 
   const marginStyle = { marginTop: "1.5cm" };
