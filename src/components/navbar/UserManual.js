@@ -43,7 +43,7 @@ const UserManual = () => {
           depending on the size and number of files selected.
         </p>
         <center><img
-          src="upload.png"
+          src="help/upload.png"
           alt="File upload screen"
         />
 </center>
@@ -64,7 +64,7 @@ const UserManual = () => {
           <li>Select your input language from the dropdown shown.</li>
         </ul>
         <img
-          src="input.png"
+          src="help/input.png"
           alt="Language selection dropdown"
         />
 
@@ -72,19 +72,19 @@ const UserManual = () => {
         <p>
           Click on the play button at the end of a chat message by the chatbot.
         </p>
-        <img src="play.png" alt="Play button" />
+        <img src="help/play.png" alt="Play button" />
 
         <h4>To copy the message:</h4>
         <p>Click on the pointed button:</p>
         <pre>The message will be copied to your clipboard.</pre>
-        <img src="copy.png" alt="Copy button" />
+        <img src="help/copy.png" alt="Copy button" />
 
         <h4>To switch between Light and Dark mode:</h4>
         <p>
           Click on the top-right moon icon button to switch to dark mode and
           click on the sun icon in dark mode to switch back to light mode.
         </p>
-        <img src="light.png" alt="Dark mode icon" />
+        <img src="help/light.png" alt="Dark mode icon" />
 
         <h4>To handle multiple documents:</h4>
         <ul>
@@ -104,7 +104,7 @@ const UserManual = () => {
           </li>
         </ul>
         <img
-          src="delete.png"
+          src="help/delete.png"
           alt="Document management example"
         />
 
@@ -124,7 +124,7 @@ const UserManual = () => {
             additional information or reasoning.
           </li>
         </ul>
-        <img src="modes.png" alt="Mode selection options" />
+        <img src="help/modes.png" alt="Mode selection options" />
 
         <h3>Types of Questions</h3>
         <p>
@@ -170,14 +170,14 @@ const UserManual = () => {
         <p>
           फाइल अपलोड करने के लिए, साइडबार में 3 लाइनों पर क्लिक करके इसे विस्तृत करें:
         </p>
-        <center><img src='sidebar.png' alt="Sidebar icon" /></center>
+        <center><img src='help/sidebar.png' alt="Sidebar icon" /></center>
         <pre>
           "New Container" बटन पर क्लिक करें और अपनी डिवाइस से कोई फाइल अपलोड करें।
         </pre>
         <p>
           फाइल अपलोड हो जाने के बाद, यह फाइल के आकार और चुने गए दस्तावेज़ों की संख्या के आधार पर अपलोड होने में कुछ समय ले सकती है।
         </p>
-        <center><img src="upload.png" alt="File upload screen" /></center>
+        <center><img src="help/upload.png" alt="File upload screen" /></center>
 
         <h4>फाइल अपलोड हो जाने के बाद:</h4>
         <p>आप चैट विंडो में निम्न संदेश देखेंगे:</p>
@@ -193,16 +193,16 @@ const UserManual = () => {
           </li>
           <li>दिखाए गए ड्रॉपडाउन से अपनी इनपुट भाषा चुनें।</li>
         </ul>
-        <img src="input.png" alt="भाषा चयन ड्रॉपडाउन" />
+        <img src="help/input.png" alt="भाषा चयन ड्रॉपडाउन" />
 
         <h4>स्पीच आउटपुट सुनने के लिए:</h4>
         <p>चैटबॉट के संदेश के अंत में प्ले बटन पर क्लिक करें।</p>
-        <img src="play.png" alt="Play button" />
+        <img src="help/play.png" alt="Play button" />
 
         <h4>संदेश को कॉपी करने के लिए:</h4>
         <p>संदेश को कॉपी करने के लिए "कॉपी" बटन पर क्लिक करें:</p>
         <pre>संदेश आपके क्लिपबोर्ड पर कॉपी हो जाएगा।</pre>
-        <img src="copy.png" alt="कॉपी बटन" />
+        <img src="help/copy.png" alt="कॉपी बटन" />
 
         <h3>प्रश्नों के प्रकार</h3>
         <p>

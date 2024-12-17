@@ -32,7 +32,10 @@ const RestrictedUpload = () => {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+    maxWidth: "600px", // Doubled width
+    margin: "0 auto", // Center horizontally
   };
+
   const marginStyle = { marginTop: "1.5cm" };
 
   const handleFileChange = async (files) => {
@@ -60,7 +63,7 @@ const RestrictedUpload = () => {
           response.data.message &&
           response.data.message === "No data was extracted!"
         ) {
-          alert("Kindly loign to upload scanned documents");
+          alert("Kindly login to upload scanned documents");
           return;
         }
         setFiles(filesArray);
