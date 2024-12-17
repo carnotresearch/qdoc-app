@@ -6,7 +6,6 @@ import FingerprintJS from "@fingerprintjs/fingerprintjs";
 import { FileContext } from "../FileContext";
 import { ttsSupportedLanguages } from "../../constant/data";
 import FileViewer from "../chatpage/FileViewer";
-// icons and style
 import { Container } from "react-bootstrap";
 import "../../styles/chatPage.css";
 import Popup from "./Popup";
@@ -100,77 +99,80 @@ function Home() {
 
   return (
     <Container fluid className="chat-container" style={{ padding: 0, margin: 0 }}>
-  {showFeatures && !isFileUpdated ? (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "row", // Default for larger screens
-        height: "100vh",
-        margin: 0,
-        padding: 0,
-        width: "100%",
-        overflowY: "auto",
-      }}
-      className="responsive-layout"
-    >
-      <style>
-        {`
-          @media (max-width: 768px) {
-            .responsive-layout {
-              flex-direction: column; /* Stack vertically on mobile */
-              height: auto; /* Allow scrolling if needed */
-            }
-          }
-        `}
-      </style>
+      {showFeatures && !isFileUpdated ? (
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            height: "100vh",
+            margin: 0,
+            padding: 0,
+            width: "100%",
+            overflowY: "auto",
+          }}
+          className="responsive-layout"
+        >
+          <style>
+            {`
+              @media (max-width: 768px) {
+                .responsive-layout {
+                  flex-direction: column;
+                  height: auto;
+                }
+                .hide-on-mobile {
+                  display: none !important;
+                }
+              }
+            `}
+          </style>
 
-      {/* Left Section: MiddleBlock */}
-      <div
-        style={{
-          flex: 1,
-          display: "flex",
-          alignItems: "center", // Center vertically
-          justifyContent: "center", // Center horizontally
-          backgroundColor: "#f9f9f9",
-          padding: "1rem",
-          height: "100%", // Ensure it takes the full height
-        }}
-      >
-        <MiddleBlock />
-      </div>
+          {/* Left Section: MiddleBlock */}
+          <div
+            style={{
+              flex: 1,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: "#f9f9f9",
+              padding: "1rem",
+              height: "100%",
+            }}
+          >
+            <MiddleBlock />
+          </div>
 
-      {/* Right Section: Features */}
-      <div
-        style={{
-          flex: 1,
-          display: "flex",
-          alignItems: "center", // Center vertically
-          justifyContent: "center", // Center horizontally
-          backgroundColor: "#ffffff",
-          padding: "1rem",
-          height: "100%", // Ensure it takes the full height
-        }}
-      >
-        <Features />
-      </div>
-    </div>
-  ) : (
-    <>
-      {files && <FileViewer files={files} />}
-      <ChatContent
-        chatHistory={chatHistory}
-        files={files}
-        handleSendMessage={handleSendMessage}
-        inputLanguage={inputLanguage}
-        outputLanguage={outputLanguage}
-        messageInputRef={messageInputRef}
-        isFileUpdated={isFileUpdated}
-      />
-    </>
-  )}
-  <Popup showPopup={showPopup} setShowPopup={setShowPopup} popupText={popupText} />
-</Container>
-
+          {/* Right Section: Features */}
+          <div
+            className="hide-on-mobile"
+            style={{
+              flex: 1,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: "#ffffff",
+              padding: "1rem",
+              height: "100%",
+            }}
+          >
+            <Features />
+          </div>
+        </div>
+      ) : (
+        <>
+          {files && <FileViewer files={files} />}
+          <ChatContent
+            chatHistory={chatHistory}
+            files={files}
+            handleSendMessage={handleSendMessage}
+            inputLanguage={inputLanguage}
+            outputLanguage={outputLanguage}
+            messageInputRef={messageInputRef}
+            isFileUpdated={isFileUpdated}
+          />
+        </>
+      )}
+      <Popup showPopup={showPopup} setShowPopup={setShowPopup} popupText={popupText} />
+    </Container>
   );
 }
 

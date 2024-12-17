@@ -3,8 +3,6 @@ import React, { useState, useEffect, useRef } from "react";
 function Features() {
   const carouselItems = [
     { type: "image", src: "./features.jpg" }, // Picture
-    { type: "video", src: "./video1.mp4" }, // Video 1
-    { type: "video", src: "./video2.mp4" }, // Video 2
   ];
 
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -85,9 +83,9 @@ function Features() {
 
   return (
     <div style={containerStyle}>
-      <button style={prevButtonStyle} onClick={handlePrev}>
+      {/* <button style={prevButtonStyle} onClick={handlePrev}>
         &#8249;
-      </button>
+      </button> */}
 
       {/* Conditional rendering for image or video */}
       {carouselItems[currentIndex].type === "image" ? (
@@ -106,9 +104,9 @@ function Features() {
         />
       )}
 
-      <button style={nextButtonStyle} onClick={handleNext}>
+      {/* <button style={nextButtonStyle} onClick={handleNext}>
         &#8250;
-      </button>
+      </button> */}
     </div>
   );
 }
