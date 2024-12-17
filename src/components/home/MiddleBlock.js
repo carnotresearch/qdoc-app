@@ -27,7 +27,7 @@ const MiddleBlock = () => {
   const buttonStyles = {
     backgroundColor: "#0056b3",
     color: "white",
-    maxWidth: "10rem",
+    maxWidth: "115rem",
     minWidth: "7rem", // Add spacing between buttons
     display: "flex",
     alignItems: "center",
@@ -74,7 +74,7 @@ const MiddleBlock = () => {
             {/* Go To Login Button */}
           </div>
           <Button name="submit" onClick={handleLoginClick} style={buttonStyles}>
-            Go To Login <BsArrowRight />
+            Already have an account? Login <BsArrowRight />
           </Button>
           <div style={{ textAlign: "left", marginTop: "2rem" }}>
             <center>

@@ -72,7 +72,8 @@ function ChatContent({
             <div className="message-box">
               <span className={"message-text"}>
                 <b className="text-success">icarKno: </b>
-                Your knowledge container is updated!
+                You can query the documents by asking information related to the document.
+                Please login to upload more documents and access knowledge containers.
               </span>
             </div>
           </div>

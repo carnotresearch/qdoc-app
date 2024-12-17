@@ -9,22 +9,11 @@ export const MiddleBlockSection = styled.section`
 `;
 
 export const Content = styled.p`
-  padding: 0.75rem 0 0.75rem;
+  padding: 0.05rem 0 0.05rem;
   font-size: 1.2rem;
 `;
 
 export const ContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
-`;
-
-const ResponsiveLayout = styled.div`
-  display: flex;
-  flex-direction: row; /* Default for larger screens */
-  height: 100vh;
-  width: 100%;
-  @media (max-width: 768px) {
-    flex-direction: column; /* Stack vertically on mobile */
-    height: auto; /* Allow scrolling */
-  }
 `;
