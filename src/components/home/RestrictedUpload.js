@@ -28,7 +28,6 @@ const RestrictedUpload = () => {
   const cardStyle = {
     border: "2px dashed #ccc",
     textAlign: "center",
-    height: "4rem",
     display: "flex",
     justifyContent: "center",
     alignItems: "center", // Increased width to 800px

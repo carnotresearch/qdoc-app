@@ -6,13 +6,15 @@ import FingerprintJS from "@fingerprintjs/fingerprintjs";
 import { FileContext } from "../FileContext";
 import { ttsSupportedLanguages } from "../../constant/data";
 import FileViewer from "../chatpage/FileViewer";
-import { Container } from "react-bootstrap";
+import { Button, Container } from "react-bootstrap";
 import "../../styles/chatPage.css";
 import Popup from "./Popup";
 import Features from "./Features";
 import ChatContent from "./ChatContent";
 import MiddleBlock from "./MiddleBlock";
 import WelcomePopup from "./WelcomePopup";
+import { MenuOutlined } from "@mui/icons-material";
+import LeftMenu from "./LeftMenu";
 
 function Home() {
   const inputLanguage = "23";
@@ -24,8 +26,10 @@ function Home() {
   const [showPopup, setShowPopup] = useState(false);
   const [welcomPopop, setWelcomePopup] = useState(false);
   const [chatCount, setChatCount] = useState(0);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const navigate = useNavigate();
   const popupText = "Kindly login to ask further questions.";
+  const [sessions, setSessions] = useState([]);
 
   useEffect(() => {
     const fpPromise = FingerprintJS.load();
@@ -47,6 +51,12 @@ function Home() {
   useEffect(() => {
     if (files.length > 0) {
       setIsFileUpdated(true);
+      const sessionDetails = {
+        id: "1",
+        name: "knowledge container",
+        fileNames: [files[0].name],
+      };
+      setSessions([sessionDetails]);
       if (messageInputRef.current) {
         messageInputRef.current.focus();
       }
@@ -54,7 +64,8 @@ function Home() {
   }, [files]);
 
   const handleSendMessage = async (message) => {
-    setIsFileUpdated(false);
+    // setIsFileUpdated(false);
+
     if (message.trim()) {
       if (chatCount >= 10) {
         setShowPopup(true);
@@ -104,28 +115,49 @@ function Home() {
     }
   };
 
-  return (
+  return isFileUpdated ? (
+    <Container fluid className="chat-container">
+      <div className={`sidebar ${sidebarCollapsed ? "collapsed" : ""}`}>
+        <Button
+          variant="secondary"
+          className="sidebar-toggle-btn"
+          onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+        >
+          <MenuOutlined className="menu-icon" fontSize="medium" />
+        </Button>
+        {!sidebarCollapsed && <LeftMenu sessions={sessions} />}
+      </div>
+      {files && <FileViewer files={files} />}
+      <ChatContent
+        chatHistory={chatHistory}
+        files={files}
+        handleSendMessage={handleSendMessage}
+        inputLanguage={inputLanguage}
+        outputLanguage={outputLanguage}
+        messageInputRef={messageInputRef}
+        isFileUpdated={isFileUpdated}
+      />
+    </Container>
+  ) : (
     <Container
       fluid
       className="chat-container"
       style={{ padding: 0, margin: 0 }}
     >
-      {!isFileUpdated ? (
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            // height: "100vh",
-            margin: 0,
-            padding: 0,
-            width: "100%",
-            overflowY: "auto",
-            alignItems: "center",
-          }}
-          className="responsive-layout"
-        >
-          <style>
-            {`
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          margin: 0,
+          padding: 0,
+          width: "100%",
+          overflowY: "auto",
+          alignItems: "center",
+        }}
+        className="responsive-layout"
+      >
+        <style>
+          {`
               @media (max-width: 768px) {
                 .left-container {
                   width: 100% !important
@@ -139,50 +171,36 @@ function Home() {
                 }
               }
             `}
-          </style>
+        </style>
 
-          {/* Left Section: Features */}
-          <div
-            className="hide-on-mobile"
-            style={{
-              flex: 1,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              backgroundColor: "#f9f9f9",
-              padding: "1rem",
-            }}
-          >
-            <Features />
-          </div>
-          {/* Right Section: MiddleBlock */}
-          <div
-            className="left-container"
-            style={{
-              alignItems: "center",
-              justifyContent: "center",
-              padding: "1rem",
-              height: "100%",
-              width: "50%",
-            }}
-          >
-            <MiddleBlock />
-          </div>
+        {/* Left Section: Features */}
+        <div
+          className="hide-on-mobile"
+          style={{
+            flex: 1,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "#f9f9f9",
+            padding: "1rem",
+          }}
+        >
+          <Features />
         </div>
-      ) : (
-        <>
-          {files && <FileViewer files={files} />}
-          <ChatContent
-            chatHistory={chatHistory}
-            files={files}
-            handleSendMessage={handleSendMessage}
-            inputLanguage={inputLanguage}
-            outputLanguage={outputLanguage}
-            messageInputRef={messageInputRef}
-            isFileUpdated={isFileUpdated}
-          />
-        </>
-      )}
+        {/* Right Section: MiddleBlock */}
+        <div
+          className="left-container"
+          style={{
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "1rem",
+            height: "100%",
+            width: "50%",
+          }}
+        >
+          <MiddleBlock />
+        </div>
+      </div>
       <Popup
         showPopup={showPopup}
         setShowPopup={setShowPopup}

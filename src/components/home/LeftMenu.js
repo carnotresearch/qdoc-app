@@ -10,10 +10,9 @@ import "../../styles/sidebar.css";
 import RestrictedUpload from "./RestrictedUpload";
 import Popup from "./Popup";
 
-function LeftMenu() {
+function LeftMenu({ sessions }) {
   const [visibleFiles, setVisibleFiles] = useState({});
   const [showPopup, setShowPopup] = useState(false);
-  const sessions = [];
   const selectedSessionFiles = [];
 
   const addButtonStyle = {
@@ -74,7 +73,6 @@ function LeftMenu() {
                 <Button
                   variant="outline-info"
                   size="sm"
-                  disabled={true}
                   onClick={(e) => {
                     e.stopPropagation();
                     toggleFileVisibility(session.id);
@@ -120,4 +118,4 @@ function LeftMenu() {
   );
 }
 
-export default React.memo(LeftMenu);
+export default LeftMenu;
