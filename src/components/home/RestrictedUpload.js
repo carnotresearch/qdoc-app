@@ -31,9 +31,11 @@ const RestrictedUpload = () => {
     height: "4rem",
     display: "flex",
     justifyContent: "center",
-    alignItems: "center",
-    maxWidth: "600px", // Doubled width
+    alignItems: "center", // Increased width to 800px
     margin: "0 auto", // Center horizontally
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", // Subtle shadow for better appearance
+    borderRadius: "8px", // Optional: Rounded corners
+    width: "10cm", // Optional: Full width
   };
 
   const marginStyle = { marginTop: "1.5cm" };
@@ -111,9 +113,9 @@ const RestrictedUpload = () => {
               ) : (
                 <div>
                   <p className="mb-0">
-                    <RiMessage2Fill /> <b>New Container</b>
+                    <RiMessage2Fill /> <b>Upload a file</b>
                   </p>
-                  <p className="mb-0">Drop files here</p>
+                  <p className="mb-0">Free Trial</p>
                 </div>
               )}
             </Card>

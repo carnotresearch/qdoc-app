@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import RestrictedUpload from "./RestrictedUpload";
 import { BsArrowRight } from "react-icons/bs"; // Import arrow icon
 
-const iconStyles = { height: "7cm", cursor: "pointer", margin: "0" };
+const iconStyles = { height: "5cm", cursor: "pointer", margin: "0" };
 
 const MiddleBlock = ({ setSidebarCollapsed }) => {
   const navigate = useNavigate();
@@ -27,7 +27,7 @@ const MiddleBlock = ({ setSidebarCollapsed }) => {
   const buttonStyles = {
     backgroundColor: "#0056b3",
     color: "white",
-    maxWidth: "10rem",
+    maxWidth: "115rem",
     minWidth: "7rem", // Add spacing between buttons
     display: "flex",
     alignItems: "center",
@@ -79,7 +79,9 @@ const MiddleBlock = ({ setSidebarCollapsed }) => {
               style={{
                 alignItems: "center",
                 display: "flex",
-                justifyContent: "center", // Space above the buttons
+                justifyContent: "center",
+                maxWidth: "7cm",
+                width: "10cm"// Space above the buttons
               }}
             >
               {/* Restricted Upload */}
@@ -93,7 +95,7 @@ const MiddleBlock = ({ setSidebarCollapsed }) => {
                 onClick={handleLoginClick}
                 style={buttonStyles}
               >
-                Go To Login <BsArrowRight />
+                Already have an account? Login <BsArrowRight />
               </Button>
             <div style={{ textAlign: "left", marginTop: "2rem" }}>
               <center>
