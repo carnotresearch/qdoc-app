@@ -24,7 +24,6 @@ function Home() {
   const [showPopup, setShowPopup] = useState(false);
   const [welcomPopop, setWelcomePopup] = useState(false);
   const [chatCount, setChatCount] = useState(0);
-  const [showFeatures, setShowFeatures] = useState(true);
   const navigate = useNavigate();
   const popupText = "Kindly login to ask further questions.";
 
@@ -47,7 +46,6 @@ function Home() {
 
   useEffect(() => {
     if (files.length > 0) {
-      setShowFeatures(false);
       setIsFileUpdated(true);
       if (messageInputRef.current) {
         messageInputRef.current.focus();
@@ -112,7 +110,7 @@ function Home() {
       className="chat-container"
       style={{ padding: 0, margin: 0 }}
     >
-      {showFeatures && !isFileUpdated ? (
+      {!isFileUpdated ? (
         <div
           style={{
             display: "flex",
@@ -142,8 +140,6 @@ function Home() {
           {/* Left Section: MiddleBlock */}
           <div
             style={{
-              flex: 1,
-              display: "flex",
               alignItems: "center",
               justifyContent: "center",
               backgroundColor: "#f9f9f9",

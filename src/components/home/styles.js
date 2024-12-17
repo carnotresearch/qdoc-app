@@ -1,12 +1,11 @@
 import styled from "styled-components";
 
 export const MiddleBlockSection = styled.section`
-padding-top: 10cm;
+  padding-top: 0;
   position: relative;
   text-align: center;
-  display: flex;
-  justify-content: center;
-  width: 70%;
+  width: 80%;
+  margin: 0 auto;
 
   @media screen and (max-width: 1024px) {
     padding: 5.5rem 0 3rem;
@@ -19,6 +18,8 @@ export const Content = styled.p`
 `;
 
 export const ContentWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
   @media only screen and (max-width: 768px) {
     max-width: 100%;
   }
