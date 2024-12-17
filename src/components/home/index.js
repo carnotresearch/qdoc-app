@@ -120,12 +120,16 @@ function Home() {
             padding: 0,
             width: "100%",
             overflowY: "auto",
+            alignItems: "center",
           }}
           className="responsive-layout"
         >
           <style>
             {`
               @media (max-width: 768px) {
+                .left-container {
+                  width: 100% !important
+                }
                 .responsive-layout {
                   flex-direction: column;
                   height: auto;
@@ -139,12 +143,14 @@ function Home() {
 
           {/* Left Section: MiddleBlock */}
           <div
+            className="left-container"
             style={{
               alignItems: "center",
               justifyContent: "center",
               backgroundColor: "#f9f9f9",
               padding: "1rem",
               height: "100%",
+              width: "50%",
             }}
           >
             <MiddleBlock />

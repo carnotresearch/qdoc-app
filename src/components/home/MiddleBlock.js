@@ -44,23 +44,23 @@ const MiddleBlock = () => {
     <MiddleBlockSection>
       <Row justify="center" align="middle">
         <ContentWrapper>
-          <div>
+          <div
+            style={{ display: "flex", flexDirection: "row", margin: "0 auto" }}
+          >
             <img
               src="./logo.png"
               alt="logo"
               style={iconStyles}
               onClick={() => navigate("/")}
             />
-          </div>
-          <div>
-            <h2>
+            <h2 style={{ margin: "auto 0" }}>
               <b>
                 icarKno
                 <span style={tmStyles}>TM</span> Chat
               </b>
             </h2>
-            <Content>{content}</Content>
           </div>
+          <Content>{content}</Content>
           <div
             style={{
               alignItems: "center",
