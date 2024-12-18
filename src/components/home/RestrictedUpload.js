@@ -38,10 +38,10 @@ const RestrictedUpload = () => {
     height: "8rem",
   };
 
-  const marginStyle = { marginTop: "1.5cm" };
+  // const marginStyle = { marginTop: "1.5cm" };
 
   const handleFileChange = async (files) => {
-    const trialUsed = localStorage.getItem("trialUsed");
+    const trialUsed = sessionStorage.getItem("trialUsed");
     if (trialUsed === "true") {
       setShowPopup(true);
       return;
@@ -50,7 +50,7 @@ const RestrictedUpload = () => {
     if (files && files.length === 1) {
       setIsUploading(true);
       try {
-        const fingerprint = localStorage.getItem("fingerprint");
+        const fingerprint = sessionStorage.getItem("fingerprint");
         const filesArray = Array.from(files);
         const formData = new FormData();
         filesArray.forEach((file) => formData.append("files", file));
@@ -82,8 +82,8 @@ const RestrictedUpload = () => {
 
   return (
     <>
-      <Form style={marginStyle}>
-        <Form.Group className="mb-3">
+      <Form>
+        <Form.Group className="mb-3 mt-3">
           <div
             className="custom-file-input"
             onDragOver={handleDragOver}

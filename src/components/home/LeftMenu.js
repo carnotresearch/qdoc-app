@@ -13,7 +13,6 @@ import Popup from "./Popup";
 function LeftMenu({ sessions }) {
   const [visibleFiles, setVisibleFiles] = useState({});
   const [showPopup, setShowPopup] = useState(false);
-  const selectedSessionFiles = [];
 
   const addButtonStyle = {
     color: "white",
@@ -45,13 +44,13 @@ function LeftMenu({ sessions }) {
 
   return (
     <div>
+      {sessions.length > 1 && <div className="mt-5"></div>}
       <RestrictedUpload />
       <ListGroup>
         {sessions.slice(0, 4).map((session, index) => (
           <div key={index}>
             <ListGroup.Item
               className={`d-flex justify-content-between session-item`}
-              // disabled={true}
               title={`${session.fileNames.join(", ")}`}
             >
               {session.name}
@@ -89,14 +88,12 @@ function LeftMenu({ sessions }) {
 
             {visibleFiles[session.id] && (
               <ListGroup>
-                {selectedSessionFiles[session.id]?.map((file, idx) => (
+                {sessions[0]?.fileNames?.map((file, idx) => (
                   <ListGroup.Item
                     key={idx}
                     className="d-flex justify-content-between align-items-center file-item"
                   >
-                    <span style={listItemStyle}>
-                      {file.name} - {(file.size / 1024).toFixed(2)} KB
-                    </span>
+                    <span style={listItemStyle}>{file}</span>
                   </ListGroup.Item>
                 ))}
 
