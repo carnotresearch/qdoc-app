@@ -65,7 +65,11 @@ function ChatContent({
               <span className={"message-text"}>
                 <b className="text-success">icarKno: </b>
                 You can ask maximum 10 questions. To interact more and to edit
-                or save you knowledge container, please login.
+                or save you knowledge container,{" "}
+                <a href="/login" target="_blank" rel="noopener noreferrer">
+                  please login
+                </a>
+                .
               </span>
             </div>
           </div>

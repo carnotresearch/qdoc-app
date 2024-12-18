@@ -44,7 +44,7 @@ function LeftMenu({ sessions }) {
 
   return (
     <div>
-      {sessions.length > 1 && <div className="mt-5"></div>}
+      {sessions.length > 0 && <div className="mt-5"></div>}
       <RestrictedUpload />
       <ListGroup>
         {sessions.slice(0, 4).map((session, index) => (

@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import RestrictedUpload from "./RestrictedUpload";
 import { BsArrowRight } from "react-icons/bs"; // Import arrow icon
 
-const iconStyles = { height: "7rem", cursor: "pointer", margin: "0" };
+const iconStyles = { height: "5rem", cursor: "pointer", margin: "0" };
 
 const MiddleBlock = () => {
   const navigate = useNavigate();
@@ -33,6 +33,7 @@ const MiddleBlock = () => {
     alignItems: "center",
     justifyContent: "center",
     margin: "0 auto",
+    marginTop: "2rem",
   };
 
   const listStyles = {
@@ -61,6 +62,9 @@ const MiddleBlock = () => {
             </h2>
           </div>
           <Content>{content}</Content>
+          <p className="mt-3">
+            <b>To interact with your data, upload your files below ⤵️</b>
+          </p>
           <div
             style={{
               alignItems: "center",
@@ -70,13 +74,9 @@ const MiddleBlock = () => {
           >
             {/* Restricted Upload */}
             <RestrictedUpload />
-
-            {/* Go To Login Button */}
           </div>
-          <Button name="submit" onClick={handleLoginClick} style={buttonStyles}>
-            Already have an account? Login <BsArrowRight />
-          </Button>
-          <div style={{ textAlign: "left", marginTop: "2rem" }}>
+
+          <div style={{ textAlign: "left", marginTop: "1rem" }}>
             <center>
               <ul style={listStyles}>
                 <li>
@@ -89,6 +89,10 @@ const MiddleBlock = () => {
               </ul>
             </center>
           </div>
+          {/* Go To Login Button */}
+          <Button name="submit" onClick={handleLoginClick} style={buttonStyles}>
+            Already have an account? Login <BsArrowRight />
+          </Button>
         </ContentWrapper>
       </Row>
     </MiddleBlockSection>
