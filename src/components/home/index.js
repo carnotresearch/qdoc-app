@@ -26,7 +26,7 @@ function Home() {
   const [showPopup, setShowPopup] = useState(false);
   const [welcomPopop, setWelcomePopup] = useState(false);
   const [chatCount, setChatCount] = useState(0);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
   const navigate = useNavigate();
   const popupText = "Kindly login to ask further questions.";
   const [sessions, setSessions] = useState([]);
@@ -42,10 +42,7 @@ function Home() {
   }, []);
 
   useEffect(() => {
-    const trialUsed = localStorage.getItem("trialUsed");
-    if (!trialUsed) {
-      setWelcomePopup(true);
-    }
+    setWelcomePopup(true);
   }, []);
 
   useEffect(() => {

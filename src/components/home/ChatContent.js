@@ -59,6 +59,17 @@ function ChatContent({
             </span>
           </div>
         </div>
+        {isFileUpdated && (
+          <div className="message bot">
+            <div className="message-box">
+              <span className={"message-text"}>
+                <b className="text-success">icarKno: </b>
+                You can ask maximum 10 questions. To interact more and to edit
+                or save you knowledge container, please login.
+              </span>
+            </div>
+          </div>
+        )}
         {chatHistory.map((chat, index) => (
           <ChatHistory
             chat={chat}
@@ -67,17 +78,6 @@ function ChatContent({
             key={index}
           />
         ))}
-        {isFileUpdated && (
-          <div className="message bot">
-            <div className="message-box">
-              <span className={"message-text"}>
-                <b className="text-success">icarKno: </b>
-                You can query the documents by asking information related to the document.
-                Please login to upload more documents and access knowledge containers.
-              </span>
-            </div>
-          </div>
-        )}
       </div>
       <MessageInput
         inputLanguage={inputLanguage}

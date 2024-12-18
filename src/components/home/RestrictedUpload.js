@@ -72,7 +72,7 @@ const RestrictedUpload = () => {
       } catch (error) {
         console.error("Error uploading file:", error);
       } finally {
-        localStorage.setItem("trialUsed", "true");
+        sessionStorage.setItem("trialUsed", "true");
         setIsUploading(false);
       }
     } else {
@@ -113,9 +113,11 @@ const RestrictedUpload = () => {
               ) : (
                 <div>
                   <p className="mb-0">
-                    <RiMessage2Fill /> <b>Upload a file</b>
+                    <RiMessage2Fill /> <b>Upload File</b>
                   </p>
-                  <p className="mb-0">Free Trial</p>
+                  <p className="mb-0 mt-1" style={{ fontSize: "0.8rem" }}>
+                    Knowledge container
+                  </p>
                 </div>
               )}
             </Card>

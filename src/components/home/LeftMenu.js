@@ -51,7 +51,7 @@ function LeftMenu({ sessions }) {
           <div key={index}>
             <ListGroup.Item
               className={`d-flex justify-content-between session-item`}
-              disabled={true}
+              // disabled={true}
               title={`${session.fileNames.join(", ")}`}
             >
               {session.name}
