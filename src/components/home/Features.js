@@ -9,6 +9,11 @@ function Features() {
   const videoRef = useRef(null);
 
   // Function to go to the next item
+  // const handleNext = () => {
+  //   setCurrentIndex((prevIndex) =>
+  //     prevIndex === carouselItems.length - 1 ? 0 : prevIndex + 1
+  //   );
+  // };
 
   // Function to go to the previous item
   // const handlePrev = () => {

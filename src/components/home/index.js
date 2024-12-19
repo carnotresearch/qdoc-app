@@ -14,13 +14,15 @@ import WelcomePopup from "./WelcomePopup";
 import { MenuOutlined } from "@mui/icons-material";
 import LeftMenu from "./LeftMenu";
 
-function Home() {
-  const inputLanguage = "23";
-  const outputLanguage = "23";
+function Home({
+  inputLanguage,
+  outputLanguage,
+  isFileUpdated,
+  setIsFileUpdated,
+}) {
   const [chatHistory, setChatHistory] = useState([]);
   const messageInputRef = useRef(null);
   const { files } = useContext(FileContext);
-  const [isFileUpdated, setIsFileUpdated] = useState(false);
   const [welcomPopop, setWelcomePopup] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
   const [sessions, setSessions] = useState([]);
@@ -51,7 +53,7 @@ function Home() {
         messageInputRef.current.focus();
       }
     }
-  }, [files]);
+  }, [files, setIsFileUpdated]);
 
   const handleSendMessage = async (message) => {
     if (message.trim()) {
@@ -72,17 +74,21 @@ function Home() {
         },
       ];
       setChatHistory(newChatHistory);
+
       try {
+        // Constructing the correct payload
+        const payload = {
+          message,
+          fingerprint: sessionStorage.getItem("fingerprint"),
+          inputLanguage,
+          outputLanguage,
+          context: "files",
+          mode: "contextual",
+        };
+
         const response = await axios.post(
           `${process.env.REACT_APP_BACKEND_URL}/trialAsk`,
-          {
-            message,
-            fingerprint: sessionStorage.getItem("fingerprint"),
-            inputLanguage,
-            outputLanguage,
-            context: "files",
-            mode: "contextual",
-          }
+          payload
         );
         newChatHistory[newChatHistory.length - 1].bot = response.data.answer;
         newChatHistory[newChatHistory.length - 1].loading = false;

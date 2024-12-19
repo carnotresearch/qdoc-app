@@ -144,7 +144,6 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
         const context_mode = sessionStorage.getItem("answerMode");
 
         if (isScannedDocument) {
-          console.log(files);
           newChatHistory[newChatHistory.length - 1].bot =
             scannedDocumentWarning(files[0].name);
         } else {
