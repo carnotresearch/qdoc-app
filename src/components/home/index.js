@@ -16,9 +16,7 @@ import WelcomePopup from "./WelcomePopup";
 import { MenuOutlined } from "@mui/icons-material";
 import LeftMenu from "./LeftMenu";
 
-function Home() {
-  const inputLanguage = "23";
-  const outputLanguage = "23";
+function Home(inputLanguage, outputLanguage) {
   const [chatHistory, setChatHistory] = useState([]);
   const messageInputRef = useRef(null);
   const { files } = useContext(FileContext);
@@ -61,8 +59,6 @@ function Home() {
   }, [files]);
 
   const handleSendMessage = async (message) => {
-    // setIsFileUpdated(false);
-
     if (message.trim()) {
       if (chatCount >= 10) {
         setShowPopup(true);
@@ -73,7 +69,7 @@ function Home() {
         hour: "2-digit",
         minute: "2-digit",
       });
-
+  
       const ttsSupport = ttsSupportedLanguages.includes(outputLanguage);
       const newChatHistory = [
         ...chatHistory,
@@ -86,18 +82,26 @@ function Home() {
         },
       ];
       setChatHistory(newChatHistory);
+  
       try {
+        // Constructing the correct payload
+        const payload = {
+          message,
+          fingerprint: localStorage.getItem("fingerprint"),
+          inputLanguage: typeof inputLanguage === "object" ? inputLanguage.inputLanguage : inputLanguage, // Ensure it's a simple value
+          outputLanguage: typeof outputLanguage === "object" ? outputLanguage.outputLanguage : outputLanguage, // Ensure it's a simple value
+          context: "files",
+          mode: "contextual",
+        };
+  
+        console.log("Request Payload:", payload);
+  
         const response = await axios.post(
           `${process.env.REACT_APP_BACKEND_URL}/trialAsk`,
-          {
-            message,
-            fingerprint: localStorage.getItem("fingerprint"),
-            inputLanguage,
-            outputLanguage,
-            context: "files",
-            mode: "contextual",
-          }
+          payload
         );
+  
+        console.log("Response:", response);
         if (response?.data?.message === "Free Trial limit is exhausted") {
           setShowPopup(true);
         }
@@ -111,6 +115,7 @@ function Home() {
       }
     }
   };
+  
 
   return isFileUpdated ? (
     <Container fluid className="chat-container">

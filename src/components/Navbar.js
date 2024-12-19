@@ -20,8 +20,7 @@ import UserManual from "./navbar/UserManual";
 import "../styles/navbar.css";
 import ContextMode from "./navbar/ContextMode";
 import Help from "./navbar/Help";
-import InputLanguage from "./navbar/InputLanguage";
-import OutputLanguage from "./navbar/OutputLanguage";
+import UnifiedLanguageSelector from "./navbar/Language";
 
 const Navbar = ({
   inputLanguage,
@@ -100,21 +99,15 @@ const Navbar = ({
           darkMode ? "navbar-dark bg-dark" : "navbar-light bg-light"
         }`}
       >
-        {/* User Profile */}
-        {isLoggedIn ? (
-          <Profile />
-        ) : (
-          <div>
-            <img
-              src="./logo.png"
-              alt=""
-              style={iconStyles}
-              onClick={() => navigate("/")}
-            />
-          </div>
-        )}
-
-        {/* Heading */}
+          {isLoggedIn ? (
+            <Profile />
+          ) : (
+            <div>
+              <a href="https://www.carnotresearch.com" style={iconStyles}>
+                <img src="./logo.png" alt="" style={{ height: "2.5rem" }} />
+              </a>
+            </div>
+          )}
         <Link className="navbar-brand" style={{ marginLeft: "0.5cm" }} to="/">
           icarKno
           <span
@@ -129,7 +122,15 @@ const Navbar = ({
           </span>{" "}
           Chat
         </Link>
-
+        { <div>
+        <UnifiedLanguageSelector
+                inputLanguage={inputLanguage}
+                setInputLanguage={setInputLanguage}
+                outputLanguage={outputLanguage}
+                setOutputLanguage={setOutputLanguage}
+                darkMode={darkMode}
+              />
+          </div> }
         {/* Right side items */}
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav ms-auto">
@@ -161,21 +162,7 @@ const Navbar = ({
                   key={3}
                 >
                   <ContextMode mode={mode} setMode={setMode} />
-                </li>,
-                // Input Language Button
-                <InputLanguage
-                  inputLanguage={inputLanguage}
-                  setInputLanguage={setInputLanguage}
-                  darkMode={darkMode}
-                  key={4}
-                />,
-                // Output Language Button
-                <OutputLanguage
-                  outputLanguage={outputLanguage}
-                  setOutputLanguage={setOutputLanguage}
-                  darkMode={darkMode}
-                  key={5}
-                />,
+                </li>
               ]}
 
             {/* Login Logout Button */}
@@ -272,29 +259,7 @@ const Navbar = ({
             // User Manual Button
             <MenuItem className="menu-item" key="user-manual">
               <Help setOpenManualDialog={setOpenManualDialog} />
-            </MenuItem>,
-            // Input Language Button
-            <MenuItem
-              key="input-grid-selector"
-              className="menu-item input-grid-selector"
-            >
-              <InputLanguage
-                inputLanguage={inputLanguage}
-                setInputLanguage={setInputLanguage}
-                darkMode={darkMode}
-              />
-            </MenuItem>,
-            // Output Language button
-            <MenuItem
-              key="output-grid-selector"
-              className="menu-item output-grid-selector"
-            >
-              <OutputLanguage
-                outputLanguage={outputLanguage}
-                setOutputLanguage={setOutputLanguage}
-                darkMode={darkMode}
-              />
-            </MenuItem>,
+            </MenuItem>
           ]}
 
           <MenuItem className="menu-item">

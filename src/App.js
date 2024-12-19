@@ -99,7 +99,7 @@ function Content({
                 />
               </ProtectedRoute>
             ) : (
-              <Home />
+              <Home inputLanguage={inputLanguage} outputLanguage={outputLanguage}/>
             )
           }
         />
