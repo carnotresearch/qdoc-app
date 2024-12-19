@@ -158,19 +158,16 @@ const Navbar = ({
                 >
                   <ContextMode mode={mode} setMode={setMode} />
                 </li>,
+                <li>
+                  <UnifiedLanguageSelector
+                    inputLanguage={inputLanguage}
+                    setInputLanguage={setInputLanguage}
+                    outputLanguage={outputLanguage}
+                    setOutputLanguage={setOutputLanguage}
+                    darkMode={darkMode}
+                  />
+                </li>,
               ]}
-
-            {/* {location.pathname === "/" && !isLoggedIn && (
-              <li>
-                <UnifiedLanguageSelector
-                  inputLanguage={inputLanguage}
-                  setInputLanguage={setInputLanguage}
-                  outputLanguage={outputLanguage}
-                  setOutputLanguage={setOutputLanguage}
-                  darkMode={darkMode}
-                />
-              </li>
-            )} */}
 
             {/* Login Logout Button */}
             <li className="nav-item">
@@ -275,6 +272,16 @@ const Navbar = ({
                   >
                     Pricing
                   </Link>
+                </MenuItem>,
+                // Language Button
+                <MenuItem>
+                  <UnifiedLanguageSelector
+                    inputLanguage={inputLanguage}
+                    setInputLanguage={setInputLanguage}
+                    outputLanguage={outputLanguage}
+                    setOutputLanguage={setOutputLanguage}
+                    darkMode={darkMode}
+                  />
                 </MenuItem>,
                 // User Manual Button
                 <MenuItem className="menu-item" key="user-manual">

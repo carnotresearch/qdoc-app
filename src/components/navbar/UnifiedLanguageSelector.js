@@ -87,10 +87,11 @@ const UnifiedLanguageSelector = ({
             style={{
               color:
                 selectedType === "Input"
-                  ? "#3f51b5"
+                  ? "white"
                   : darkMode
                   ? "white"
                   : "black",
+              backgroundColor: selectedType === "Input" ? "#3f51b5" : "",
               textTransform: "none",
               transition: "color 0.3s ease-in-out",
             }}
@@ -103,10 +104,11 @@ const UnifiedLanguageSelector = ({
             style={{
               color:
                 selectedType === "Output"
-                  ? "#3f51b5"
+                  ? "white"
                   : darkMode
                   ? "white"
                   : "black",
+              backgroundColor: selectedType === "Output" ? "#3f51b5" : "",
               textTransform: "none",
               transition: "color 0.3s ease-in-out",
             }}
@@ -114,10 +116,7 @@ const UnifiedLanguageSelector = ({
             Output Language
           </Button>
         </div>
-        <Typography variant="h6" style={{ marginBottom: "8px" }}>
-          Select {selectedType} Language
-        </Typography>
-        <Grid container spacing={2}>
+        <Grid container spacing={2} style={{ marginTop: "0" }}>
           {languages.map((language) => (
             <Grid item xs={6} sm={4} key={language.value}>
               <Button
