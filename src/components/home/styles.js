@@ -10,7 +10,6 @@ export const MiddleBlockSection = styled.section`
 
 export const Content = styled.p`
   padding: 0.05rem 0 0.05rem;
-  font-size: 1.2rem;
 `;
 
 export const ContentWrapper = styled.div`
