@@ -20,7 +20,7 @@ import UserManual from "./navbar/UserManual";
 import "../styles/navbar.css";
 import ContextMode from "./navbar/ContextMode";
 import Help from "./navbar/Help";
-import UnifiedLanguageSelector from "./navbar/Language";
+import UnifiedLanguageSelector from "./navbar/UnifiedLanguageSelector";
 
 const Navbar = ({
   inputLanguage,
@@ -31,6 +31,7 @@ const Navbar = ({
   setDarkMode,
   isLoggedIn,
   setIsLoggedIn,
+  isFileUpdated,
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -99,15 +100,18 @@ const Navbar = ({
           darkMode ? "navbar-dark bg-dark" : "navbar-light bg-light"
         }`}
       >
-          {isLoggedIn ? (
-            <Profile />
-          ) : (
-            <div>
-              <a href="https://www.carnotresearch.com" style={iconStyles}>
-                <img src="./logo.png" alt="" style={{ height: "2.5rem" }} />
-              </a>
-            </div>
-          )}
+        {isLoggedIn ? (
+          <Profile />
+        ) : (
+          <a
+            href="https://www.carnotresearch.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={iconStyles}
+          >
+            <img src="./logo.png" alt="" style={{ height: "2.5rem" }} />
+          </a>
+        )}
         <Link className="navbar-brand" style={{ marginLeft: "0.5cm" }} to="/">
           icarKno
           <span
@@ -122,15 +126,6 @@ const Navbar = ({
           </span>{" "}
           Chat
         </Link>
-        { <div>
-        <UnifiedLanguageSelector
-                inputLanguage={inputLanguage}
-                setInputLanguage={setInputLanguage}
-                outputLanguage={outputLanguage}
-                setOutputLanguage={setOutputLanguage}
-                darkMode={darkMode}
-              />
-          </div> }
         {/* Right side items */}
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav ms-auto">
@@ -162,8 +157,20 @@ const Navbar = ({
                   key={3}
                 >
                   <ContextMode mode={mode} setMode={setMode} />
-                </li>
+                </li>,
               ]}
+
+            {/* {location.pathname === "/" && !isLoggedIn && (
+              <li>
+                <UnifiedLanguageSelector
+                  inputLanguage={inputLanguage}
+                  setInputLanguage={setInputLanguage}
+                  outputLanguage={outputLanguage}
+                  setOutputLanguage={setOutputLanguage}
+                  darkMode={darkMode}
+                />
+              </li>
+            )} */}
 
             {/* Login Logout Button */}
             <li className="nav-item">
@@ -195,115 +202,130 @@ const Navbar = ({
           </ul>
         </div>
 
-        {/* Navbar toggle button for mobile view */}
-        <Button
-          className="navbar-toggler d-lg-none"
-          onClick={handleMenuClick}
-          style={{
-            border: `2px solid ${darkMode ? "white" : "black"}`,
-            borderRadius: "6px",
-            padding: "2px",
-            color: darkMode ? "white" : "black",
-          }}
-        >
-          <ArrowDropDownIcon
-            style={{ fontSize: "2rem", color: darkMode ? "white" : "black" }}
+        {isFileUpdated && !isLoggedIn ? (
+          <UnifiedLanguageSelector
+            inputLanguage={inputLanguage}
+            setInputLanguage={setInputLanguage}
+            outputLanguage={outputLanguage}
+            setOutputLanguage={setOutputLanguage}
+            darkMode={darkMode}
           />
-        </Button>
-
-        {/* Mobile Menu Dropdown */}
-        <Menu
-          anchorEl={anchorEl}
-          open={open}
-          onClose={handleCloseMenu}
-          PaperProps={{
-            style: {
-              width: "200px",
-              backgroundColor: darkMode ? "#424242" : "#f5f5f5",
-              color: darkMode ? "white" : "black",
-              zIndex: 1300,
-            },
-          }}
-          MenuListProps={{
-            style: {
-              padding: "10px",
-            },
-          }}
-        >
-          {/* Mode Toggle */}
-          <MenuItem className="menu-item">
-            <ContextMode mode={mode} setMode={setMode} />
-          </MenuItem>
-
-          <MenuItem
-            component="a"
-            href="https://carnotresearch.com/#section-about"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="menu-item"
-          >
-            About Us
-          </MenuItem>
-
-          {location.pathname === "/" && [
-            // Pricing Link
-            <MenuItem className="menu-item" key="pricing">
-              <Link
-                className="menu-item"
-                to="/pricing"
-                style={{ color: darkMode ? "white" : "black" }}
-              >
-                Pricing
-              </Link>
-            </MenuItem>,
-            // User Manual Button
-            <MenuItem className="menu-item" key="user-manual">
-              <Help setOpenManualDialog={setOpenManualDialog} />
-            </MenuItem>
-          ]}
-
-          <MenuItem className="menu-item">
-            {isLoggedIn ? (
-              <button
-                className="btn login-logout-btn"
-                onClick={handleLogout}
-                style={{
-                  color: darkMode ? "white" : "black",
-                  cursor: "pointer",
-                  marginLeft: "-0.5px",
-                }}
-              >
-                Logout
-              </button>
-            ) : (
-              <button
-                className="btn login-logout-btn"
-                onClick={handleLoginClick}
-                style={{
-                  color: darkMode ? "white" : "black",
-                  cursor: "pointer",
-                  marginLeft: "-0.5px",
-                }}
-              >
-                Login
-              </button>
-            )}
-          </MenuItem>
-
-          <MenuItem className="menu-item">
-            <button
-              className="dark-mode-toggle"
-              onClick={() => setDarkMode(!darkMode)}
-              style={{ color: darkMode ? "white" : "black" }}
+        ) : (
+          <div>
+            <Button
+              className="navbar-toggler d-lg-none"
+              onClick={handleMenuClick}
+              style={{
+                border: `2px solid ${darkMode ? "white" : "black"}`,
+                borderRadius: "6px",
+                padding: "2px",
+                color: darkMode ? "white" : "black",
+              }}
             >
-              {darkMode ? (
-                <Brightness7Icon style={{ color: "white" }} />
-              ) : (
-                <DarkModeIcon style={{ color: "black" }} />
-              )}
-            </button>
-          </MenuItem>
-        </Menu>
+              <ArrowDropDownIcon
+                style={{
+                  fontSize: "2rem",
+                  color: darkMode ? "white" : "black",
+                }}
+              />
+            </Button>
+
+            {/* Mobile Menu Dropdown */}
+
+            <Menu
+              anchorEl={anchorEl}
+              open={open}
+              onClose={handleCloseMenu}
+              PaperProps={{
+                style: {
+                  width: "200px",
+                  backgroundColor: darkMode ? "#424242" : "#f5f5f5",
+                  color: darkMode ? "white" : "black",
+                  zIndex: 1300,
+                },
+              }}
+              MenuListProps={{
+                style: {
+                  padding: "10px",
+                },
+              }}
+            >
+              {/* Mode Toggle */}
+              <MenuItem className="menu-item">
+                <ContextMode mode={mode} setMode={setMode} />
+              </MenuItem>
+
+              <MenuItem
+                component="a"
+                href="https://carnotresearch.com/#section-about"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="menu-item"
+              >
+                About Us
+              </MenuItem>
+
+              {location.pathname === "/" && [
+                // Pricing Link
+                <MenuItem className="menu-item" key="pricing">
+                  <Link
+                    className="menu-item"
+                    to="/pricing"
+                    style={{ color: darkMode ? "white" : "black" }}
+                  >
+                    Pricing
+                  </Link>
+                </MenuItem>,
+                // User Manual Button
+                <MenuItem className="menu-item" key="user-manual">
+                  <Help setOpenManualDialog={setOpenManualDialog} />
+                </MenuItem>,
+              ]}
+
+              <MenuItem className="menu-item">
+                {isLoggedIn ? (
+                  <button
+                    className="btn login-logout-btn"
+                    onClick={handleLogout}
+                    style={{
+                      color: darkMode ? "white" : "black",
+                      cursor: "pointer",
+                      marginLeft: "-0.5px",
+                    }}
+                  >
+                    Logout
+                  </button>
+                ) : (
+                  <button
+                    className="btn login-logout-btn"
+                    onClick={handleLoginClick}
+                    style={{
+                      color: darkMode ? "white" : "black",
+                      cursor: "pointer",
+                      marginLeft: "-0.5px",
+                    }}
+                  >
+                    Login
+                  </button>
+                )}
+              </MenuItem>
+
+              <MenuItem className="menu-item">
+                <button
+                  className="dark-mode-toggle"
+                  onClick={() => setDarkMode(!darkMode)}
+                  style={{ color: darkMode ? "white" : "black" }}
+                >
+                  {darkMode ? (
+                    <Brightness7Icon style={{ color: "white" }} />
+                  ) : (
+                    <DarkModeIcon style={{ color: "black" }} />
+                  )}
+                </button>
+              </MenuItem>
+            </Menu>
+          </div>
+        )}
 
         {/* User Manual Dialog */}
         <Dialog

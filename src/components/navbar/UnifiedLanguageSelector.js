@@ -40,13 +40,11 @@ const UnifiedLanguageSelector = ({
     handleClosePopover();
   };
 
-
   return (
     <>
       <Button
         onClick={handleOpenPopover}
         style={{
-          margin: "0 8px",
           color: darkMode ? "white" : "black",
           textTransform: "none",
         }}
@@ -54,7 +52,7 @@ const UnifiedLanguageSelector = ({
         <img
           src="language.png"
           alt="Language Icon"
-          style={{ width: "35px", height: "25px", marginRight: "8px" }}
+          style={{ width: "35px", height: "25px" }}
         />
       </Button>
       <Popover
@@ -75,7 +73,9 @@ const UnifiedLanguageSelector = ({
             color: darkMode ? "white" : "black",
             padding: "16px",
             maxWidth: isSmallScreen ? "90vw" : "400px",
-            boxShadow: darkMode ? "0px 4px 20px rgba(0, 0, 0, 0.5)" : "0px 4px 20px rgba(0, 0, 0, 0.1)",
+            boxShadow: darkMode
+              ? "0px 4px 20px rgba(0, 0, 0, 0.5)"
+              : "0px 4px 20px rgba(0, 0, 0, 0.1)",
             transition: "transform 0.3s ease-in-out",
           },
         }}
@@ -85,7 +85,12 @@ const UnifiedLanguageSelector = ({
             variant="text"
             onClick={() => setSelectedType("Input")}
             style={{
-              color: selectedType === "Input" ? "#3f51b5" : darkMode ? "white" : "black",
+              color:
+                selectedType === "Input"
+                  ? "#3f51b5"
+                  : darkMode
+                  ? "white"
+                  : "black",
               textTransform: "none",
               transition: "color 0.3s ease-in-out",
             }}
@@ -96,7 +101,12 @@ const UnifiedLanguageSelector = ({
             variant="text"
             onClick={() => setSelectedType("Output")}
             style={{
-              color: selectedType === "Output" ? "#3f51b5" : darkMode ? "white" : "black",
+              color:
+                selectedType === "Output"
+                  ? "#3f51b5"
+                  : darkMode
+                  ? "white"
+                  : "black",
               textTransform: "none",
               transition: "color 0.3s ease-in-out",
             }}
@@ -118,20 +128,25 @@ const UnifiedLanguageSelector = ({
                   height: "60px",
                   textTransform: "none",
                   backgroundColor:
-                    (selectedType === "Input" && inputLanguage === language.value) ||
-                    (selectedType === "Output" && outputLanguage === language.value)
+                    (selectedType === "Input" &&
+                      inputLanguage === language.value) ||
+                    (selectedType === "Output" &&
+                      outputLanguage === language.value)
                       ? "#3f51b5"
                       : darkMode
                       ? "#757575"
                       : "#e0e0e0",
                   color:
-                    (selectedType === "Input" && inputLanguage === language.value) ||
-                    (selectedType === "Output" && outputLanguage === language.value)
+                    (selectedType === "Input" &&
+                      inputLanguage === language.value) ||
+                    (selectedType === "Output" &&
+                      outputLanguage === language.value)
                       ? "#fff"
                       : darkMode
                       ? "#fff"
                       : "#000",
-                  transition: "background-color 0.3s ease-in-out, color 0.3s ease-in-out",
+                  transition:
+                    "background-color 0.3s ease-in-out, color 0.3s ease-in-out",
                 }}
               >
                 <Typography variant="body1">{language.label}</Typography>
