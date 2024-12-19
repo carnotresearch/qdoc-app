@@ -1,8 +1,9 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ChatHistory from "../chatpage/ChatHistory";
 import MessageInput from "../chatpage/MessageInput";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Popup from "./Popup";
 
 function ChatContent({
   files,
@@ -14,6 +15,7 @@ function ChatContent({
   isFileUpdated,
 }) {
   const chatHistoryRef = useRef(null);
+  const [showPopup, setShowPopup] = useState(false);
   const iconStyles = { color: "green", marginRight: "5px" };
   const startingQuestions = [
     "Summarise the document.",
@@ -23,6 +25,13 @@ function ChatContent({
 
   // auto scroll down to latest chat response
   useEffect(() => {
+    if (
+      chatHistory.length > 0 &&
+      !chatHistory[chatHistory.length - 1]?.loading &&
+      !chatHistory[chatHistory.length - 1]?.bot
+    ) {
+      setShowPopup(true);
+    }
     if (chatHistoryRef.current) {
       chatHistoryRef.current.scrollTop = chatHistoryRef.current.scrollHeight;
     }
@@ -87,6 +96,11 @@ function ChatContent({
         inputLanguage={inputLanguage}
         messageInputRef={messageInputRef}
         handleSendMessage={handleSendMessage}
+      />
+      <Popup
+        popupText={"Trial limit is over."}
+        showPopup={showPopup}
+        setShowPopup={setShowPopup}
       />
     </div>
   );
