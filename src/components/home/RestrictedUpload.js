@@ -93,7 +93,7 @@ const RestrictedUpload = () => {
             <input
               type="file"
               id="file"
-              accept=".txt,.pdf,.docx,.csv,.xlsx"
+              accept=".txt,.pdf,.docx"
               onChange={(event) => handleFileChange(event.target.files)}
               ref={fileInputRef}
               style={{ display: "none" }}

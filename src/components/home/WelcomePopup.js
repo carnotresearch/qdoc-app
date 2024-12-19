@@ -26,13 +26,22 @@ const WelcomePopup = ({ showPopup, setShowPopup }) => {
           </b>
         </p>
         <p>Use Free Trial to experience icarKno with a single file.</p>
-        <p>Login to upload multiple files and interact.</p>
+        <p>
+          Please login for free to experience the application with multiple
+          files in a knowledge container.
+        </p>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={handlePopupClose}>
+        <Button
+          style={{ backgroundColor: "grey", color: "white" }}
+          onClick={handlePopupClose}
+        >
           Free Trial
         </Button>
-        <Button variant="primary" onClick={handlePopupRedirect}>
+        <Button
+          style={{ backgroundColor: "blue", color: "white" }}
+          onClick={handlePopupRedirect}
+        >
           Go to Login
         </Button>
       </Modal.Footer>

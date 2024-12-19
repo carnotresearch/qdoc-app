@@ -13,6 +13,7 @@ import Popup from "./Popup";
 function LeftMenu({ sessions }) {
   const [visibleFiles, setVisibleFiles] = useState({});
   const [showPopup, setShowPopup] = useState(false);
+  const popupText = "Login to access this feature.";
 
   const addButtonStyle = {
     color: "white",
@@ -110,7 +111,11 @@ function LeftMenu({ sessions }) {
           </div>
         ))}
       </ListGroup>
-      <Popup showPopup={showPopup} setShowPopup={setShowPopup} />
+      <Popup
+        popupText={popupText}
+        showPopup={showPopup}
+        setShowPopup={setShowPopup}
+      />
     </div>
   );
 }

@@ -9,32 +9,36 @@ function Features() {
   const videoRef = useRef(null);
 
   // Function to go to the next item
-  const handleNext = () => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === carouselItems.length - 1 ? 0 : prevIndex + 1
-    );
-  };
 
   // Function to go to the previous item
-  const handlePrev = () => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === 0 ? carouselItems.length - 1 : prevIndex - 1
-    );
-  };
+  // const handlePrev = () => {
+  //   setCurrentIndex((prevIndex) =>
+  //     prevIndex === 0 ? carouselItems.length - 1 : prevIndex - 1
+  //   );
+  // };
 
   // Automatically switch after 5 seconds for images or after video ends
   useEffect(() => {
     let timer;
+    const carouselItems = [
+      { type: "image", src: "./features.jpg" }, // Picture
+    ];
+    const handleNext = () => {
+      setCurrentIndex((prevIndex) =>
+        prevIndex === carouselItems.length - 1 ? 0 : prevIndex + 1
+      );
+    };
 
     if (carouselItems[currentIndex].type === "image") {
       timer = setTimeout(handleNext, 5000); // Switch after 5 seconds for images
-    } else if (carouselItems[currentIndex].type === "video") {
-      const video = videoRef.current;
-      if (video) {
-        video.play(); // Auto-play video
-        video.onended = handleNext; // Move to next slide after video ends
-      }
     }
+    // else if (carouselItems[currentIndex].type === "video") {
+    //   const video = videoRef.current;
+    //   if (video) {
+    //     video.play(); // Auto-play video
+    //     video.onended = handleNext; // Move to next slide after video ends
+    //   }
+    // }
 
     return () => {
       clearTimeout(timer);
@@ -58,27 +62,27 @@ function Features() {
     objectFit: "contain", // Ensures media fills the container
   };
 
-  const navButtonStyle = {
-    position: "absolute",
-    top: "50%",
-    transform: "translateY(-50%)",
-    background: "rgba(0, 0, 0, 0.7)",
-    color: "#fff",
-    border: "none",
-    borderRadius: "50%",
-    width: "50px",
-    height: "50px",
-    fontSize: "1.5rem",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    cursor: "pointer",
-    transition: "background 0.3s ease",
-    zIndex: 1,
-  };
+  // const navButtonStyle = {
+  //   position: "absolute",
+  //   top: "50%",
+  //   transform: "translateY(-50%)",
+  //   background: "rgba(0, 0, 0, 0.7)",
+  //   color: "#fff",
+  //   border: "none",
+  //   borderRadius: "50%",
+  //   width: "50px",
+  //   height: "50px",
+  //   fontSize: "1.5rem",
+  //   display: "flex",
+  //   alignItems: "center",
+  //   justifyContent: "center",
+  //   cursor: "pointer",
+  //   transition: "background 0.3s ease",
+  //   zIndex: 1,
+  // };
 
-  const prevButtonStyle = { ...navButtonStyle, left: "20px" };
-  const nextButtonStyle = { ...navButtonStyle, right: "20px" };
+  // const prevButtonStyle = { ...navButtonStyle, left: "20px" };
+  // const nextButtonStyle = { ...navButtonStyle, right: "20px" };
 
   return (
     <div style={containerStyle}>
