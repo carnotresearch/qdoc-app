@@ -15,20 +15,21 @@ const WelcomePopup = ({ showPopup, setShowPopup }) => {
       <Modal.Header closeButton>
         <Modal.Title>
           <img src="logo_cisce.png" alt="" style={{ height: "3rem" }} /> Welcome
-          to icarKno Chat.
+          to icarKno
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <p>
           <b>
-            Create your knowledge container by uploading any file and interact
-            with it securely.
+            Interact with secure knowledge container in your preferred language.
           </b>
         </p>
-        <p>Use Free Trial to experience icarKno with a single file.</p>
         <p>
-          Please login for free to experience the application with multiple
-          files in a knowledge container.
+          Click <b>Free Trial</b> to experience icarKno with a single file.
+        </p>
+        <p>
+          Please <b>Login for Free</b> to experience the application with
+          multiple files in a knowledge container.
         </p>
       </Modal.Body>
       <Modal.Footer>

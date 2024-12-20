@@ -16,13 +16,19 @@ const Popup = ({ showPopup, setShowPopup, popupText }) => {
         <Modal.Title>Login Required</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        {popupText} You will be redirected to the login page.
+        {popupText || "Please Login for Free to continue."}
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={handlePopupClose}>
+        <Button
+          style={{ backgroundColor: "grey", color: "white" }}
+          onClick={handlePopupClose}
+        >
           Cancel
         </Button>
-        <Button variant="primary" onClick={handlePopupRedirect}>
+        <Button
+          style={{ backgroundColor: "blue", color: "white" }}
+          onClick={handlePopupRedirect}
+        >
           Go to Login
         </Button>
       </Modal.Footer>

@@ -4,13 +4,15 @@ import { RiMessage2Fill } from "react-icons/ri";
 import { FileContext } from "../FileContext";
 import axios from "axios";
 import Popup from "./Popup";
+import { FaFileAlt } from "react-icons/fa";
 
-const RestrictedUpload = () => {
+const RestrictedUpload = ({ isLandingPage }) => {
   const { setFiles } = useContext(FileContext);
   const [showPopup, setShowPopup] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef(null);
-  const popupText = "Please login to upload files.";
+  const popupText =
+    "You can create only one knowledge container. Please login for free, to create more.";
 
   const handleDragOver = (event) => {
     event.preventDefault();
@@ -30,15 +32,13 @@ const RestrictedUpload = () => {
     textAlign: "center",
     display: "flex",
     justifyContent: "center",
-    alignItems: "center", // Increased width to 800px
-    margin: "0 auto", // Center horizontally
-    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", // Subtle shadow for better appearance
-    borderRadius: "8px", // Optional: Rounded corners
-    width: "10rem", // Optional: Full width
-    height: "8rem",
+    alignItems: "center",
+    margin: "0 auto",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+    borderRadius: "8px",
+    width: "10rem",
+    height: isLandingPage ? "8rem" : "auto",
   };
-
-  // const marginStyle = { marginTop: "1.5cm" };
 
   const handleFileChange = async (files) => {
     const trialUsed = sessionStorage.getItem("trialUsed");
@@ -106,17 +106,23 @@ const RestrictedUpload = () => {
                     loop
                     autoPlay
                     muted
-                    style={{ width: "100%", height: "auto" }}
+                    style={{ width: "100%", height: "90%" }}
                   />
                   <p className="mb-0">This may take some time...</p>
                 </div>
               ) : (
                 <div>
-                  <p className="mb-0">
-                    <RiMessage2Fill /> <b>Upload File</b>
-                  </p>
                   <p className="mb-0 mt-1" style={{ fontSize: "0.8rem" }}>
                     Knowledge container
+                  </p>
+                  {isLandingPage && (
+                    <FaFileAlt
+                      style={{ fontSize: "2rem" }}
+                      className="mt-2 mb-2"
+                    />
+                  )}
+                  <p className="mb-0">
+                    <RiMessage2Fill /> <b>Upload File</b>
                   </p>
                 </div>
               )}

@@ -14,7 +14,7 @@ const MiddleBlock = () => {
   };
 
   const content =
-    "Interact with secure knowledge container in your preferred language";
+    "To discover the potential of icarKno create a knowledge container by uploading a file below ⤵️";
 
   const tmStyles = {
     verticalAlign: "super",
@@ -41,13 +41,18 @@ const MiddleBlock = () => {
     margin: "0",
   };
 
+  const titleStyles = {
+    display: "flex",
+    flexDirection: "row",
+    margin: "0 auto",
+    marginBottom: "2rem",
+  };
+
   return (
     <MiddleBlockSection>
       <Row justify="center" align="middle">
         <ContentWrapper>
-          <div
-            style={{ display: "flex", flexDirection: "row", margin: "0 auto" }}
-          >
+          <div style={titleStyles}>
             <img
               src="./logo.png"
               alt="logo"
@@ -62,9 +67,6 @@ const MiddleBlock = () => {
             </h2>
           </div>
           <Content>{content}</Content>
-          <p className="mt-3">
-            <b>To interact with your data, upload your files below ⤵️</b>
-          </p>
           <div
             style={{
               alignItems: "center",
@@ -73,7 +75,7 @@ const MiddleBlock = () => {
             }}
           >
             {/* Restricted Upload */}
-            <RestrictedUpload />
+            <RestrictedUpload isLandingPage={true} />
           </div>
 
           <div style={{ textAlign: "left", marginTop: "1rem" }}>

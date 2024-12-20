@@ -72,13 +72,9 @@ function ChatContent({
           <div className="message bot">
             <div className="message-box">
               <span className={"message-text"}>
-                <b className="text-success">icarKno: </b>
-                You can ask maximum 10 questions. To interact more and to edit
-                or save you knowledge container,{" "}
-                <a href="/login" target="_blank" rel="noopener noreferrer">
-                  please login
-                </a>
-                .
+                Your knowledge container is ready with file "{files[0].name}".
+                Without login you can ask 10 questions. Login for Free to ask
+                more questions.
               </span>
             </div>
           </div>
@@ -98,7 +94,9 @@ function ChatContent({
         handleSendMessage={handleSendMessage}
       />
       <Popup
-        popupText={"Trial limit is over."}
+        popupText={
+          "You've reached the maximum limit to ask questions. Login for Free to continue."
+        }
         showPopup={showPopup}
         setShowPopup={setShowPopup}
       />

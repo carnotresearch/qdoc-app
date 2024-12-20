@@ -11,9 +11,10 @@ import RestrictedUpload from "./RestrictedUpload";
 import Popup from "./Popup";
 
 function LeftMenu({ sessions }) {
-  const [visibleFiles, setVisibleFiles] = useState({});
+  const [showFiles, setShowFiles] = useState(true);
   const [showPopup, setShowPopup] = useState(false);
-  const popupText = "Login to access this feature.";
+  const popupText =
+    "Without login you can interact with only one file. Delete existing file to upload new one or login for free to upload additional files to the same knowledge container.";
 
   const addButtonStyle = {
     color: "white",
@@ -28,19 +29,6 @@ function LeftMenu({ sessions }) {
     textOverflow: "ellipsis",
     whiteSpace: "nowrap",
     fontSize: "0.875rem",
-  };
-
-  const toggleFileVisibility = (session) => {
-    setVisibleFiles((prevState) => {
-      const newState = { ...prevState };
-      for (const key in newState) {
-        if (key !== session) {
-          newState[key] = false;
-        }
-      }
-      newState[session] = !newState[session];
-      return newState;
-    });
   };
 
   return (
@@ -75,19 +63,15 @@ function LeftMenu({ sessions }) {
                   size="sm"
                   onClick={(e) => {
                     e.stopPropagation();
-                    toggleFileVisibility(session.id);
+                    setShowFiles(!showFiles);
                   }}
                 >
-                  {visibleFiles[session.id] ? (
-                    <RiArrowDropUpLine />
-                  ) : (
-                    <RiArrowDropDownLine />
-                  )}
+                  {showFiles ? <RiArrowDropUpLine /> : <RiArrowDropDownLine />}
                 </Button>
               </ButtonGroup>
             </ListGroup.Item>
 
-            {visibleFiles[session.id] && (
+            {showFiles && (
               <ListGroup>
                 {sessions[0]?.fileNames?.map((file, idx) => (
                   <ListGroup.Item
