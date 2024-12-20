@@ -1,56 +1,54 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 
 function Features() {
   const carouselItems = [
-    { type: "image", src: "./features.jpg" }, // Picture
+    {
+      type: "image",
+      content: (
+        <img
+          src="./features.jpg"
+          alt="Feature"
+          style={{ width: "100%", height: "100%", objectFit: "contain" }}
+        />
+      ),
+    },
+    {
+      type: "iframe",
+      content: (
+        <iframe
+          src="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7267918084563218432"
+          style={{ width: "100%", height: "100%", border: "none" }}
+          allowFullScreen
+          title="LinkedIn Post"
+        ></iframe>
+      ),
+    }
   ];
 
   const [currentIndex, setCurrentIndex] = useState(0);
-  const videoRef = useRef(null);
 
-  // Function to go to the next item
-  // const handleNext = () => {
-  //   setCurrentIndex((prevIndex) =>
-  //     prevIndex === carouselItems.length - 1 ? 0 : prevIndex + 1
-  //   );
-  // };
-
-  // Function to go to the previous item
-  // const handlePrev = () => {
-  //   setCurrentIndex((prevIndex) =>
-  //     prevIndex === 0 ? carouselItems.length - 1 : prevIndex - 1
-  //   );
-  // };
-
-  // Automatically switch after 5 seconds for images or after video ends
   useEffect(() => {
-    let timer;
-    const carouselItems = [
-      { type: "image", src: "./features.jpg" }, // Picture
-    ];
-    const handleNext = () => {
+    const timer = setTimeout(() => {
       setCurrentIndex((prevIndex) =>
         prevIndex === carouselItems.length - 1 ? 0 : prevIndex + 1
       );
-    };
+    }, 100000000);
 
-    if (carouselItems[currentIndex].type === "image") {
-      timer = setTimeout(handleNext, 5000); // Switch after 5 seconds for images
-    }
-    // else if (carouselItems[currentIndex].type === "video") {
-    //   const video = videoRef.current;
-    //   if (video) {
-    //     video.play(); // Auto-play video
-    //     video.onended = handleNext; // Move to next slide after video ends
-    //   }
-    // }
+    return () => clearTimeout(timer);
+  }, [currentIndex, carouselItems.length]);
 
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [currentIndex]);
+  const handleNext = () => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex === carouselItems.length - 1 ? 0 : prevIndex + 1
+    );
+  };
 
-  // Styles
+  const handlePrev = () => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex === 0 ? carouselItems.length - 1 : prevIndex - 1
+    );
+  };
+
   const containerStyle = {
     width: "100%",
     height: "87.5vh",
@@ -61,60 +59,37 @@ function Features() {
     justifyContent: "center",
   };
 
-  const mediaStyle = {
-    width: "100%",
-    height: "100%",
-    objectFit: "contain", // Ensures media fills the container
+  const buttonStyle = {
+    position: "absolute",
+    top: "50%",
+    transform: "translateY(-50%)",
+    background: "rgba(0, 0, 0, 0.7)",
+    color: "#fff",
+    border: "none",
+    borderRadius: "50%",
+    width: "50px",
+    height: "50px",
+    fontSize: "1.5rem",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    cursor: "pointer",
+    transition: "background 0.3s ease",
+    zIndex: 1,
   };
 
-  // const navButtonStyle = {
-  //   position: "absolute",
-  //   top: "50%",
-  //   transform: "translateY(-50%)",
-  //   background: "rgba(0, 0, 0, 0.7)",
-  //   color: "#fff",
-  //   border: "none",
-  //   borderRadius: "50%",
-  //   width: "50px",
-  //   height: "50px",
-  //   fontSize: "1.5rem",
-  //   display: "flex",
-  //   alignItems: "center",
-  //   justifyContent: "center",
-  //   cursor: "pointer",
-  //   transition: "background 0.3s ease",
-  //   zIndex: 1,
-  // };
-
-  // const prevButtonStyle = { ...navButtonStyle, left: "20px" };
-  // const nextButtonStyle = { ...navButtonStyle, right: "20px" };
+  const prevButtonStyle = { ...buttonStyle, left: "20px" };
+  const nextButtonStyle = { ...buttonStyle, right: "20px" };
 
   return (
     <div style={containerStyle}>
-      {/* <button style={prevButtonStyle} onClick={handlePrev}>
+      <button style={prevButtonStyle} onClick={handlePrev}>
         &#8249;
-      </button> */}
-
-      {/* Conditional rendering for image or video */}
-      {carouselItems[currentIndex].type === "image" ? (
-        <img
-          src={carouselItems[currentIndex].src}
-          alt={`Slide ${currentIndex + 1}`}
-          style={mediaStyle}
-        />
-      ) : (
-        <video
-          ref={videoRef}
-          src={carouselItems[currentIndex].src}
-          style={mediaStyle}
-          muted
-          playsInline
-        />
-      )}
-
-      {/* <button style={nextButtonStyle} onClick={handleNext}>
+      </button>
+      <div style={{ width: "100%", height: "100%" }}>{carouselItems[currentIndex].content}</div>
+      <button style={nextButtonStyle} onClick={handleNext}>
         &#8250;
-      </button> */}
+      </button>
     </div>
   );
 }
