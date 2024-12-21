@@ -27,6 +27,7 @@ const WelcomePopup = ({ showPopup, setShowPopup }) => {
         <p>
           Click <b>Free Trial</b> to experience icarKno with a single file.
         </p>
+        <p>OR</p>
         <p>
           Please <b>Login for Free</b> to experience the application with
           multiple files in a knowledge container.
