@@ -4,6 +4,7 @@ import MessageInput from "../chatpage/MessageInput";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Popup from "./Popup";
+import "../../styles/chatContent.css";
 
 function ChatContent({
   files,
@@ -13,6 +14,7 @@ function ChatContent({
   messageInputRef,
   handleSendMessage,
   isFileUpdated,
+  handleInputFocus,
 }) {
   const chatHistoryRef = useRef(null);
   const [showPopup, setShowPopup] = useState(false);
@@ -92,6 +94,7 @@ function ChatContent({
         inputLanguage={inputLanguage}
         messageInputRef={messageInputRef}
         handleSendMessage={handleSendMessage}
+        handleInputFocus={handleInputFocus}
       />
       <Popup
         popupText={

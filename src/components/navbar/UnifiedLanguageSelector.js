@@ -94,6 +94,7 @@ const UnifiedLanguageSelector = ({
               backgroundColor: selectedType === "Input" ? "#3f51b5" : "",
               textTransform: "none",
               transition: "color 0.3s ease-in-out",
+              marginRight: "1rem",
             }}
           >
             Input Language
@@ -111,6 +112,7 @@ const UnifiedLanguageSelector = ({
               backgroundColor: selectedType === "Output" ? "#3f51b5" : "",
               textTransform: "none",
               transition: "color 0.3s ease-in-out",
+              marginLeft: "1rem",
             }}
           >
             Output Language
@@ -124,7 +126,7 @@ const UnifiedLanguageSelector = ({
                 onClick={() => handleLanguageSelect(language.value)}
                 style={{
                   width: "100%",
-                  height: "60px",
+                  height: "50px",
                   textTransform: "none",
                   backgroundColor:
                     (selectedType === "Input" &&

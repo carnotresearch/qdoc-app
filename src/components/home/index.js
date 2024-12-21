@@ -55,6 +55,13 @@ function Home({
     }
   }, [files, setIsFileUpdated]);
 
+  const handleInputFocus = () => {
+    if (window.innerWidth <= 768) {
+      // hide sidebar while typing
+      setSidebarCollapsed(true);
+    }
+  };
+
   const handleSendMessage = async (message) => {
     if (message.trim()) {
       const timestamp = new Date().toLocaleTimeString([], {
@@ -133,6 +140,7 @@ function Home({
         outputLanguage={outputLanguage}
         messageInputRef={messageInputRef}
         isFileUpdated={isFileUpdated}
+        handleInputFocus={handleInputFocus}
       />
     </Container>
   ) : (
