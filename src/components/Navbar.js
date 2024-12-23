@@ -274,7 +274,7 @@ const Navbar = ({
                   </Link>
                 </MenuItem>,
                 // Language Button
-                <MenuItem>
+                <MenuItem key="language-selector">
                   <UnifiedLanguageSelector
                     inputLanguage={inputLanguage}
                     setInputLanguage={setInputLanguage}
