@@ -28,7 +28,6 @@ function LeftMenu({ sessions, setSessions, setIsFileUpdated }) {
   };
 
   const handleDeleteSession = () => {
-    console.log("delete");
     setIsFileUpdated(false);
   };
 
