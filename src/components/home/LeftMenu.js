@@ -10,11 +10,27 @@ import "../../styles/sidebar.css";
 import RestrictedUpload from "./RestrictedUpload";
 import Popup from "./Popup";
 
-function LeftMenu({ sessions }) {
+function LeftMenu({ sessions, setSessions, setIsFileUpdated }) {
   const [showFiles, setShowFiles] = useState(true);
   const [showPopup, setShowPopup] = useState(false);
   const popupText =
     "Without login you can interact with only one file. Delete existing file to upload new one or login for free to upload additional files to the same knowledge container.";
+
+  const handleRenameSession = () => {
+    const newName = prompt("Enter the new name for the session:").trim();
+    if (newName) {
+      setSessions((prevSessions) => {
+        const updatedSessions = [...prevSessions];
+        updatedSessions[0] = { ...updatedSessions[0], name: newName };
+        return updatedSessions;
+      });
+    }
+  };
+
+  const handleDeleteSession = () => {
+    console.log("delete");
+    setIsFileUpdated(false);
+  };
 
   const addButtonStyle = {
     color: "white",
@@ -47,14 +63,14 @@ function LeftMenu({ sessions }) {
                 <Button
                   variant="outline-primary"
                   size="sm"
-                  onClick={() => setShowPopup(true)}
+                  onClick={handleRenameSession}
                 >
                   <RiEdit2Line />
                 </Button>
                 <Button
                   variant="outline-danger"
                   size="sm"
-                  onClick={() => setShowPopup(true)}
+                  onClick={handleDeleteSession}
                 >
                   <RiDeleteBinLine />
                 </Button>

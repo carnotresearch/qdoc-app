@@ -129,7 +129,13 @@ function Home({
         >
           <MenuOutlined className="menu-icon" fontSize="medium" />
         </Button>
-        {!sidebarCollapsed && <LeftMenu sessions={sessions} />}
+        {!sidebarCollapsed && (
+          <LeftMenu
+            sessions={sessions}
+            setSessions={setSessions}
+            setIsFileUpdated={setIsFileUpdated}
+          />
+        )}
       </div>
       {files && <FileViewer files={files} />}
       <ChatContent
