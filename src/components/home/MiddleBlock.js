@@ -82,11 +82,12 @@ const MiddleBlock = () => {
             <center>
               <ul style={listStyles}>
                 <li>
-                  Your info remains safe and not shared externally with anyone
+                  Your information remains safe and not shared externally with
+                  anyone.
                 </li>
                 <li>
                   On-premise deployments for corporate and application-specific
-                  use-cases
+                  use-cases.
                 </li>
               </ul>
             </center>

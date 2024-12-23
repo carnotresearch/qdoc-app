@@ -41,8 +41,7 @@ const RestrictedUpload = ({ isLandingPage }) => {
   };
 
   const handleFileChange = async (files) => {
-    const trialUsed = sessionStorage.getItem("trialUsed");
-    if (trialUsed === "true") {
+    if (!isLandingPage) {
       setShowPopup(true);
       return;
     }
