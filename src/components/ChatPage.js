@@ -23,9 +23,11 @@ import "../styles/chatPage.css";
 import MessageInput from "./chatpage/MessageInput";
 import ChatHistory from "./chatpage/ChatHistory";
 import { handleDownloadChat } from "./utils/chatUtils";
+
 function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
   const [chatHistory, setChatHistory] = useState([]);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const sidebarRef = useRef(null); // Ref for the sidebar
   const chatHistoryRef = useRef(null);
   const messageInputRef = useRef(null);
   const { files, setFiles } = useContext(FileContext);
@@ -35,10 +37,9 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
   const [selectedSessionFiles, setSelectedSessionFiles] = useState({});
   const [isScannedDocument, setIsScannedDocument] = useState(false);
   const navigate = useNavigate();
+
   const scannedDocumentWarning = (documentName) =>
-    "Unfortunately we couldn't read document: '" +
-    documentName +
-    "', as it seems to be a scanned document. Kindly upload a readable document.";
+    `Unfortunately we couldn't read document: '${documentName}', as it seems to be a scanned document. Kindly upload a readable document.`;
 
   const fetchSessions = useCallback(async () => {
     try {
@@ -80,6 +81,19 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
     }
   }, []);
 
+  const handleOutsideClick = useCallback(
+    (event) => {
+      if (
+        sidebarRef.current &&
+        !sidebarRef.current.contains(event.target) &&
+        !sidebarCollapsed // Only act if the sidebar is open
+      ) {
+        setSidebarCollapsed(true); // Collapse the sidebar
+      }
+    },
+    [sidebarCollapsed]
+  );
+
   useEffect(() => {
     fetchSessions();
   }, [fetchSessions]);
@@ -99,6 +113,15 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
+  useEffect(() => {
+    // Attach the event listener to detect outside clicks
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => {
+      // Clean up the event listener on unmount
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, [handleOutsideClick]);
 
   useEffect(() => {
     setIsFileUpdated(true);
@@ -183,6 +206,7 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
   const downloadChat = () => {
     handleDownloadChat(chatHistory); // Call the function with chatHistory
   };
+
   const iconStyles = { color: "green", marginRight: "5px" };
   const startingQuestions = [
     "Summarise the document.",
@@ -192,7 +216,10 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
 
   return (
     <Container fluid className="chat-container">
-      <div className={`sidebar ${sidebarCollapsed ? "collapsed" : ""}`}>
+      <div
+        ref={sidebarRef} // Attach the ref to the sidebar
+        className={`sidebar ${sidebarCollapsed ? "collapsed" : ""}`}
+      >
         <Button
           variant="secondary"
           className="sidebar-toggle-btn"
@@ -256,9 +283,7 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
             (files.length > 0 ? (
               <div className="message bot">
                 <div className="message-box">
-                  <span className={"message-text"}>
-                    Your files have been uploaded!
-                  </span>
+                  <span className={"message-text"}>Your files have been uploaded!</span>
                 </div>
               </div>
             ) : (

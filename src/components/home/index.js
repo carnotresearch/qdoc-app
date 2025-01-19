@@ -119,6 +119,19 @@ function Home({
     }
   };
 
+  const handleOutsideClick = (event) => {
+    if (!event.target.closest('.sidebar') && !sidebarCollapsed) {
+      setSidebarCollapsed(true);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("click", handleOutsideClick);
+    return () => {
+      document.removeEventListener("click", handleOutsideClick);
+    };
+  }, [sidebarCollapsed]);
+
   return isFileUpdated ? (
     <Container fluid className="chat-container">
       <div className={`sidebar ${sidebarCollapsed ? "collapsed" : ""}`}>
