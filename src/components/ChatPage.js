@@ -124,6 +124,7 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
   }, [handleOutsideClick]);
 
   useEffect(() => {
+    setIsLoggedIn(true);
     setIsFileUpdated(true);
     messageInputRef.current.focus();
     if (files.length > 0) {
@@ -214,6 +215,27 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
     "Explain one feature mentioned in the document.",
   ];
 
+  function resizeMusedown(e) {
+    document.addEventListener('mousemove', resize);
+    document.addEventListener('mouseup', stopResize);
+  }
+
+function resize(e) {
+    const container = document.getElementsByClassName('chat-container')[0]
+    const containerOffsetLeft = container.offsetLeft;
+    const newLeftWidth = e.clientX - containerOffsetLeft;
+    const leftDiv = document.getElementsByClassName('file-viewer')[0]
+    const rightDiv = document.getElementsByClassName('chat-content')[0]
+    const resizer = document.getElementById('resizer')
+    leftDiv.style.width = newLeftWidth + 'px';
+    rightDiv.style.width = (container.clientWidth - newLeftWidth - resizer.offsetWidth) + 'px';
+}
+
+function stopResize() {
+    document.removeEventListener('mousemove', resize);
+    document.removeEventListener('mouseup', stopResize);
+}
+
   return (
     <Container fluid className="chat-container">
       <div
@@ -241,6 +263,7 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
         )}
       </div>
       <FileViewer files={files} />
+      <div id="resizer" onMouseDown={resizeMusedown}></div>
       <div className="chat-content">
         <div className="chat-history" ref={chatHistoryRef}>
           <div className="message bot">
@@ -316,6 +339,6 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
       </div>
     </Container>
   );
-}
+};
 
 export default ChatPage;

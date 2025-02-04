@@ -1,80 +1,89 @@
+
 .file-viewer {
-    flex: 1;
-    overflow-y: auto;
-    padding: 10px;
-    max-height: 90vh;
-    margin-bottom: 10px;
-    width: 30%;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    border: black;
-  }
-  
-  .file-page {
-    margin-bottom: 20px;
-    padding: 10px;
-    border: 1px solid #ffffff;
-    border-radius: 5px;
-    background-color: #ffffff;
-    overflow-wrap: break-word;
-  }
-  
-  @media (max-width: 992px) {
-    .file-viewer {
-      display: none;
-    }
-  }
-  
-  .doc-page {
-    border: 1px solid #ddd;
-    padding: 10px;
-    margin-bottom: 20px;
-    background-color: #f9f9f9;
-    overflow: auto;
-    max-width: 100%;
-  }
-
-  .doc-page canvas {
-    max-width: 100%;  /* Ensure the canvas element (if any) does not exceed the width of the container */
-    height: auto;    /* Maintain aspect ratio */
-  }
-
-  .pdf-viewer {
-    margin-bottom: 20px;
-    background-color: #f9f9f9;
-    overflow-y: auto;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  
-  .pdf-viewer canvas {
-    width: 20%;
-    margin: 10px;
-    display: block;
-  }
-  
-  /* Add styles for the table */
-.spreadsheet-viewer table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 10px;
+  overflow-y: auto;
+  padding: 10px;
+  max-height: 90vh;
+  margin-bottom: 10px;
+  width: 30%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  border: black;
 }
 
-.spreadsheet-viewer th,
-.spreadsheet-viewer td {
-  border: 1px solid black; /* Add border to cells */
-  padding: 8px; /* Add padding inside cells */
-  text-align: left; /* Align text to the left */
-  white-space: nowrap; /* Prevent long text from wrapping */
+
+#resizer {
+  width: 2px;
+  cursor: ew-resize;
+  background-color: black;
 }
 
-.spreadsheet-viewer tr:nth-child(even) {
-  background-color: #f2f2f2; /* Alternate row background for readability */
+.file-page {
+  margin-bottom: 20px;
+  padding: 10px;
+  border: 1px solid #ffffff;
+  border-radius: 5px;
+  background-color: #ffffff;
+  overflow-wrap: break-word;
 }
 
-.spreadsheet-viewer th {
-  background-color: #4CAF50; /* Header row background color */
-  color: white; /* Header row text color */
+@media (max-width: 992px) {
+  .file-viewer {
+    display: none;
+  }
+}
+
+.doc-page {
+  border: 1px solid #ddd;
+  padding: 10px;
+  margin-bottom: 20px;
+  background-color: #f9f9f9;
+  overflow: auto;
+  max-width: 100%;
+}
+
+.doc-page canvas {
+  max-width: 100%;  /* Ensure the canvas element (if any) does not exceed the width of the container */
+  height: auto;    /* Maintain aspect ratio */
+}
+
+.pdf-viewer {
+  margin-bottom: 20px;
+  background-color: #f9f9f9;
+  overflow-y: auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.pdf-viewer canvas {
+  width: 20%;
+  margin: 10px;
+  display: block;
+}
+
+/* Add styles for the table */
+.spreadsheet-viewer {
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+  }
+
+  th,
+  td {
+    border: 1px solid black; /* Add border to cells */
+    padding: 8px; /* Add padding inside cells */
+    text-align: left; /* Align text to the left */
+    white-space: nowrap; /* Prevent long text from wrapping */
+  }
+
+  tr:nth-child(even) {
+    background-color: #f2f2f2; /* Alternate row background for readability */
+  }
+
+  th {
+    background-color: #4CAF50; /* Header row background color */
+    color: white; /* Header row text color */
+  }
 }
