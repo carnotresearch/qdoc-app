@@ -1,14 +1,14 @@
 const { override, addWebpackResolve } = require("customize-cra");
 
-module.exports = function override(config, env) {
-  config.module.rules.push({
-    test: /\.mjs$/,
-    include: /node_modules/,
-    type: "javascript/auto",
-  });
-  return config;
-};
 module.exports = override(
+  (config) => {
+    config.module.rules.push({
+      test: /\.mjs$/,
+      include: /node_modules/,
+      type: "javascript/auto",
+    });
+    return config;
+  },
   addWebpackResolve({
     fallback: {
       util: require.resolve("util/"),
@@ -16,3 +16,11 @@ module.exports = override(
     },
   })
 );
+
+// Export devServer settings correctly
+module.exports.devServer = function (config) {
+  config.headers = {
+    "Cross-Origin-Opener-Policy": "same-origin-allow-popups",
+  };
+  return config;
+};

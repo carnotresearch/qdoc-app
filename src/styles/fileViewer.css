@@ -1,4 +1,3 @@
-
 .file-viewer {
   overflow-y: auto;
   padding: 10px;
@@ -11,9 +10,8 @@
   border: black;
 }
 
-
 #resizer {
-  width: 2px;
+  width: 1.5px;
   cursor: ew-resize;
   background-color: black;
 }
@@ -29,9 +27,19 @@
 
 @media (max-width: 992px) {
   .file-viewer {
-    display: none;
+    display: none !important; /* Completely removes it */
+    visibility: hidden; /* Ensures it’s not visible */
+    width: 0;
+    height: 0;
+    overflow: hidden;
   }
+
+  #resizer {
+    display: none !important; /* Hide the resizer */
+  }
+
 }
+
 
 .doc-page {
   border: 1px solid #ddd;
@@ -43,8 +51,8 @@
 }
 
 .doc-page canvas {
-  max-width: 100%;  /* Ensure the canvas element (if any) does not exceed the width of the container */
-  height: auto;    /* Maintain aspect ratio */
+  max-width: 100%; /* Ensure the canvas element does not exceed the width of the container */
+  height: auto; /* Maintain aspect ratio */
 }
 
 .pdf-viewer {
@@ -57,33 +65,45 @@
 }
 
 .pdf-viewer canvas {
-  width: 20%;
-  margin: 10px;
-  display: block;
+  width: calc(50% - 20px); /* Adjust width for two columns on smaller screens */
+  margin: 10px; /* Margin around canvas elements */
+}
+
+@media (max-width: 600px) {
+   .pdf-viewer canvas {
+    width: calc(100% - 20px); /* Full width on very small screens */
+   }
 }
 
 /* Add styles for the table */
-.spreadsheet-viewer {
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-  }
+.spreadsheet-viewer table {
+   width: 100%;
+   border-collapse: collapse;
+   margin-top: 10px;
+}
 
-  th,
-  td {
-    border: 1px solid black; /* Add border to cells */
-    padding: 8px; /* Add padding inside cells */
-    text-align: left; /* Align text to the left */
-    white-space: nowrap; /* Prevent long text from wrapping */
-  }
+.spreadsheet-viewer th,
+.spreadsheet-viewer td {
+   border: 1px solid black; /* Add border to cells */
+   padding: 8px; /* Add padding inside cells */
+   text-align: left; /* Align text to the left */
+   white-space: nowrap; /* Prevent long text from wrapping */
+}
 
-  tr:nth-child(even) {
-    background-color: #f2f2f2; /* Alternate row background for readability */
-  }
+.spreadsheet-viewer tr:nth-child(even) {
+   background-color: #f2f2f2; /* Alternate row background for readability */
+}
 
-  th {
-    background-color: #4CAF50; /* Header row background color */
-    color: white; /* Header row text color */
-  }
+.spreadsheet-viewer th {
+   background-color: #4CAF50; /* Header row background color */
+   color: white; /* Header row text color */
+}
+
+/* Responsive styles for tables on small screens */
+@media (max-width: 600px) {
+   .spreadsheet-viewer th,
+   .spreadsheet-viewer td {
+      white-space: normal; /* Allow wrapping in cells on small screens */
+      font-size: smaller; /* Adjust font size for better readability */
+   }
 }
