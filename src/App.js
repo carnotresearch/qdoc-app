@@ -22,6 +22,7 @@ function App() {
   const [outputLanguage, setOutputLanguage] = useState("23");
   const [darkMode, setDarkMode] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isFileUpdated, setIsFileUpdated] = useState(false);
 
   useEffect(() => {
     document.body.classList.toggle("dark-mode", darkMode);
@@ -39,6 +40,8 @@ function App() {
           setDarkMode={setDarkMode}
           isLoggedIn={isLoggedIn}
           setIsLoggedIn={setIsLoggedIn}
+          isFileUpdated={isFileUpdated}
+          setIsFileUpdated={setIsFileUpdated}
         />
       </Router>
     </FileProvider>
@@ -54,6 +57,8 @@ function Content({
   setDarkMode,
   isLoggedIn,
   setIsLoggedIn,
+  isFileUpdated,
+  setIsFileUpdated,
 }) {
   const location = useLocation();
 
@@ -69,6 +74,7 @@ function Content({
           setDarkMode={setDarkMode}
           isLoggedIn={isLoggedIn}
           setIsLoggedIn={setIsLoggedIn}
+          isFileUpdated={isFileUpdated}
         />
       )}
       <Routes>
@@ -99,7 +105,12 @@ function Content({
                 />
               </ProtectedRoute>
             ) : (
-              <Home />
+              <Home
+                inputLanguage={inputLanguage}
+                outputLanguage={outputLanguage}
+                isFileUpdated={isFileUpdated}
+                setIsFileUpdated={setIsFileUpdated}
+              />
             )
           }
         />

@@ -1,8 +1,10 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ChatHistory from "../chatpage/ChatHistory";
 import MessageInput from "../chatpage/MessageInput";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Popup from "./Popup";
+import "../../styles/chatContent.css";
 
 function ChatContent({
   files,
@@ -12,8 +14,10 @@ function ChatContent({
   messageInputRef,
   handleSendMessage,
   isFileUpdated,
+  handleInputFocus,
 }) {
   const chatHistoryRef = useRef(null);
+  const [showPopup, setShowPopup] = useState(false);
   const iconStyles = { color: "green", marginRight: "5px" };
   const startingQuestions = [
     "Summarise the document.",
@@ -23,6 +27,13 @@ function ChatContent({
 
   // auto scroll down to latest chat response
   useEffect(() => {
+    if (
+      chatHistory.length > 0 &&
+      !chatHistory[chatHistory.length - 1]?.loading &&
+      !chatHistory[chatHistory.length - 1]?.bot
+    ) {
+      setShowPopup(true);
+    }
     if (chatHistoryRef.current) {
       chatHistoryRef.current.scrollTop = chatHistoryRef.current.scrollHeight;
     }
@@ -59,6 +70,17 @@ function ChatContent({
             </span>
           </div>
         </div>
+        {isFileUpdated && (
+          <div className="message bot">
+            <div className="message-box">
+              <span className={"message-text"}>
+                Your knowledge container is ready with file "{files[0].name}".
+                Without login you can ask 10 questions. Login for Free to ask
+                more questions.
+              </span>
+            </div>
+          </div>
+        )}
         {chatHistory.map((chat, index) => (
           <ChatHistory
             chat={chat}
@@ -67,21 +89,19 @@ function ChatContent({
             key={index}
           />
         ))}
-        {isFileUpdated && (
-          <div className="message bot">
-            <div className="message-box">
-              <span className={"message-text"}>
-                <b className="text-success">icarKno: </b>
-                Your knowledge container is updated!
-              </span>
-            </div>
-          </div>
-        )}
       </div>
       <MessageInput
         inputLanguage={inputLanguage}
         messageInputRef={messageInputRef}
         handleSendMessage={handleSendMessage}
+        handleInputFocus={handleInputFocus}
+      />
+      <Popup
+        popupText={
+          "You've reached the maximum limit to ask questions. Login for Free to continue."
+        }
+        showPopup={showPopup}
+        setShowPopup={setShowPopup}
       />
     </div>
   );

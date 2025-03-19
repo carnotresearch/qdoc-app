@@ -4,13 +4,15 @@ import { RiMessage2Fill } from "react-icons/ri";
 import { FileContext } from "../FileContext";
 import axios from "axios";
 import Popup from "./Popup";
+import { FaFileAlt } from "react-icons/fa";
 
-const RestrictedUpload = () => {
+const RestrictedUpload = ({ isLandingPage }) => {
   const { setFiles } = useContext(FileContext);
   const [showPopup, setShowPopup] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef(null);
-  const popupText = "Please login to upload files.";
+  const popupText =
+    "You can create only one knowledge container. Please login for free, to create more.";
 
   const handleDragOver = (event) => {
     event.preventDefault();
@@ -28,16 +30,18 @@ const RestrictedUpload = () => {
   const cardStyle = {
     border: "2px dashed #ccc",
     textAlign: "center",
-    height: "4rem",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+    margin: "0 auto",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+    borderRadius: "8px",
+    width: "10rem",
+    height: isLandingPage ? "8rem" : "auto",
   };
-  const marginStyle = { marginTop: "1.5cm" };
 
   const handleFileChange = async (files) => {
-    const trialUsed = localStorage.getItem("trialUsed");
-    if (trialUsed === "true") {
+    if (!isLandingPage) {
       setShowPopup(true);
       return;
     }
@@ -45,7 +49,7 @@ const RestrictedUpload = () => {
     if (files && files.length === 1) {
       setIsUploading(true);
       try {
-        const fingerprint = localStorage.getItem("fingerprint");
+        const fingerprint = sessionStorage.getItem("fingerprint");
         const filesArray = Array.from(files);
         const formData = new FormData();
         filesArray.forEach((file) => formData.append("files", file));
@@ -60,14 +64,14 @@ const RestrictedUpload = () => {
           response.data.message &&
           response.data.message === "No data was extracted!"
         ) {
-          alert("Kindly loign to upload scanned documents");
+          alert("Kindly login to upload scanned documents");
           return;
         }
         setFiles(filesArray);
       } catch (error) {
         console.error("Error uploading file:", error);
       } finally {
-        localStorage.setItem("trialUsed", "true");
+        sessionStorage.setItem("trialUsed", "true");
         setIsUploading(false);
       }
     } else {
@@ -77,8 +81,8 @@ const RestrictedUpload = () => {
 
   return (
     <>
-      <Form style={marginStyle}>
-        <Form.Group className="mb-3">
+      <Form>
+        <Form.Group className="mb-3 mt-3">
           <div
             className="custom-file-input"
             onDragOver={handleDragOver}
@@ -88,7 +92,7 @@ const RestrictedUpload = () => {
             <input
               type="file"
               id="file"
-              accept=".txt,.pdf,.docx,.csv,.xlsx"
+              accept=".txt,.pdf,.docx"
               onChange={(event) => handleFileChange(event.target.files)}
               ref={fileInputRef}
               style={{ display: "none" }}
@@ -101,16 +105,24 @@ const RestrictedUpload = () => {
                     loop
                     autoPlay
                     muted
-                    style={{ width: "100%", height: "auto" }}
+                    style={{ width: "100%", height: "90%" }}
                   />
                   <p className="mb-0">This may take some time...</p>
                 </div>
               ) : (
                 <div>
-                  <p className="mb-0">
-                    <RiMessage2Fill /> <b>New Container</b>
+                  <p className="mb-0 mt-1" style={{ fontSize: "0.8rem" }}>
+                    Knowledge container
                   </p>
-                  <p className="mb-0">Drop files here</p>
+                  {isLandingPage && (
+                    <FaFileAlt
+                      style={{ fontSize: "2rem" }}
+                      className="mt-2 mb-2"
+                    />
+                  )}
+                  <p className="mb-0">
+                    <RiMessage2Fill /> <b>Upload File</b>
+                  </p>
                 </div>
               )}
             </Card>

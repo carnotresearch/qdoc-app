@@ -10,6 +10,7 @@ const MessageInput = ({
   inputLanguage,
   messageInputRef,
   handleSendMessage,
+  handleInputFocus,
 }) => {
   const [showMicrophone, setShowMicrophone] = useState(true);
   const sttSupportedLanguagesRef = useRef(sttSupportedLanguages);
@@ -84,6 +85,7 @@ const MessageInput = ({
         placeholder="Type your question"
         ref={messageInputRef}
         style={{ marginRight: "10px" }}
+        onFocus={handleInputFocus}
       />
       {showMicrophone && (
         <Button

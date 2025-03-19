@@ -10,11 +10,26 @@ import "../../styles/sidebar.css";
 import RestrictedUpload from "./RestrictedUpload";
 import Popup from "./Popup";
 
-function LeftMenu() {
-  const [visibleFiles, setVisibleFiles] = useState({});
+function LeftMenu({ sessions, setSessions, setIsFileUpdated }) {
+  const [showFiles, setShowFiles] = useState(true);
   const [showPopup, setShowPopup] = useState(false);
-  const sessions = [];
-  const selectedSessionFiles = [];
+  const popupText =
+    "Without login you can interact with only one file. Delete existing file to upload new one or login for free to upload additional files to the same knowledge container.";
+
+  const handleRenameSession = () => {
+    const newName = prompt("Enter the new name for the session:").trim();
+    if (newName) {
+      setSessions((prevSessions) => {
+        const updatedSessions = [...prevSessions];
+        updatedSessions[0] = { ...updatedSessions[0], name: newName };
+        return updatedSessions;
+      });
+    }
+  };
+
+  const handleDeleteSession = () => {
+    setIsFileUpdated(false);
+  };
 
   const addButtonStyle = {
     color: "white",
@@ -31,28 +46,15 @@ function LeftMenu() {
     fontSize: "0.875rem",
   };
 
-  const toggleFileVisibility = (session) => {
-    setVisibleFiles((prevState) => {
-      const newState = { ...prevState };
-      for (const key in newState) {
-        if (key !== session) {
-          newState[key] = false;
-        }
-      }
-      newState[session] = !newState[session];
-      return newState;
-    });
-  };
-
   return (
     <div>
+      {sessions.length > 0 && <div className="mt-5"></div>}
       <RestrictedUpload />
       <ListGroup>
         {sessions.slice(0, 4).map((session, index) => (
           <div key={index}>
             <ListGroup.Item
               className={`d-flex justify-content-between session-item`}
-              disabled={true}
               title={`${session.fileNames.join(", ")}`}
             >
               {session.name}
@@ -60,45 +62,38 @@ function LeftMenu() {
                 <Button
                   variant="outline-primary"
                   size="sm"
-                  onClick={() => setShowPopup(true)}
+                  onClick={handleRenameSession}
                 >
                   <RiEdit2Line />
                 </Button>
                 <Button
                   variant="outline-danger"
                   size="sm"
-                  onClick={() => setShowPopup(true)}
+                  onClick={handleDeleteSession}
                 >
                   <RiDeleteBinLine />
                 </Button>
                 <Button
                   variant="outline-info"
                   size="sm"
-                  disabled={true}
                   onClick={(e) => {
                     e.stopPropagation();
-                    toggleFileVisibility(session.id);
+                    setShowFiles(!showFiles);
                   }}
                 >
-                  {visibleFiles[session.id] ? (
-                    <RiArrowDropUpLine />
-                  ) : (
-                    <RiArrowDropDownLine />
-                  )}
+                  {showFiles ? <RiArrowDropUpLine /> : <RiArrowDropDownLine />}
                 </Button>
               </ButtonGroup>
             </ListGroup.Item>
 
-            {visibleFiles[session.id] && (
+            {showFiles && (
               <ListGroup>
-                {selectedSessionFiles[session.id]?.map((file, idx) => (
+                {sessions[0]?.fileNames?.map((file, idx) => (
                   <ListGroup.Item
                     key={idx}
                     className="d-flex justify-content-between align-items-center file-item"
                   >
-                    <span style={listItemStyle}>
-                      {file.name} - {(file.size / 1024).toFixed(2)} KB
-                    </span>
+                    <span style={listItemStyle}>{file}</span>
                   </ListGroup.Item>
                 ))}
 
@@ -115,9 +110,13 @@ function LeftMenu() {
           </div>
         ))}
       </ListGroup>
-      <Popup showPopup={showPopup} setShowPopup={setShowPopup} />
+      <Popup
+        popupText={popupText}
+        showPopup={showPopup}
+        setShowPopup={setShowPopup}
+      />
     </div>
   );
 }
 
-export default React.memo(LeftMenu);
+export default LeftMenu;

@@ -1,0 +1,26 @@
+.chat-container {
+    display: flex;
+    flex-direction: row;
+    overflow: hidden; /* Prevent horizontal scrolling */
+    width: 100%; /* Ensure the container takes the full width of the viewport */
+  }
+
+ 
+  
+  .chat-content {
+    flex-grow: 1; /* Allow the chat content to take up remaining space */
+    overflow-y: auto; /* Ensure vertical scrolling for content */
+    overflow-x: hidden; /* Prevent horizontal overflow */
+    width: 0; /* Prevent pushing the layout */
+    word-break: break-word; /* Break long words onto the next line */
+    overflow-wrap: break-word; /* Ensure compatibility for breaking words */
+  }
+  
+  .session-item, .file-item {
+    overflow: hidden; /* Hide overflow */
+    word-break: break-word;
+    text-overflow: ellipsis; /* Add ellipsis for long text */
+  }
+  
+
+  
