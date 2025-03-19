@@ -45,7 +45,7 @@ body {
 /* for mobile devices */
 @media (max-width: 767px) {
   .chat-container {
-    height: 100vh;
+    height: 80vh;
   }
 }
 
