@@ -1,4 +1,4 @@
-import React, { useState, useRef, useContext} from "react";
+import React, { useState, useRef, useContext } from "react";
 import { ListGroup, Button, ButtonGroup } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import {
@@ -40,7 +40,7 @@ function Sidebar({
     const hasCsvOrXlsx = files.some((file) => /\.(xlsx|csv)$/i.test(file.name));
     sessionStorage.setItem("currentSessionHasCsvOrXlsx", hasCsvOrXlsx);
   };
-  
+
   const handleRenameSession = async (sessionId) => {
     const newName = prompt("Enter the new name for the session:");
     if (newName && newName.trim() !== "") {
@@ -150,21 +150,25 @@ function Sidebar({
   const handleFileUpload = async (files) => {
     const allowedExtensions = /\.(csv|xlsx?|pdf|docx?|txt)$/i; // Regular expression for allowed extensions
     const filesArray = Array.from(files);
-  
+
     // Filter out invalid files
-    const invalidFiles = filesArray.filter(file => !allowedExtensions.test(file.name));
+    const invalidFiles = filesArray.filter(
+      (file) => !allowedExtensions.test(file.name)
+    );
     if (invalidFiles.length > 0) {
-      alert("Some files have invalid extensions. Only CSV, Excel, PDF, Docx, and Txt files are supported.");
+      alert(
+        "Some files have invalid extensions. Only CSV, Excel, PDF, Docx, and Txt files are supported."
+      );
       return; // Exit the function if invalid files are detected
     }
-  
+
     // Calculate the total size for the provided files
     const size = filesArray.reduce((total, file) => total + file.size, 0);
     const estimated_time = Math.floor(size / (1024 * 1024)) * 20; // Estimation formula
     if (estimated_time > 10) {
       setProcessTime(estimated_time);
     }
-  
+
     setIsUploading(true);
     try {
       await uploadMultiFiles(token, files);
@@ -172,7 +176,7 @@ function Sidebar({
       await fetchSessions();
       const newSessionId = sessionStorage.getItem("sessionId");
       setLatestSessionId(newSessionId);
-  
+
       // Update session CSV/XLSX status after upload
       updateSessionCsvXlsxStatus(files);
     } catch (error) {
@@ -182,7 +186,7 @@ function Sidebar({
       setIsUploading(false);
     }
   };
-  
+
   const fetchSessions = async () => {
     try {
       const response = await axios.post(
@@ -229,23 +233,23 @@ function Sidebar({
       ...prevState,
       [sessionId]: [...(prevState[sessionId] || []), ...newFilesArray],
     }));
-  
+
     try {
       addUploadFiles(token, sessionId, newFiles);
-  
+
       const formData = new FormData();
       newFilesArray.forEach((file) => formData.append("files", file));
       formData.append("token", sessionStorage.getItem("token"));
       formData.append("sessionId", sessionId);
-  
+
       await axios.post(
         `${process.env.REACT_APP_BACKEND_URL}/add-upload`,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
-  
+
       setFiles((prevFiles) => [...prevFiles, ...newFilesArray]);
-  
+
       // Update session CSV/XLSX status after additional upload
       updateSessionCsvXlsxStatus(newFilesArray);
     } catch (error) {
@@ -255,7 +259,7 @@ function Sidebar({
       setIsUploading(false);
     }
   };
-  
+
   const toggleFileVisibility = (session) => {
     setVisibleFiles((prevState) => {
       const newState = { ...prevState };
@@ -271,6 +275,7 @@ function Sidebar({
 
   const fetchAndAppendSessionFiles = async (session) => {
     try {
+      console.log("Fetching and appending session files: ", session);
       setLatestSessionId(session.id);
       axios.post(
         `${process.env.REACT_APP_UPDATE_TIMESTAMP}`,

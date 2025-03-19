@@ -4,10 +4,10 @@ import { FaPlay, FaStop, FaCopy, FaCheck, FaMicrophone } from "react-icons/fa";
 import { IoSend } from "react-icons/io5";
 import "../styles/cisce.css";
 
-const Cisce = () => {
+const Demo = () => {
   const [chatMessages, setChatMessages] = useState([
     {
-      text: "**Welcome to icarKno™ Chat.** \n\nAsk me anything about Inter School Robotics Championship, 2024",
+      text: "**Welcome to icarKno™ Chat.** \n\nI'm here to help you with your queries. Feel free to ask me anything!",
       sender: "bots",
       copied: false,
     },
@@ -35,7 +35,7 @@ const Cisce = () => {
 
       try {
         const response = await fetch(
-          "https://qdocbackend.carnotresearch.com:5000/askcisce",
+          `${process.env.REACT_APP_BACKEND_URL}/demo`,
           {
             method: "POST",
             headers: {
@@ -43,8 +43,6 @@ const Cisce = () => {
             },
             body: JSON.stringify({
               message: userInput,
-              inputLanguage,
-              outputLanguage,
             }),
           }
         );
@@ -264,4 +262,4 @@ const Cisce = () => {
   );
 };
 
-export default Cisce;
+export default Demo;
