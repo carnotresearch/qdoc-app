@@ -37,7 +37,7 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
   const [selectedSessionFiles, setSelectedSessionFiles] = useState({});
   const [isScannedDocument, setIsScannedDocument] = useState(false);
   const navigate = useNavigate();
-
+  const isMobileScreen = window.innerWidth <= 768;
   const scannedDocumentWarning = (documentName) =>
     `Unfortunately we couldn't read document: '${documentName}', as it seems to be a scanned document. Kindly upload a readable document.`;
 
@@ -124,12 +124,13 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
   }, [handleOutsideClick]);
 
   useEffect(() => {
+    setIsLoggedIn(true);
     setIsFileUpdated(true);
     messageInputRef.current.focus();
     if (files.length > 0) {
       setSidebarCollapsed(true);
     }
-  }, [files]);
+  }, [files , setIsLoggedIn]);
 
   useEffect(() => {
     if (chatHistoryRef.current) {
@@ -214,8 +215,36 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
     "Explain one feature mentioned in the document.",
   ];
 
+  function resizeMusedown(e) {
+    document.addEventListener('mousemove', resize);
+    document.addEventListener('mouseup', stopResize);
+  }
+
+  function resize(e) {
+    const container = document.getElementsByClassName('chat-container')[0];
+    const containerOffsetLeft = container.offsetLeft;
+    const newLeftWidth = e.clientX - containerOffsetLeft;
+    const leftDiv = document.getElementsByClassName('file-viewer')[0];
+    const rightDiv = document.getElementsByClassName('chat-content')[0];
+    const resizer = document.getElementById('resizer');
+
+    if (leftDiv) {
+        leftDiv.style.width = newLeftWidth + 'px';
+    }
+    if (rightDiv && resizer) {
+        rightDiv.style.width = (container.clientWidth - newLeftWidth - resizer.offsetWidth) + 'px';
+    }
+}
+
+
+
+function stopResize() {
+    document.removeEventListener('mousemove', resize);
+    document.removeEventListener('mouseup', stopResize);
+}
+
   return (
-    <Container fluid className="chat-container">
+    <Container fluid className={`chat-container ${isMobileScreen ? "mobile-screen" : ""}`}>
       <div
         ref={sidebarRef} // Attach the ref to the sidebar
         className={`sidebar ${sidebarCollapsed ? "collapsed" : ""}`}
@@ -241,6 +270,7 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
         )}
       </div>
       <FileViewer files={files} />
+      <div id="resizer" onMouseDown={resizeMusedown}></div>
       <div className="chat-content">
         <div className="chat-history" ref={chatHistoryRef}>
           <div className="message bot">

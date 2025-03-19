@@ -45,7 +45,7 @@ body {
 /* for mobile devices */
 @media (max-width: 767px) {
   .chat-container {
-    height: 80vh;
+    height: 100vh;
   }
 }
 
@@ -54,7 +54,8 @@ body {
   flex: 0 0 250px;
   max-width: 250px;
   transition: all 0.3s;
-  background-color: rgba(54, 183, 183, 0.8);
+  background-color: rgba(38, 128, 128
+  );
   padding: 10px;
   border-right: 3px solid var(--border-color);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Added shadow */
@@ -66,6 +67,19 @@ body {
   max-width: 50px;
   overflow: hidden;
   background-color: transparent;
+}
+
+.chat-container.mobile-screen {
+  padding-left: 60px;
+  .sidebar {
+    position: absolute;
+    height: 100vh;
+    left: 0px;
+    z-index: 100;
+  }
+  .sidebar.collapsed {
+    width: 60px;
+  }
 }
 
 .sidebar .sidebar-toggle-btn {

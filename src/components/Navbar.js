@@ -21,6 +21,10 @@ import "../styles/navbar.css";
 import ContextMode from "./navbar/ContextMode";
 import Help from "./navbar/Help";
 import UnifiedLanguageSelector from "./navbar/UnifiedLanguageSelector";
+import { pdfjs } from 'react-pdf';
+
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
+
 
 const Navbar = ({
   inputLanguage,
@@ -141,33 +145,26 @@ const Navbar = ({
               </a>
             </li>
 
-            {/* Items displayed only on chat page */}
             {location.pathname === "/" &&
-              isLoggedIn && [
-                // Pricing Link
-                <Link className="nav-link" to="/pricing" key={1}>
-                  Pricing
-                </Link>,
-                // User Manual Button
-                <Help setOpenManualDialog={setOpenManualDialog} key={2} />,
-                // Mode Toggle
-                <li
-                  className="nav-item"
-                  style={{ marginLeft: "0.5rem" }}
-                  key={3}
-                >
-                  <ContextMode mode={mode} setMode={setMode} />
-                </li>,
-                <li>
-                  <UnifiedLanguageSelector
-                    inputLanguage={inputLanguage}
-                    setInputLanguage={setInputLanguage}
-                    outputLanguage={outputLanguage}
-                    setOutputLanguage={setOutputLanguage}
-                    darkMode={darkMode}
-                  />
-                </li>,
-              ]}
+  isLoggedIn && [
+    <Link className="nav-link" to="/pricing" key={1}>
+      Pricing
+    </Link>,
+    <Help setOpenManualDialog={setOpenManualDialog} key={2} />,
+    <li className="nav-item" style={{ marginLeft: "0.5rem" }} key={3}>
+      <ContextMode mode={mode} setMode={setMode} />
+    </li>,
+    <li key={4}>
+      <UnifiedLanguageSelector
+        inputLanguage={inputLanguage}
+        setInputLanguage={setInputLanguage}
+        outputLanguage={outputLanguage}
+        setOutputLanguage={setOutputLanguage}
+        darkMode={darkMode}
+      />
+    </li>,
+  ]}
+
 
             {/* Login Logout Button */}
             <li className="nav-item">
