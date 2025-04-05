@@ -4,7 +4,7 @@ import { FaPlay, FaStop, FaCopy, FaCheck, FaMicrophone } from "react-icons/fa";
 import { IoSend } from "react-icons/io5";
 import "../styles/cisce.css";
 
-const Demo = () => {
+const Demo = ({ inputLanguage, outputLanguage }) => {
   const [chatMessages, setChatMessages] = useState([
     {
       text: "**Welcome to icarKno™ Chat.** \n\nI'm here to help you with your queries. Feel free to ask me anything!",
@@ -13,8 +13,8 @@ const Demo = () => {
     },
   ]);
   const [userInput, setUserInput] = useState("");
-  const [inputLanguage, setInputLanguage] = useState(23); // Default to English
-  const [outputLanguage, setOutputLanguage] = useState(23); // Default to English
+  // const [inputLanguage, setInputLanguage] = useState(23); // Default to English
+  // const [outputLanguage, setOutputLanguage] = useState(23); // Default to English
   const [audioPlaying, setAudioPlaying] = useState(false);
   const chatMessagesEndRef = useRef(null); // Reference to the end of the chat messages
 

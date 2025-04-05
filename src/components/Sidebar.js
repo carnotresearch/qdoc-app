@@ -291,11 +291,15 @@ function Sidebar({
         return newState;
       });
       sessionStorage.setItem("sessionId", session.id);
-      const files = await fetchFilesFromS3(token, session.id);
-      setFiles(files);
+      const file = await fetchFilesFromS3(
+        token,
+        session.id,
+        session.fileNames[0]
+      );
+      setFiles([file]);
 
       // Update session CSV/XLSX status
-      updateSessionCsvXlsxStatus(files);
+      // updateSessionCsvXlsxStatus(files);
 
       setIsScannedDocument(false);
     } catch (error) {

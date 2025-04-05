@@ -114,7 +114,15 @@ function Content({
             )
           }
         />
-        <Route path="/demo" element={<Demo />} />
+        <Route
+          path="/demo"
+          element={
+            <Demo
+              inputLanguage={inputLanguage}
+              outputLanguage={outputLanguage}
+            />
+          }
+        />
       </Routes>
     </div>
   );
