@@ -36,7 +36,7 @@ function Sidebar({
   const navigate = useNavigate();
 
   // Function to update session CSV/XLSX status
-  const updateSessionCsvXlsxStatus = (files) => {
+  const updateSessionCsvXlsxStatus = (files, existing = false) => {
     try {
       // Check if any file has a CSV or XLSX extension
       let hasCsvOrXlsx = false;
@@ -46,7 +46,10 @@ function Sidebar({
         hasCsvOrXlsx = files.some((file) => /\.(xlsx|csv)$/i.test(file));
       }
       console.log("Session has CSV/XLSX:", hasCsvOrXlsx);
-      sessionStorage.setItem("currentSessionHasCsvOrXlsx", hasCsvOrXlsx);
+      sessionStorage.setItem(
+        "currentSessionHasCsvOrXlsx",
+        hasCsvOrXlsx || existing
+      );
     } catch (error) {
       sessionStorage.setItem("currentSessionHasCsvOrXlsx", "false");
       console.log(
@@ -73,7 +76,6 @@ function Sidebar({
       setFiles([file]);
     } catch (error) {
       console.error("Error fetching file from S3:", error);
-      alert("Error fetching file from S3. Please try again.");
     }
   };
 
@@ -284,7 +286,10 @@ function Sidebar({
       setFiles([newFilesArray[0]]);
 
       // Update session CSV/XLSX status after additional upload
-      updateSessionCsvXlsxStatus(newFilesArray);
+      updateSessionCsvXlsxStatus(
+        newFilesArray,
+        sessionStorage.getItem("currentSessionHasCsvOrXlsx") === "true"
+      );
     } catch (error) {
       console.error("Error uploading files:", error);
       alert("Error uploading files, please try again.");
