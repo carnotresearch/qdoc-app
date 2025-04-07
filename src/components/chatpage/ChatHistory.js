@@ -8,10 +8,11 @@ import {
   faRedo,
   faCopy,
   faCheck,
+  faBookmark,
 } from "@fortawesome/free-solid-svg-icons";
 import LoadingDots from "./LoadingDots";
 
-const ChatHistory = ({ chat, index, outputLanguage }) => {
+const ChatHistory = ({ chat, index, outputLanguage, onSourceClick }) => {
   const [currentUtterance, setCurrentUtterance] = useState(null); // currently playing audio
   const [playingIndex, setPlayingIndex] = useState(null); // Index of currently playing response
   const [copiedIndex, setCopiedIndex] = useState(null);
@@ -66,6 +67,37 @@ const ChatHistory = ({ chat, index, outputLanguage }) => {
     }
   };
 
+  // Split the answer into paragraphs and render each with a source button if applicable
+  const renderAnswerWithSources = () => {
+    if (!chat.bot) return null;
+    
+    const paragraphs = chat.bot.split('\n\n');
+    
+    return (
+      <div className="answer-with-sources">
+        {paragraphs.map((paragraph, pIndex) => {
+          const source = chat.sources?.find(s => s.paragraphIndex === pIndex);
+          
+          return (
+            <div key={pIndex} className="paragraph-container">
+              <ReactMarkdown>{paragraph}</ReactMarkdown>
+              {source && (
+                <Button
+                  onClick={() => onSourceClick(source)}
+                  variant="outline-secondary"
+                  size="sm"
+                  className="source-button"
+                >
+                  <FontAwesomeIcon icon={faBookmark} /> Source
+                </Button>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
+
   return (
     <div key={index} className="message-wrapper">
       <div className="message user">
@@ -84,7 +116,7 @@ const ChatHistory = ({ chat, index, outputLanguage }) => {
             {chat.loading ? (
               <LoadingDots />
             ) : (
-              <ReactMarkdown>{chat.bot}</ReactMarkdown>
+              renderAnswerWithSources()
             )}
           </span>
           {chat.ttsSupport &&

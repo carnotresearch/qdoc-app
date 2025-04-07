@@ -1,12 +1,15 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import PdfViewer from "./PdfViewer";
 import { renderAsync } from "docx-preview";
 import * as XLSX from "xlsx";
+import { SourceContext } from "../../components/SourceContext";
 import "../../styles/fileViewer.css";
 
 function FileViewer({ files }) {
   const [fileContents, setFileContents] = useState([]);
   const docxRefs = useRef([]);
+  const { activeSource } = useContext(SourceContext);
+  const [activeFileIndex, setActiveFileIndex] = useState(0);
 
   useEffect(() => {
     const loadFiles = async () => {
@@ -44,6 +47,20 @@ function FileViewer({ files }) {
       loadFiles();
     }
   }, [files]);
+
+  // Effect to handle active source changes
+  useEffect(() => {
+    if (activeSource && activeSource.filename) {
+      // Find the file index that matches the source filename
+      const fileIndex = fileContents.findIndex(
+        (file) => file.name === activeSource.filename
+      );
+      
+      if (fileIndex !== -1) {
+        setActiveFileIndex(fileIndex);
+      }
+    }
+  }, [activeSource, fileContents]);
 
   const readTextFile = (file) => {
     return new Promise((resolve) => {
@@ -107,7 +124,11 @@ function FileViewer({ files }) {
   return (
     <div className="file-viewer">
       {fileContents.map((file, index) => (
-        <div key={index} className="file-page" style={{ color: "black" }}>
+        <div 
+          key={index} 
+          className={`file-page ${index === activeFileIndex ? 'active-file' : ''}`} 
+          style={{ color: "black", display: index === activeFileIndex ? 'block' : 'none' }}
+        >
           <h4>{file.name}</h4>
           {file.type === "pdf" ? (
             <PdfViewer pdfUrl={file.content} />

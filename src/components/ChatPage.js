@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 // components
 import { FileContext } from "./FileContext";
+import { SourceContext } from "./SourceContext";
 import { ttsSupportedLanguages } from "../constant/data";
 import FileViewer from "./chatpage/FileViewer";
 import Sidebar from "./Sidebar";
@@ -40,6 +41,7 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
   const isMobileScreen = window.innerWidth <= 768;
   const scannedDocumentWarning = (documentName) =>
     `Unfortunately we couldn't read document: '${documentName}', as it seems to be a scanned document. Kindly upload a readable document.`;
+  const { setActiveSource } = useContext(SourceContext);
 
   const fetchSessions = useCallback(async () => {
     try {
@@ -155,6 +157,7 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
           loading: true,
           timestamp,
           ttsSupport,
+          sources: [], // Initialize sources array
         },
       ];
       setChatHistory(newChatHistory);
@@ -185,6 +188,10 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
             }
           );
           newChatHistory[newChatHistory.length - 1].bot = response.data.answer;
+          // Store sources if they exist in the response
+          if (response.data.sources) {
+            newChatHistory[newChatHistory.length - 1].sources = response.data.sources;
+          }
         }
         newChatHistory[newChatHistory.length - 1].loading = false;
         setChatHistory([...newChatHistory]);
@@ -236,12 +243,15 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
     }
 }
 
-
-
 function stopResize() {
     document.removeEventListener('mousemove', resize);
     document.removeEventListener('mouseup', stopResize);
 }
+
+  // Handle source button click
+  const handleSourceClick = (source) => {
+    setActiveSource(source);
+  };
 
   return (
     <Container fluid className={`chat-container ${isMobileScreen ? "mobile-screen" : ""}`}>
@@ -303,10 +313,11 @@ function stopResize() {
           </div>
           {chatHistory.map((chat, index) => (
             <ChatHistory
+              key={index}
               chat={chat}
               index={index}
               outputLanguage={outputLanguage}
-              key={index}
+              onSourceClick={handleSourceClick}
             />
           ))}
           {isFileUpdated &&

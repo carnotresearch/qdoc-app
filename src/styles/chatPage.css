@@ -287,3 +287,48 @@ body.dark-mode .loading-dots span {
 .download-button-container button svg {
   font-size: 16px; /* Smaller icon size */
 }
+
+/* Source button styles */
+.paragraph-container {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.source-button {
+  position: absolute;
+  right: 0;
+  top: 0;
+  font-size: 0.7rem;
+  padding: 0.1rem 0.3rem;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.source-button:hover {
+  opacity: 1;
+}
+
+/* Highlighted text styles */
+.highlighted-text {
+  background-color: rgba(255, 255, 0, 0.3);
+  border-radius: 2px;
+  transition: background-color 0.3s;
+  animation: pulse 1.5s ease-in-out;
+}
+
+@keyframes pulse {
+  0% {
+    background-color: rgba(255, 255, 0, 0.1);
+  }
+  50% {
+    background-color: rgba(255, 255, 0, 0.5);
+  }
+  100% {
+    background-color: rgba(255, 255, 0, 0.3);
+  }
+}
+
+/* Active file styles */
+.active-file {
+  border-left: 3px solid #28a745;
+}
