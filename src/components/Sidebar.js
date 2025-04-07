@@ -1,4 +1,4 @@
-import React, { useState, useRef, useContext} from "react";
+import React, { useState, useRef, useContext } from "react";
 import { ListGroup, Button, ButtonGroup } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import {
@@ -12,7 +12,7 @@ import { FileContext } from "./FileContext";
 import "../styles/sidebar.css";
 import {
   addUploadFiles,
-  fetchFilesFromS3,
+  fetchFileFromS3,
   uploadMultiFiles,
 } from "./utils/presignedUtils";
 import Upload from "./sidebar/Upload";
@@ -36,11 +36,49 @@ function Sidebar({
   const navigate = useNavigate();
 
   // Function to update session CSV/XLSX status
-  const updateSessionCsvXlsxStatus = (files) => {
-    const hasCsvOrXlsx = files.some((file) => /\.(xlsx|csv)$/i.test(file.name));
-    sessionStorage.setItem("currentSessionHasCsvOrXlsx", hasCsvOrXlsx);
+  const updateSessionCsvXlsxStatus = (files, existing = false) => {
+    try {
+      // Check if any file has a CSV or XLSX extension
+      let hasCsvOrXlsx = false;
+      if (files[0] && files[0].name) {
+        hasCsvOrXlsx = files.some((file) => /\.(xlsx|csv)$/i.test(file.name));
+      } else {
+        hasCsvOrXlsx = files.some((file) => /\.(xlsx|csv)$/i.test(file));
+      }
+      console.log("Session has CSV/XLSX:", hasCsvOrXlsx);
+      sessionStorage.setItem(
+        "currentSessionHasCsvOrXlsx",
+        hasCsvOrXlsx || existing
+      );
+    } catch (error) {
+      sessionStorage.setItem("currentSessionHasCsvOrXlsx", "false");
+      console.log(
+        "Error while updating session CSV/XLSX status:",
+        error.message
+      );
+    }
   };
-  
+
+  // Load a document from S3
+  const loadSessionDocument = async (sessionId, fileName) => {
+    const token = sessionStorage.getItem("token");
+    if (!token) {
+      alert("User session is expired!");
+      setIsLoggedIn(false);
+      navigate("/login");
+      return;
+    }
+
+    sessionStorage.setItem("sessionId", sessionId);
+    setLatestSessionId(sessionId);
+    try {
+      const file = await fetchFileFromS3(token, sessionId, fileName);
+      setFiles([file]);
+    } catch (error) {
+      console.error("Error fetching file from S3:", error);
+    }
+  };
+
   const handleRenameSession = async (sessionId) => {
     const newName = prompt("Enter the new name for the session:");
     if (newName && newName.trim() !== "") {
@@ -121,11 +159,8 @@ function Sidebar({
         setIsScannedDocument(false);
       }
 
-      setFiles(filesArray);
+      setFiles([filesArray[0]]);
       setIsUploading(false);
-
-      // Update session CSV/XLSX status
-      updateSessionCsvXlsxStatus(filesArray);
     } catch (backendError) {
       if (backendError.response && backendError.response.status === 401) {
         setFiles([]);
@@ -150,21 +185,25 @@ function Sidebar({
   const handleFileUpload = async (files) => {
     const allowedExtensions = /\.(csv|xlsx?|pdf|docx?|txt)$/i; // Regular expression for allowed extensions
     const filesArray = Array.from(files);
-  
+
     // Filter out invalid files
-    const invalidFiles = filesArray.filter(file => !allowedExtensions.test(file.name));
+    const invalidFiles = filesArray.filter(
+      (file) => !allowedExtensions.test(file.name)
+    );
     if (invalidFiles.length > 0) {
-      alert("Some files have invalid extensions. Only CSV, Excel, PDF, Docx, and Txt files are supported.");
+      alert(
+        "Some files have invalid extensions. Only CSV, Excel, PDF, Docx, and Txt files are supported."
+      );
       return; // Exit the function if invalid files are detected
     }
-  
+
     // Calculate the total size for the provided files
     const size = filesArray.reduce((total, file) => total + file.size, 0);
     const estimated_time = Math.floor(size / (1024 * 1024)) * 20; // Estimation formula
     if (estimated_time > 10) {
       setProcessTime(estimated_time);
     }
-  
+
     setIsUploading(true);
     try {
       await uploadMultiFiles(token, files);
@@ -172,7 +211,7 @@ function Sidebar({
       await fetchSessions();
       const newSessionId = sessionStorage.getItem("sessionId");
       setLatestSessionId(newSessionId);
-  
+
       // Update session CSV/XLSX status after upload
       updateSessionCsvXlsxStatus(files);
     } catch (error) {
@@ -182,7 +221,7 @@ function Sidebar({
       setIsUploading(false);
     }
   };
-  
+
   const fetchSessions = async () => {
     try {
       const response = await axios.post(
@@ -229,25 +268,28 @@ function Sidebar({
       ...prevState,
       [sessionId]: [...(prevState[sessionId] || []), ...newFilesArray],
     }));
-  
+
     try {
       addUploadFiles(token, sessionId, newFiles);
-  
+
       const formData = new FormData();
       newFilesArray.forEach((file) => formData.append("files", file));
       formData.append("token", sessionStorage.getItem("token"));
       formData.append("sessionId", sessionId);
-  
+
       await axios.post(
         `${process.env.REACT_APP_BACKEND_URL}/add-upload`,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
-  
-      setFiles((prevFiles) => [...prevFiles, ...newFilesArray]);
-  
+
+      setFiles([newFilesArray[0]]);
+
       // Update session CSV/XLSX status after additional upload
-      updateSessionCsvXlsxStatus(newFilesArray);
+      updateSessionCsvXlsxStatus(
+        newFilesArray,
+        sessionStorage.getItem("currentSessionHasCsvOrXlsx") === "true"
+      );
     } catch (error) {
       console.error("Error uploading files:", error);
       alert("Error uploading files, please try again.");
@@ -255,7 +297,7 @@ function Sidebar({
       setIsUploading(false);
     }
   };
-  
+
   const toggleFileVisibility = (session) => {
     setVisibleFiles((prevState) => {
       const newState = { ...prevState };
@@ -271,7 +313,7 @@ function Sidebar({
 
   const fetchAndAppendSessionFiles = async (session) => {
     try {
-      setLatestSessionId(session.id);
+      console.log("Fetching and appending session files: ", session);
       axios.post(
         `${process.env.REACT_APP_UPDATE_TIMESTAMP}`,
         { token, sessionId: session.id },
@@ -285,12 +327,10 @@ function Sidebar({
         newState[session.id] = true;
         return newState;
       });
-      sessionStorage.setItem("sessionId", session.id);
-      const files = await fetchFilesFromS3(token, session.id);
-      setFiles(files);
+      loadSessionDocument(session.id, session.fileNames[0]);
 
       // Update session CSV/XLSX status
-      updateSessionCsvXlsxStatus(files);
+      updateSessionCsvXlsxStatus(session.fileNames);
 
       setIsScannedDocument(false);
     } catch (error) {
@@ -388,6 +428,10 @@ function Sidebar({
                   <ListGroup.Item
                     key={idx}
                     className="d-flex justify-content-between align-items-center file-item"
+                    onClick={() => {
+                      loadSessionDocument(session.id, file.name);
+                    }}
+                    title={`${formatSessionDate(session.id)} - ${file.name}`}
                   >
                     <span style={listItemStyle}>
                       {file.name} - {(file.size / 1024).toFixed(2)} KB

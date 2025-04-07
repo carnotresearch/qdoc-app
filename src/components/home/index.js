@@ -119,13 +119,13 @@ function Home({
     }
   };
 
-  const handleOutsideClick = (event) => {
-    if (!event.target.closest('.sidebar') && !sidebarCollapsed) {
-      setSidebarCollapsed(true);
-    }
-  };
-
   useEffect(() => {
+    const handleOutsideClick = (event) => {
+      if (!event.target.closest(".sidebar") && !sidebarCollapsed) {
+        setSidebarCollapsed(true);
+      }
+    };
+
     document.addEventListener("click", handleOutsideClick);
     return () => {
       document.removeEventListener("click", handleOutsideClick);

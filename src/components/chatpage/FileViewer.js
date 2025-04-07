@@ -26,7 +26,8 @@ function FileViewer({ files }) {
             const arrayBuffer = await readDocxFileAsArrayBuffer(file);
             return { name: file.name, content: arrayBuffer, type: "docx" };
           } else if (
-            file.type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
+            file.type ===
+              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
             file.type === "application/vnd.ms-excel" ||
             file.type === "text/csv"
           ) {
