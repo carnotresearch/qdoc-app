@@ -12,7 +12,7 @@ import { FileContext } from "./FileContext";
 import "../styles/sidebar.css";
 import {
   addUploadFiles,
-  fetchFilesFromS3,
+  fetchFileFromS3,
   uploadMultiFiles,
 } from "./utils/presignedUtils";
 import Upload from "./sidebar/Upload";
@@ -37,8 +37,42 @@ function Sidebar({
 
   // Function to update session CSV/XLSX status
   const updateSessionCsvXlsxStatus = (files) => {
-    const hasCsvOrXlsx = files.some((file) => /\.(xlsx|csv)$/i.test(file.name));
-    sessionStorage.setItem("currentSessionHasCsvOrXlsx", hasCsvOrXlsx);
+    try {
+      // Check if any file has a CSV or XLSX extension
+      let hasCsvOrXlsx = false;
+      if (files[0] && files[0].name) {
+        hasCsvOrXlsx = files.some((file) => /\.(xlsx|csv)$/i.test(file.name));
+      } else {
+        hasCsvOrXlsx = files.some((file) => /\.(xlsx|csv)$/i.test(file));
+      }
+      console.log("Session has CSV/XLSX:", hasCsvOrXlsx);
+      sessionStorage.setItem("currentSessionHasCsvOrXlsx", hasCsvOrXlsx);
+    } catch (error) {
+      sessionStorage.setItem("currentSessionHasCsvOrXlsx", "false");
+      console.log(
+        "Error while updating session CSV/XLSX status:",
+        error.message
+      );
+    }
+  };
+
+  // Load a document from S3
+  const loadSessionDocument = async (sessionId, fileName) => {
+    const token = sessionStorage.getItem("token");
+    if (!token) {
+      alert("User session is expired!");
+      setIsLoggedIn(false);
+      navigate("/login");
+      return;
+    }
+
+    try {
+      const file = await fetchFileFromS3(token, sessionId, fileName);
+      setFiles([file]);
+    } catch (error) {
+      console.error("Error fetching file from S3:", error);
+      alert("Error fetching file from S3. Please try again.");
+    }
   };
 
   const handleRenameSession = async (sessionId) => {
@@ -121,11 +155,8 @@ function Sidebar({
         setIsScannedDocument(false);
       }
 
-      setFiles(filesArray);
+      setFiles([filesArray[0]]);
       setIsUploading(false);
-
-      // Update session CSV/XLSX status
-      updateSessionCsvXlsxStatus(filesArray);
     } catch (backendError) {
       if (backendError.response && backendError.response.status === 401) {
         setFiles([]);
@@ -248,7 +279,7 @@ function Sidebar({
         { headers: { "Content-Type": "multipart/form-data" } }
       );
 
-      setFiles((prevFiles) => [...prevFiles, ...newFilesArray]);
+      setFiles([newFilesArray[0]]);
 
       // Update session CSV/XLSX status after additional upload
       updateSessionCsvXlsxStatus(newFilesArray);
@@ -291,15 +322,10 @@ function Sidebar({
         return newState;
       });
       sessionStorage.setItem("sessionId", session.id);
-      const file = await fetchFilesFromS3(
-        token,
-        session.id,
-        session.fileNames[0]
-      );
-      setFiles([file]);
+      loadSessionDocument(session.id, session.fileNames[0]);
 
       // Update session CSV/XLSX status
-      // updateSessionCsvXlsxStatus(files);
+      updateSessionCsvXlsxStatus(session.fileNames);
 
       setIsScannedDocument(false);
     } catch (error) {
@@ -397,6 +423,10 @@ function Sidebar({
                   <ListGroup.Item
                     key={idx}
                     className="d-flex justify-content-between align-items-center file-item"
+                    onClick={() => {
+                      loadSessionDocument(session.id, file.name);
+                    }}
+                    title={`${formatSessionDate(session.id)} - ${file.name}`}
                   >
                     <span style={listItemStyle}>
                       {file.name} - {(file.size / 1024).toFixed(2)} KB
