@@ -80,32 +80,28 @@ export const addUploadFiles = async (token, sessionId, files) => {
   }
 };
 
-export const fetchFilesFromS3 = async (token, sessionId) => {
+export const fetchFileFromS3 = async (token, sessionId, fileName) => {
   try {
-    // Call the API to get the presigned URLs for all files
+    // Call the API to get the presigned URL for the given file
     const {
-      data: { presignedUrls },
-    } = await axios.post(
-      "https://9l5923hww6.execute-api.ap-south-1.amazonaws.com/default/fetchPresignedUrl",
-      { token, sessionId }
-    );
-
-    // Fetch each file using its presigned URL
-    const filePromises = presignedUrls.map(async (file) => {
-      const response = await fetch(file.downloadUrl);
-      const blob = await response.blob();
-
-      // Convert Blob to File object
-      return new File([blob], file.fileName, { type: blob.type });
+      data: { presignedUrl, fileName: returnedFileName },
+    } = await axios.post(`${process.env.REACT_APP_AWS_FETCH_PRESIGNED_URL}`, {
+      token,
+      sessionId,
+      fileName,
     });
 
-    // Wait for all files to be fetched
-    const fetchedFiles = await Promise.all(filePromises);
-    return fetchedFiles;
+    // Fetch the file using the presigned URL
+    const response = await fetch(presignedUrl);
+    const blob = await response.blob();
+
+    // Convert Blob to File object
+    const file = new File([blob], returnedFileName, { type: blob.type });
+    return file;
   } catch (err) {
-    console.error("Error fetching files:", err);
+    console.error("Error fetching file:", err);
     alert(
-      "Your container is updated but we couln't fetch your files. You can ask questions regarding your documents."
+      "Your container is updated but we couldn't fetch your file. You can ask questions regarding your documents."
     );
   }
 };
