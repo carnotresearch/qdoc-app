@@ -82,7 +82,6 @@ export const addUploadFiles = async (token, sessionId, files) => {
 
 export const fetchFileFromS3 = async (token, sessionId, fileName) => {
   try {
-    console.log("Fetching file:", fileName);
     // Call the API to get the presigned URL for the given file
     const {
       data: { presignedUrl, fileName: returnedFileName },
@@ -91,7 +90,6 @@ export const fetchFileFromS3 = async (token, sessionId, fileName) => {
       sessionId,
       fileName,
     });
-    console.log("Presigned URL:", presignedUrl);
 
     // Fetch the file using the presigned URL
     const response = await fetch(presignedUrl);
@@ -99,7 +97,6 @@ export const fetchFileFromS3 = async (token, sessionId, fileName) => {
 
     // Convert Blob to File object
     const file = new File([blob], returnedFileName, { type: blob.type });
-    console.log("Fetched file:", file);
     return file;
   } catch (err) {
     console.error("Error fetching file:", err);

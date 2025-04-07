@@ -66,6 +66,8 @@ function Sidebar({
       return;
     }
 
+    sessionStorage.setItem("sessionId", sessionId);
+    setLatestSessionId(sessionId);
     try {
       const file = await fetchFileFromS3(token, sessionId, fileName);
       setFiles([file]);
@@ -307,7 +309,6 @@ function Sidebar({
   const fetchAndAppendSessionFiles = async (session) => {
     try {
       console.log("Fetching and appending session files: ", session);
-      setLatestSessionId(session.id);
       axios.post(
         `${process.env.REACT_APP_UPDATE_TIMESTAMP}`,
         { token, sessionId: session.id },
@@ -321,7 +322,6 @@ function Sidebar({
         newState[session.id] = true;
         return newState;
       });
-      sessionStorage.setItem("sessionId", session.id);
       loadSessionDocument(session.id, session.fileNames[0]);
 
       // Update session CSV/XLSX status
