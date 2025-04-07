@@ -28,7 +28,7 @@
 @media (max-width: 992px) {
   .file-viewer {
     display: none !important; /* Completely removes it */
-    visibility: hidden; /* Ensures it’s not visible */
+    visibility: hidden; /* Ensures it's not visible */
     width: 0;
     height: 0;
     overflow: hidden;
@@ -67,6 +67,56 @@
 .pdf-viewer canvas {
   width: calc(50% - 20px); /* Adjust width for two columns on smaller screens */
   margin: 10px; /* Margin around canvas elements */
+}
+
+/* PDF page highlighting */
+.pdf-page {
+  transition: all 0.3s ease;
+  margin-bottom: 20px;
+  border: 2px solid transparent;
+  position: relative;
+  overflow: hidden;
+}
+
+.highlight-page {
+  border: 2px solid #4CAF50;
+  box-shadow: 0 0 15px rgba(76, 175, 80, 0.5);
+  animation: pulse 2s ease-in-out;
+}
+
+.highlight-page:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(76, 175, 80, 0.2);
+  z-index: 10;
+  pointer-events: none;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 20px 10px rgba(76, 175, 80, 0.4);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(76, 175, 80, 0);
+  }
+}
+
+/* View page button */
+.view-page-btn {
+  color: #4CAF50 !important;
+  margin-left: 5px;
+}
+
+.view-page-btn:hover {
+  color: #2E7D32 !important;
+  transform: scale(1.1);
 }
 
 @media (max-width: 600px) {

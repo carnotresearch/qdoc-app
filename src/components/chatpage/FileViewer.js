@@ -110,7 +110,14 @@ function FileViewer({ files }) {
         <div key={index} className="file-page" style={{ color: "black" }}>
           <h4>{file.name}</h4>
           {file.type === "pdf" ? (
-            <PdfViewer pdfUrl={file.content} />
+            <>
+              <div style={{ marginBottom: '10px' }}>
+                <small style={{ backgroundColor: '#f8f9fa', padding: '3px 6px', borderRadius: '3px' }}>
+                  Currently viewing: {file.name}
+                </small>
+              </div>
+              <PdfViewer pdfUrl={file.content} filename={file.name} />
+            </>
           ) : file.type === "docx" ? (
             <div
               className="doc-page"

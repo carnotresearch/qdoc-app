@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import { FileProvider } from "./components/FileContext";
+import { PageViewProvider } from "./components/PageViewContext";
 import ChatPage from "./components/ChatPage";
 import Register from "./components/Register";
 import ForgotPassword from "./components/ForgotPassword";
@@ -30,20 +31,22 @@ function App() {
 
   return (
     <FileProvider>
-      <Router>
-        <Content
-          inputLanguage={inputLanguage}
-          setInputLanguage={setInputLanguage}
-          outputLanguage={outputLanguage}
-          setOutputLanguage={setOutputLanguage}
-          darkMode={darkMode}
-          setDarkMode={setDarkMode}
-          isLoggedIn={isLoggedIn}
-          setIsLoggedIn={setIsLoggedIn}
-          isFileUpdated={isFileUpdated}
-          setIsFileUpdated={setIsFileUpdated}
-        />
-      </Router>
+      <PageViewProvider>
+        <Router>
+          <Content
+            inputLanguage={inputLanguage}
+            setInputLanguage={setInputLanguage}
+            outputLanguage={outputLanguage}
+            setOutputLanguage={setOutputLanguage}
+            darkMode={darkMode}
+            setDarkMode={setDarkMode}
+            isLoggedIn={isLoggedIn}
+            setIsLoggedIn={setIsLoggedIn}
+            isFileUpdated={isFileUpdated}
+            setIsFileUpdated={setIsFileUpdated}
+          />
+        </Router>
+      </PageViewProvider>
     </FileProvider>
   );
 }

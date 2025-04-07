@@ -8,13 +8,16 @@ import {
   faRedo,
   faCopy,
   faCheck,
+  faFileAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import LoadingDots from "./LoadingDots";
+import { usePageView } from "../PageViewContext";
 
 const ChatHistory = ({ chat, index, outputLanguage }) => {
   const [currentUtterance, setCurrentUtterance] = useState(null); // currently playing audio
   const [playingIndex, setPlayingIndex] = useState(null); // Index of currently playing response
   const [copiedIndex, setCopiedIndex] = useState(null);
+  const { viewPage } = usePageView();
 
   // copy message to clipboard
   const handleCopy = (text, index) => {
@@ -64,6 +67,24 @@ const ChatHistory = ({ chat, index, outputLanguage }) => {
       window.speechSynthesis.resume();
       setPlayingIndex(index); // Set the playing state
     }
+  };
+
+  // Handle viewing a specific page in a PDF
+  const handleViewPage = () => {
+    // For testing: Use hardcoded values if backend data isn't available
+    const filename = chat.filename || "document.pdf";
+    const pageNo = chat.pageNo || 0; // Default to page 2 for testing
+    
+    // Add an artificial delay to ensure state updates are processed
+    setTimeout(() => {
+      viewPage(filename, pageNo);
+      
+      // Scroll to the file viewer area
+      const fileViewer = document.querySelector('.file-viewer');
+      if (fileViewer) {
+        fileViewer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 100);
   };
 
   return (
@@ -121,6 +142,14 @@ const ChatHistory = ({ chat, index, outputLanguage }) => {
             ) : (
               <FontAwesomeIcon icon={faCopy} />
             )}
+          </Button>
+          {/* Always show the View Page button for testing */}
+          <Button
+            onClick={handleViewPage}
+            variant="link"
+            className="view-page-btn"
+          >
+            <FontAwesomeIcon icon={faFileAlt} />
           </Button>
         </div>
       </div>
