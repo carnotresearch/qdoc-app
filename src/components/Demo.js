@@ -13,8 +13,6 @@ const Demo = ({ inputLanguage, outputLanguage }) => {
     },
   ]);
   const [userInput, setUserInput] = useState("");
-  // const [inputLanguage, setInputLanguage] = useState(23); // Default to English
-  // const [outputLanguage, setOutputLanguage] = useState(23); // Default to English
   const [audioPlaying, setAudioPlaying] = useState(false);
   const chatMessagesEndRef = useRef(null); // Reference to the end of the chat messages
 
