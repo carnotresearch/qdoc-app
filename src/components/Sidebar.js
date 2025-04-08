@@ -10,11 +10,7 @@ import {
 import axios from "axios";
 import { FileContext } from "./FileContext";
 import "../styles/sidebar.css";
-import {
-  addUploadFiles,
-  fetchFileFromS3,
-  uploadMultiFiles,
-} from "./utils/presignedUtils";
+import { addUploadFiles, uploadMultiFiles } from "./utils/presignedUtils";
 import Upload from "./sidebar/Upload";
 
 function Sidebar({
@@ -26,6 +22,7 @@ function Sidebar({
   setSessions,
   setIsLoggedIn,
   setIsScannedDocument,
+  loadSessionDocument,
 }) {
   const { setFiles } = useContext(FileContext);
   const additionalFileInputRef = useRef(null);
@@ -56,26 +53,6 @@ function Sidebar({
         "Error while updating session CSV/XLSX status:",
         error.message
       );
-    }
-  };
-
-  // Load a document from S3
-  const loadSessionDocument = async (sessionId, fileName) => {
-    const token = sessionStorage.getItem("token");
-    if (!token) {
-      alert("User session is expired!");
-      setIsLoggedIn(false);
-      navigate("/login");
-      return;
-    }
-
-    sessionStorage.setItem("sessionId", sessionId);
-    setLatestSessionId(sessionId);
-    try {
-      const file = await fetchFileFromS3(token, sessionId, fileName);
-      setFiles([file]);
-    } catch (error) {
-      console.error("Error fetching file from S3:", error);
     }
   };
 

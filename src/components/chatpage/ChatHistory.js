@@ -13,7 +13,7 @@ import {
 import LoadingDots from "./LoadingDots";
 import { usePageView } from "../PageViewContext";
 
-const ChatHistory = ({ chat, index, outputLanguage }) => {
+const ChatHistory = ({ chat, index, outputLanguage, loadSessionDocument }) => {
   const [currentUtterance, setCurrentUtterance] = useState(null); // currently playing audio
   const [playingIndex, setPlayingIndex] = useState(null); // Index of currently playing response
   const [copiedIndex, setCopiedIndex] = useState(null);
@@ -70,19 +70,18 @@ const ChatHistory = ({ chat, index, outputLanguage }) => {
   };
 
   // Handle viewing a specific page in a PDF
-  const handleViewPage = () => {
-    // For testing: Use hardcoded values if backend data isn't available
-    const filename = chat.filename || "document.pdf";
-    const pageNo = chat.pageNo || 0; // Default to page 2 for testing
-    
+  const handleViewPage = (filename, pageNo) => {
+    if (filename !== sessionStorage.getItem("currentFile")) {
+      loadSessionDocument(sessionStorage.getItem("sessionId"), filename);
+    }
     // Add an artificial delay to ensure state updates are processed
     setTimeout(() => {
       viewPage(filename, pageNo);
-      
+
       // Scroll to the file viewer area
-      const fileViewer = document.querySelector('.file-viewer');
+      const fileViewer = document.querySelector(".file-viewer");
       if (fileViewer) {
-        fileViewer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        fileViewer.scrollIntoView({ behavior: "smooth", block: "start" });
       }
     }, 100);
   };
@@ -145,7 +144,12 @@ const ChatHistory = ({ chat, index, outputLanguage }) => {
           </Button>
           {/* Always show the View Page button for testing */}
           <Button
-            onClick={handleViewPage}
+            onClick={() =>
+              handleViewPage(
+                chat.fileName || sessionStorage.getItem("currentFile"),
+                chat.pageNo || 1
+              )
+            }
             variant="link"
             className="view-page-btn"
           >

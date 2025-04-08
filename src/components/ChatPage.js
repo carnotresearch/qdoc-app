@@ -23,6 +23,7 @@ import "../styles/chatPage.css";
 import MessageInput from "./chatpage/MessageInput";
 import ChatHistory from "./chatpage/ChatHistory";
 import { handleDownloadChat } from "./utils/chatUtils";
+import { fetchFileFromS3 } from "./utils/presignedUtils";
 
 function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
   const [chatHistory, setChatHistory] = useState([]);
@@ -130,13 +131,34 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
     if (files.length > 0) {
       setSidebarCollapsed(true);
     }
-  }, [files , setIsLoggedIn]);
+  }, [files, setIsLoggedIn]);
 
   useEffect(() => {
     if (chatHistoryRef.current) {
       chatHistoryRef.current.scrollTop = chatHistoryRef.current.scrollHeight;
     }
   }, [chatHistory]);
+
+  // Load a document from S3
+  const loadSessionDocument = async (sessionId, fileName) => {
+    const token = sessionStorage.getItem("token");
+    if (!token) {
+      alert("User session is expired!");
+      setIsLoggedIn(false);
+      navigate("/login");
+      return;
+    }
+
+    sessionStorage.setItem("sessionId", sessionId);
+    setLatestSessionId(sessionId);
+    try {
+      const file = await fetchFileFromS3(token, sessionId, fileName);
+      setFiles([file]);
+      sessionStorage.setItem("currentFile", fileName);
+    } catch (error) {
+      console.error("Error fetching file from S3:", error);
+    }
+  };
 
   const handleSendMessage = async (message) => {
     setIsFileUpdated(false);
@@ -185,6 +207,10 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
             }
           );
           newChatHistory[newChatHistory.length - 1].bot = response.data.answer;
+          newChatHistory[newChatHistory.length - 1].fileName =
+            response.data.fileName;
+          newChatHistory[newChatHistory.length - 1].pageNo =
+            response.data.pageNo + 1; // +1 to make it 1-indexed
         }
         newChatHistory[newChatHistory.length - 1].loading = false;
         setChatHistory([...newChatHistory]);
@@ -216,35 +242,37 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
   ];
 
   function resizeMusedown(e) {
-    document.addEventListener('mousemove', resize);
-    document.addEventListener('mouseup', stopResize);
+    document.addEventListener("mousemove", resize);
+    document.addEventListener("mouseup", stopResize);
   }
 
   function resize(e) {
-    const container = document.getElementsByClassName('chat-container')[0];
+    const container = document.getElementsByClassName("chat-container")[0];
     const containerOffsetLeft = container.offsetLeft;
     const newLeftWidth = e.clientX - containerOffsetLeft;
-    const leftDiv = document.getElementsByClassName('file-viewer')[0];
-    const rightDiv = document.getElementsByClassName('chat-content')[0];
-    const resizer = document.getElementById('resizer');
+    const leftDiv = document.getElementsByClassName("file-viewer")[0];
+    const rightDiv = document.getElementsByClassName("chat-content")[0];
+    const resizer = document.getElementById("resizer");
 
     if (leftDiv) {
-        leftDiv.style.width = newLeftWidth + 'px';
+      leftDiv.style.width = newLeftWidth + "px";
     }
     if (rightDiv && resizer) {
-        rightDiv.style.width = (container.clientWidth - newLeftWidth - resizer.offsetWidth) + 'px';
+      rightDiv.style.width =
+        container.clientWidth - newLeftWidth - resizer.offsetWidth + "px";
     }
-}
+  }
 
-
-
-function stopResize() {
-    document.removeEventListener('mousemove', resize);
-    document.removeEventListener('mouseup', stopResize);
-}
+  function stopResize() {
+    document.removeEventListener("mousemove", resize);
+    document.removeEventListener("mouseup", stopResize);
+  }
 
   return (
-    <Container fluid className={`chat-container ${isMobileScreen ? "mobile-screen" : ""}`}>
+    <Container
+      fluid
+      className={`chat-container ${isMobileScreen ? "mobile-screen" : ""}`}
+    >
       <div
         ref={sidebarRef} // Attach the ref to the sidebar
         className={`sidebar ${sidebarCollapsed ? "collapsed" : ""}`}
@@ -266,6 +294,7 @@ function stopResize() {
             setSessions={setSessions}
             setIsLoggedIn={setIsLoggedIn}
             setIsScannedDocument={setIsScannedDocument}
+            loadSessionDocument={loadSessionDocument}
           />
         )}
       </div>
@@ -306,6 +335,7 @@ function stopResize() {
               chat={chat}
               index={index}
               outputLanguage={outputLanguage}
+              loadSessionDocument={loadSessionDocument}
               key={index}
             />
           ))}
@@ -313,7 +343,9 @@ function stopResize() {
             (files.length > 0 ? (
               <div className="message bot">
                 <div className="message-box">
-                  <span className={"message-text"}>Your files have been uploaded!</span>
+                  <span className={"message-text"}>
+                    Your files have been uploaded!
+                  </span>
                 </div>
               </div>
             ) : (
