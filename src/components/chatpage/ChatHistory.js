@@ -70,9 +70,9 @@ const ChatHistory = ({ chat, index, outputLanguage, loadSessionDocument }) => {
   };
 
   // Handle viewing a specific page in a PDF
-  const handleViewPage = (filename, pageNo) => {
+  const handleViewPage = async (filename, pageNo) => {
     if (filename !== sessionStorage.getItem("currentFile")) {
-      loadSessionDocument(sessionStorage.getItem("sessionId"), filename);
+      await loadSessionDocument(sessionStorage.getItem("sessionId"), filename);
     }
     // Add an artificial delay to ensure state updates are processed
     setTimeout(() => {
