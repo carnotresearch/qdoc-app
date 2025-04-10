@@ -287,3 +287,125 @@ body.dark-mode .loading-dots span {
 .download-button-container button svg {
   font-size: 16px; /* Smaller icon size */
 }
+
+/* Reference pages styling */
+.reference-pages {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-top: 12px;
+  margin-bottom: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+body.dark-mode .reference-pages {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.reference-header {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.reference-label {
+  font-size: 13px;
+  color: #555;
+  margin-bottom: 6px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+}
+
+body.dark-mode .reference-label {
+  color: #bbb;
+}
+
+.page-icons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.page-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background-color: #268080;
+  color: white;
+  border-radius: 50%;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.page-icon:hover {
+  background-color: #1a6565;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.page-icon:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* Message controls styling */
+.message-controls {
+  display: flex;
+  align-items: center;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+body.dark-mode .message-controls {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.control-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: rgba(38, 128, 128, 0.1);
+  color: #268080;
+  border: none;
+  margin-right: 8px;
+  transition: all 0.2s ease;
+}
+
+body.dark-mode .control-btn {
+  background-color: rgba(38, 128, 128, 0.2);
+  color: #4db8b8;
+}
+
+.control-btn:hover {
+  background-color: rgba(38, 128, 128, 0.2);
+  transform: translateY(-2px);
+}
+
+body.dark-mode .control-btn:hover {
+  background-color: rgba(38, 128, 128, 0.3);
+}
+
+.control-btn:active {
+  transform: translateY(0);
+}
+
+.view-page-btn {
+  margin-left: auto;
+  background-color: rgba(38, 128, 128, 0.2);
+}
+
+body.dark-mode .view-page-btn {
+  background-color: rgba(38, 128, 128, 0.3);
+}

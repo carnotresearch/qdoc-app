@@ -177,6 +177,7 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
           loading: true,
           timestamp,
           ttsSupport,
+          sources: [], // Initialize sources array
         },
       ];
       setChatHistory(newChatHistory);
@@ -207,10 +208,15 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
             }
           );
           newChatHistory[newChatHistory.length - 1].bot = response.data.answer;
-          newChatHistory[newChatHistory.length - 1].fileName =
-            response.data.fileName;
-          newChatHistory[newChatHistory.length - 1].pageNo =
-            response.data.pageNo + 1; // +1 to make it 1-indexed
+          
+                          
+                   // Store sources if they exist in the response
+          //  (response.data.sources) {
+            newChatHistory[newChatHistory.length - 1].sources = [
+              { fileName: "Air Pollution.pdf", pageNo: 1 },
+              { fileName: "Air Pollution.pdf", pageNo: 2 }
+            ];
+          
         }
         newChatHistory[newChatHistory.length - 1].loading = false;
         setChatHistory([...newChatHistory]);

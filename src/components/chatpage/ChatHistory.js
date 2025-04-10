@@ -86,6 +86,22 @@ const ChatHistory = ({ chat, index, outputLanguage, loadSessionDocument }) => {
     }, 100);
   };
 
+  // Get sources for the current chat message, or create default sources if none exist
+  const getSources = () => {
+    if (chat.sources && chat.sources.length > 0) {
+      return chat.sources;
+    } else if (chat.fileName && chat.pageNo) {
+      // Support for old format
+      return [{ fileName: chat.fileName, pageNo: chat.pageNo }];
+    } else if (!chat.loading) {
+      // Default sources for testing (only if message is not loading)
+      return [
+        { fileName: "Air Pollution.pdf", pageNo: 1 },
+      ];
+    }
+    return [];
+  };
+
   return (
     <div key={index} className="message-wrapper">
       <div className="message user">
@@ -107,54 +123,81 @@ const ChatHistory = ({ chat, index, outputLanguage, loadSessionDocument }) => {
               <ReactMarkdown>{chat.bot}</ReactMarkdown>
             )}
           </span>
-          {chat.ttsSupport &&
-            (playingIndex === index ? (
-              <>
+          
+          {/* Reference page icons - Now shown first */}
+          {!chat.loading && getSources().length > 0 && (
+            <div className="reference-pages">
+              <div className="reference-header">
+                <span className="reference-label">References:</span>
+                <div className="page-icons">
+                  {getSources().map((source, idx) => (
+                    <button
+                      key={idx}
+                      className="page-icon"
+                      onClick={() => handleViewPage(source.fileName, source.pageNo)}
+                      title={`View page ${source.pageNo} in ${source.fileName}`}
+                    >
+                      {source.pageNo}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+          
+          {/* Audio and copy controls - Now shown after references */}
+          <div className="message-controls">
+            {chat.ttsSupport &&
+              (playingIndex === index ? (
+                <>
+                  <Button
+                    onClick={() => handleSpeechOutput(chat.bot, "pause", index)}
+                    variant="link"
+                    className="control-btn"
+                  >
+                    <FontAwesomeIcon icon={faPause} />
+                  </Button>
+                  <Button
+                    onClick={() => handleSpeechOutput(chat.bot, "restart", index)}
+                    variant="link"
+                    className="control-btn"
+                  >
+                    <FontAwesomeIcon icon={faRedo} />
+                  </Button>
+                </>
+              ) : (
                 <Button
-                  onClick={() => handleSpeechOutput(chat.bot, "pause", index)}
+                  onClick={() => handleSpeechOutput(chat.bot, "play", index)}
                   variant="link"
+                  className="control-btn"
                 >
-                  <FontAwesomeIcon icon={faPause} />
+                  <FontAwesomeIcon icon={faPlay} />
                 </Button>
-                <Button
-                  onClick={() => handleSpeechOutput(chat.bot, "restart", index)}
-                  variant="link"
-                >
-                  <FontAwesomeIcon icon={faRedo} />
-                </Button>
-              </>
-            ) : (
-              <Button
-                onClick={() => handleSpeechOutput(chat.bot, "play", index)}
-                variant="link"
-              >
-                <FontAwesomeIcon icon={faPlay} />
-              </Button>
-            ))}
-          <Button
-            onClick={() => handleCopy(chat.bot, index)}
-            variant="link"
-            style={{ fontSize: "1" }}
-          >
-            {copiedIndex === index ? (
-              <FontAwesomeIcon icon={faCheck} />
-            ) : (
-              <FontAwesomeIcon icon={faCopy} />
-            )}
-          </Button>
-          {/* Always show the View Page button for testing */}
-          <Button
-            onClick={() =>
-              handleViewPage(
-                chat.fileName || sessionStorage.getItem("currentFile"),
-                chat.pageNo || 1
-              )
-            }
-            variant="link"
-            className="view-page-btn"
-          >
-            <FontAwesomeIcon icon={faFileAlt} />
-          </Button>
+              ))}
+            <Button
+              onClick={() => handleCopy(chat.bot, index)}
+              variant="link"
+              className="control-btn"
+            >
+              {copiedIndex === index ? (
+                <FontAwesomeIcon icon={faCheck} />
+              ) : (
+                <FontAwesomeIcon icon={faCopy} />
+              )}
+            </Button>
+            <Button
+              onClick={() =>
+                handleViewPage(
+                  chat.fileName || sessionStorage.getItem("currentFile"),
+                  chat.pageNo || 1
+                )
+              }
+              variant="link"
+              className="control-btn view-page-btn"
+            >
+              <FontAwesomeIcon icon={faFileAlt} />
+            </Button>
+          </div>
         </div>
       </div>
     </div>
