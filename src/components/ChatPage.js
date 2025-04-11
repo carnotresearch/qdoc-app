@@ -210,6 +210,20 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
             }
           );
           
+          // Log full response data with clear formatting
+          console.log("%c ===== BACKEND RESPONSE DATA =====", "background: #000; color: #00ff00; font-size: 16px; font-weight: bold;");
+          console.log("%c Full Response Object:", "color: #ff6600; font-weight: bold;", response.data);
+          console.log("%c Answer:", "color: #ff6600; font-weight: bold;", response.data.answer);
+          console.log("%c Sources Array:", "color: #ff6600; font-weight: bold;", response.data.sources);
+          
+          // Log cleaned filename (remove temp/ prefix)
+          const cleanedFileName = response.data.fileName ? 
+            (response.data.fileName.includes('/') ? response.data.fileName.split('/').pop() : response.data.fileName) : '';
+          console.log("%c Filename (cleaned):", "color: #ff6600; font-weight: bold;", cleanedFileName);
+          console.log("%c Original Filename:", "color: #ff6600; font-weight: bold;", response.data.fileName);
+          console.log("%c Page Number:", "color: #ff6600; font-weight: bold;", response.data.pageNo);
+          console.log("%c ===============================", "background: #000; color: #00ff00; font-size: 16px; font-weight: bold;");
+          
           // Get the answer from the response
           newChatHistory[newChatHistory.length - 1].bot = response.data.answer;
           
@@ -232,19 +246,32 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
             
             newChatHistory[newChatHistory.length - 1].sources = cleanedSources;
             console.log("Cleaned sources:", cleanedSources);
-          } else if (response.data.fileName && response.data.pageNo !== undefined) {
-            // For backward compatibility - create sources array from fileName and pageNo
+          }
+          
+          // Store standalone fileName and pageNo for fallback
+          if (response.data.fileName) {
             let fileName = response.data.fileName;
             if (fileName && fileName.includes('/')) {
               fileName = fileName.split('/').pop();
             }
-            const pageNo = parseInt(String(response.data.pageNo).replace(/\D/g, ''), 10) + 1 || 1;
-            
-            newChatHistory[newChatHistory.length - 1].sources = [{ fileName, pageNo }];
-            console.log("Created source from legacy format:", { fileName, pageNo });
+            newChatHistory[newChatHistory.length - 1].fileName = fileName;
           } else {
-            console.log("No sources received from backend");
-            newChatHistory[newChatHistory.length - 1].sources = [];
+            // Use current file if fileName is not in response
+            const currentFile = sessionStorage.getItem("currentFile");
+            if (currentFile) {
+              newChatHistory[newChatHistory.length - 1].fileName = currentFile;
+            }
+          }
+          
+          if (response.data.pageNo !== undefined) {
+            // Ensure page number starts from 1 (not 0)
+            let pageNo = parseInt(String(response.data.pageNo).replace(/\D/g, ''), 10);
+            // If pageNo is 0, change to 1
+            if (pageNo === 0) pageNo = 1;
+            newChatHistory[newChatHistory.length - 1].pageNo = pageNo;
+          } else {
+            // Default to page 1 if not specified
+            newChatHistory[newChatHistory.length - 1].pageNo = 1;
           }
           
           newChatHistory[newChatHistory.length - 1].loading = false;

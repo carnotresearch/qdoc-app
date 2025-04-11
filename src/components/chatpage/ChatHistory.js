@@ -9,15 +9,70 @@ import {
   faCopy,
   faCheck,
   faFileAlt,
+  faBookmark
 } from "@fortawesome/free-solid-svg-icons";
 import LoadingDots from "./LoadingDots";
 import { usePageView } from "../PageViewContext";
+
+// Simple and clean reference styles
+const styles = {
+  referencesWrapper: {
+    marginTop: "10px",
+    marginBottom: "5px",
+  },
+  referenceLabel: {
+    fontSize: "13px",
+    fontWeight: "600",
+    marginBottom: "8px",
+    color: "#555",
+    textAlign: "left",
+  },
+  referencesList: {
+    display: "flex",
+    flexWrap: "wrap",
+    gap: "8px",
+  },
+  referenceItem: {
+    display: "inline-flex",
+    alignItems: "center",
+    padding: "4px 10px",
+    backgroundColor: "rgba(38, 128, 128, 0.08)",
+    borderLeft: "none",
+    borderRadius: "3px",
+    fontSize: "13px",
+    fontWeight: "400",
+    cursor: "pointer",
+    transition: "all 0.15s ease",
+    color: "#333333",
+    textAlign: "left",
+  },
+  referenceItemHover: {
+    backgroundColor: "rgba(38, 128, 128, 0.2)",
+  },
+  referenceIcon: {
+    width: "12px",
+    marginRight: "8px",
+    color: "#268080",
+  },
+  filename: {
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+    maxWidth: "150px",
+  },
+  pageInfo: {
+    marginLeft: "8px",
+    color: "#268080",
+    fontWeight: "500",
+  }
+};
 
 const ChatHistory = ({ chat, index, outputLanguage, loadSessionDocument }) => {
   const [currentUtterance, setCurrentUtterance] = useState(null); // currently playing audio
   const [playingIndex, setPlayingIndex] = useState(null); // Index of currently playing response
   const [copiedIndex, setCopiedIndex] = useState(null);
   const { viewPage } = usePageView();
+  const [hoveredReference, setHoveredReference] = useState(null);
 
   // copy message to clipboard
   const handleCopy = (text, index) => {
@@ -88,20 +143,38 @@ const ChatHistory = ({ chat, index, outputLanguage, loadSessionDocument }) => {
 
   // Get sources from the chat message
   const getSources = () => {
-    // Check if sources array exists in chat
+    console.log("Sources from backend:", chat.sources);
+    console.log("Standalone fileName from backend:", chat.fileName);
+    console.log("Standalone pageNo from backend:", chat.pageNo);
+    
+    // Check if sources array exists and has items
     if (chat.sources && Array.isArray(chat.sources) && chat.sources.length > 0) {
+      console.log("Using sources array:", chat.sources);
       return chat.sources;
     }
     
-    // If no sources and not loading, return default test sources
-    // if (!chat.loading) {
-    //   return [
-    //     { fileName: "kepy101.pdf", pageNo: 1 },
-    //     { fileName: "kepy101.pdf", pageNo: 2 }
-    //   ];
-    // }
+    // Fallback: If sources is empty array or undefined but we have fileName and pageNo fields
+    if (chat.fileName && chat.pageNo !== undefined) {
+      console.log("Sources empty, using standalone fileName and pageNo");
+      return [{ fileName: chat.fileName, pageNo: chat.pageNo }];
+    }
     
     return [];
+  };
+
+  // Function to truncate long filenames
+  const truncateFilename = (filename, maxLength = 20) => {
+    if (!filename) return "Document";
+    if (filename.length <= maxLength) return filename;
+    
+    const extension = filename.includes('.') ? filename.split('.').pop() : '';
+    const nameWithoutExt = filename.includes('.') ? 
+      filename.substring(0, filename.lastIndexOf('.')) : 
+      filename;
+    
+    const truncatedName = nameWithoutExt.substring(0, maxLength - 3 - (extension ? extension.length + 1 : 0)) + '...';
+    
+    return extension ? `${truncatedName}.${extension}` : truncatedName;
   };
 
   return (
@@ -128,24 +201,35 @@ const ChatHistory = ({ chat, index, outputLanguage, loadSessionDocument }) => {
           
           {!chat.loading && (
             <div className="message-footer">
-              {/* Reference page numbers on the left */}
+              {/* Reference section on the left */}
               <div className="reference-section">
                 {getSources().length > 0 && (
-                  <>
-                    <span className="reference-label">References:</span>
-                    <div className="page-numbers">
+                  <div style={styles.referencesWrapper}>
+                    <div style={styles.referenceLabel}>
+                      References
+                    </div>
+                    <div style={styles.referencesList}>
                       {getSources().map((source, idx) => (
-                        <button
+                        <div
                           key={idx}
-                          className="page-number"
+                          style={{
+                            ...styles.referenceItem,
+                            ...(hoveredReference === idx ? styles.referenceItemHover : {})
+                          }}
                           onClick={() => handleViewPage(source.fileName, source.pageNo)}
                           title={`View page ${source.pageNo} in ${source.fileName}`}
+                          onMouseEnter={() => setHoveredReference(idx)}
+                          onMouseLeave={() => setHoveredReference(null)}
                         >
-                          {idx + 1}
-                        </button>
+                          <FontAwesomeIcon icon={faFileAlt} style={styles.referenceIcon} />
+                          <span style={styles.filename}>
+                            {truncateFilename(source.fileName)}
+                          </span>
+                          <span style={styles.pageInfo}>pg: {source.pageNo || 1}</span>
+                        </div>
                       ))}
                     </div>
-                  </>
+                  </div>
                 )}
               </div>
               
