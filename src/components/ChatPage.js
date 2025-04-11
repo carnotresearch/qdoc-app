@@ -177,6 +177,7 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
           loading: true,
           timestamp,
           ttsSupport,
+          sources: [], // Initialize sources array
         },
       ];
       setChatHistory(newChatHistory);
@@ -192,6 +193,8 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
         if (isScannedDocument) {
           newChatHistory[newChatHistory.length - 1].bot =
             scannedDocumentWarning(files[0].name);
+          newChatHistory[newChatHistory.length - 1].loading = false;
+          setChatHistory([...newChatHistory]);
         } else {
           const response = await axios.post(
             `${process.env.REACT_APP_BACKEND_URL}/ask`,
@@ -206,14 +209,47 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
               hasCsvOrXlsx,
             }
           );
+          
+          // Get the answer from the response
           newChatHistory[newChatHistory.length - 1].bot = response.data.answer;
-          newChatHistory[newChatHistory.length - 1].fileName =
-            response.data.fileName;
-          newChatHistory[newChatHistory.length - 1].pageNo =
-            response.data.pageNo + 1; // +1 to make it 1-indexed
+          
+          // Process sources if they exist in the response
+          if (response.data.sources && Array.isArray(response.data.sources)) {
+            // Clean both filenames and page numbers
+            const cleanedSources = response.data.sources.map(source => {
+              // Handle filename prefix (remove "temp/" or similar)
+              let fileName = source.fileName;
+              if (fileName && fileName.includes('/')) {
+                // Take everything after the last slash
+                fileName = fileName.split('/').pop();
+              }
+              
+              // Clean page number to be a valid number
+              const pageNo = parseInt(String(source.pageNo).replace(/\D/g, ''), 10) || 1;
+              
+              return { fileName, pageNo };
+            });
+            
+            newChatHistory[newChatHistory.length - 1].sources = cleanedSources;
+            console.log("Cleaned sources:", cleanedSources);
+          } else if (response.data.fileName && response.data.pageNo !== undefined) {
+            // For backward compatibility - create sources array from fileName and pageNo
+            let fileName = response.data.fileName;
+            if (fileName && fileName.includes('/')) {
+              fileName = fileName.split('/').pop();
+            }
+            const pageNo = parseInt(String(response.data.pageNo).replace(/\D/g, ''), 10) + 1 || 1;
+            
+            newChatHistory[newChatHistory.length - 1].sources = [{ fileName, pageNo }];
+            console.log("Created source from legacy format:", { fileName, pageNo });
+          } else {
+            console.log("No sources received from backend");
+            newChatHistory[newChatHistory.length - 1].sources = [];
+          }
+          
+          newChatHistory[newChatHistory.length - 1].loading = false;
+          setChatHistory([...newChatHistory]);
         }
-        newChatHistory[newChatHistory.length - 1].loading = false;
-        setChatHistory([...newChatHistory]);
       } catch (error) {
         console.error("There was an error!", error);
         if (error.response && error.response.status === 401) {
