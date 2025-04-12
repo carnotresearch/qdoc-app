@@ -31,6 +31,9 @@ function Sidebar({
   const token = sessionStorage.getItem("token");
   const [visibleFiles, setVisibleFiles] = useState({});
   const navigate = useNavigate();
+  
+  // This is passed from ChatPage.js
+  const resetChatHistory = window.resetChatHistory;
 
   // Function to update session CSV/XLSX status
   const updateSessionCsvXlsxStatus = (files, existing = false) => {
@@ -114,9 +117,20 @@ function Sidebar({
 
   const uploadToBackend = async (files) => {
     try {
+      // Convert files to array and sanitize filenames
       const filesArray = Array.from(files);
+      
+      // Create sanitized files with renamed versions (replace spaces with underscores)
+      const sanitizedFiles = filesArray.map(file => {
+        if (!file.name.includes(' ')) return file;
+        
+        // Create a new file with sanitized name (replace spaces with underscores)
+        const sanitizedName = file.name.replace(/\s+/g, '_');
+        return new File([file], sanitizedName, { type: file.type });
+      });
+      
       const formData = new FormData();
-      filesArray.forEach((file) => formData.append("files", file));
+      sanitizedFiles.forEach((file) => formData.append("files", file));
       formData.append("token", token);
       formData.append("sessionId", sessionStorage.getItem("sessionId"));
       setIsUploading(true);
@@ -136,7 +150,7 @@ function Sidebar({
         setIsScannedDocument(false);
       }
 
-      setFiles([filesArray[0]]);
+      setFiles([sanitizedFiles[0]]);
       setIsUploading(false);
     } catch (backendError) {
       if (backendError.response && backendError.response.status === 401) {
@@ -183,14 +197,34 @@ function Sidebar({
 
     setIsUploading(true);
     try {
-      await uploadMultiFiles(token, files);
-      await uploadToBackend(files);
+      // Use original files for S3 upload with presigned URLs
+      await uploadMultiFiles(token, filesArray);
+      
+      // Use sanitized filenames for backend only
+      await uploadToBackend(filesArray);
+      
       await fetchSessions();
       const newSessionId = sessionStorage.getItem("sessionId");
       setLatestSessionId(newSessionId);
 
       // Update session CSV/XLSX status after upload
-      updateSessionCsvXlsxStatus(files);
+      updateSessionCsvXlsxStatus(filesArray);
+      
+      // Reset chat history when creating a new container
+      if (typeof resetChatHistory === 'function') {
+        resetChatHistory();
+      }
+      
+      // Signal that files have been uploaded
+      window.dispatchEvent(new CustomEvent('filesUploaded'));
+      
+      // Use the global function to show "files uploaded" message after a delay
+      setTimeout(() => {
+        if (typeof window.showFilesUploadedMessage === 'function') {
+          window.showFilesUploadedMessage();
+        }
+      }, 500);
+      
     } catch (error) {
       console.error("Error uploading files:", error);
       alert("Error uploading files, please try again.");
@@ -241,16 +275,27 @@ function Sidebar({
     setIsUploading(true);
     const sessionId = latestSessionId || sessionStorage.getItem("sessionId");
 
+    // Create sanitized files with renamed versions (replace spaces with underscores)
+    const sanitizedFiles = newFilesArray.map(file => {
+      if (!file.name.includes(' ')) return file;
+      
+      // Create a new file with sanitized name (replace spaces with underscores)
+      const sanitizedName = file.name.replace(/\s+/g, '_');
+      return new File([file], sanitizedName, { type: file.type });
+    });
+
     setSelectedSessionFiles((prevState) => ({
       ...prevState,
-      [sessionId]: [...(prevState[sessionId] || []), ...newFilesArray],
+      [sessionId]: [...(prevState[sessionId] || []), ...sanitizedFiles],
     }));
 
     try {
-      addUploadFiles(token, sessionId, newFiles);
+      // Use original files for S3 upload with presigned URLs
+      addUploadFiles(token, sessionId, newFilesArray);
 
       const formData = new FormData();
-      newFilesArray.forEach((file) => formData.append("files", file));
+      // Use sanitized files for backend upload
+      sanitizedFiles.forEach((file) => formData.append("files", file));
       formData.append("token", sessionStorage.getItem("token"));
       formData.append("sessionId", sessionId);
 
@@ -260,13 +305,24 @@ function Sidebar({
         { headers: { "Content-Type": "multipart/form-data" } }
       );
 
-      setFiles([newFilesArray[0]]);
+      setFiles([sanitizedFiles[0]]);
 
       // Update session CSV/XLSX status after additional upload
       updateSessionCsvXlsxStatus(
-        newFilesArray,
+        sanitizedFiles,
         sessionStorage.getItem("currentSessionHasCsvOrXlsx") === "true"
       );
+      
+      // Signal that files have been uploaded (for "files uploaded" message)
+      window.dispatchEvent(new CustomEvent('filesUploaded'));
+      
+      // Use the global function to show "files uploaded" message after a delay
+      setTimeout(() => {
+        if (typeof window.showFilesUploadedMessage === 'function') {
+          window.showFilesUploadedMessage();
+        }
+      }, 500);
+      
     } catch (error) {
       console.error("Error uploading files:", error);
       alert("Error uploading files, please try again.");
@@ -304,6 +360,13 @@ function Sidebar({
         newState[session.id] = true;
         return newState;
       });
+      
+      // Reset chat history when changing sessions
+      if (typeof resetChatHistory === 'function') {
+        resetChatHistory();
+      }
+      
+      // Load the document without showing "files uploaded" message
       loadSessionDocument(session.id, session.fileNames[0]);
 
       // Update session CSV/XLSX status
@@ -420,7 +483,10 @@ function Sidebar({
                   <Button
                     className="mb-2 bg-secondary"
                     variant="secondary"
-                    onClick={() => additionalFileInputRef.current.click()}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      additionalFileInputRef.current.click();
+                    }}
                     style={addButtonStyle}
                   >
                     <big>+</big> Add Files

@@ -42,6 +42,21 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
   const scannedDocumentWarning = (documentName) =>
     `Unfortunately we couldn't read document: '${documentName}', as it seems to be a scanned document. Kindly upload a readable document.`;
 
+  // Make resetChatHistory available to Sidebar component
+  window.resetChatHistory = () => {
+    setChatHistory([]);
+    console.log("Chat history has been reset");
+  };
+
+  // Explicitly show "files uploaded" message after file loading
+  const showFilesUploadedMessage = () => {
+    setIsFileUpdated(true);
+    console.log("Setting isFileUpdated to true - files have been uploaded");
+  };
+  
+  // Make this function available globally
+  window.showFilesUploadedMessage = showFilesUploadedMessage;
+
   const fetchSessions = useCallback(async () => {
     try {
       const token = sessionStorage.getItem("token");
@@ -118,20 +133,35 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
   useEffect(() => {
     // Attach the event listener to detect outside clicks
     document.addEventListener("mousedown", handleOutsideClick);
+    
+    // Listen for file upload events
+    const handleFilesUploaded = () => {
+      // We add a small delay to ensure files have been rendered
+      setTimeout(() => {
+        setIsFileUpdated(true);
+        console.log("Files uploaded event received - showing upload message");
+      }, 300);
+    };
+    
+    window.addEventListener('filesUploaded', handleFilesUploaded);
+    
     return () => {
-      // Clean up the event listener on unmount
+      // Clean up the event listeners on unmount
       document.removeEventListener("mousedown", handleOutsideClick);
+      window.removeEventListener('filesUploaded', handleFilesUploaded);
     };
   }, [handleOutsideClick]);
 
   useEffect(() => {
     setIsLoggedIn(true);
-    setIsFileUpdated(true);
-    messageInputRef.current.focus();
-    if (files.length > 0) {
+    
+    // Only show "files uploaded" message when files are initially loaded
+    if (files.length > 0 && isFileUpdated) {
       setSidebarCollapsed(true);
     }
-  }, [files, setIsLoggedIn]);
+    
+    messageInputRef.current.focus();
+  }, [files, setIsLoggedIn, isFileUpdated]);
 
   useEffect(() => {
     if (chatHistoryRef.current) {
@@ -149,12 +179,22 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
       return;
     }
 
+    // Check if this is from a reference button click or from session change
+    const isFromReferenceClick = sessionId === sessionStorage.getItem("sessionId") && 
+                               fileName === sessionStorage.getItem("currentFile");
+    
     sessionStorage.setItem("sessionId", sessionId);
     setLatestSessionId(sessionId);
     try {
       const file = await fetchFileFromS3(token, sessionId, fileName);
       setFiles([file]);
       sessionStorage.setItem("currentFile", fileName);
+      
+      // Only show "files uploaded" message for new uploads, not reference clicks
+      if (isFromReferenceClick) {
+        setIsFileUpdated(false);
+        console.log("Reference click detected - not showing upload message");
+      }
     } catch (error) {
       console.error("Error fetching file from S3:", error);
     }
