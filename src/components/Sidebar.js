@@ -117,29 +117,21 @@ function Sidebar({
 
   const uploadToBackend = async (files) => {
     try {
-      // Convert files to array and sanitize filenames
-      const filesArray = Array.from(files);
-      
-      // Create sanitized files with renamed versions (replace spaces with underscores)
-      const sanitizedFiles = filesArray.map(file => {
-        if (!file.name.includes(' ')) return file;
-        
-        // Create a new file with sanitized name (replace spaces with underscores)
-        const sanitizedName = file.name.replace(/\s+/g, '_');
-        return new File([file], sanitizedName, { type: file.type });
-      });
+      // The files passed to this function should already be sanitized
+      // from the handleFileUpload function, so no additional sanitization needed here
       
       const formData = new FormData();
-      sanitizedFiles.forEach((file) => formData.append("files", file));
+      files.forEach((file) => formData.append("files", file));
       formData.append("token", token);
       formData.append("sessionId", sessionStorage.getItem("sessionId"));
+      
       setIsUploading(true);
       const response = await axios.post(
         `${process.env.REACT_APP_BACKEND_URL}/upload`,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
-
+  
       if (
         response.data.message &&
         response.data.message === "No data was extracted!"
@@ -149,8 +141,8 @@ function Sidebar({
       } else {
         setIsScannedDocument(false);
       }
-
-      setFiles([sanitizedFiles[0]]);
+  
+      setFiles([files[0]]);
       setIsUploading(false);
     } catch (backendError) {
       if (backendError.response && backendError.response.status === 401) {
@@ -176,7 +168,7 @@ function Sidebar({
   const handleFileUpload = async (files) => {
     const allowedExtensions = /\.(csv|xlsx?|pdf|docx?|txt)$/i; // Regular expression for allowed extensions
     const filesArray = Array.from(files);
-
+  
     // Filter out invalid files
     const invalidFiles = filesArray.filter(
       (file) => !allowedExtensions.test(file.name)
@@ -187,28 +179,35 @@ function Sidebar({
       );
       return; // Exit the function if invalid files are detected
     }
-
+  
+    // Sanitize filenames - replace spaces with underscores
+    const sanitizedFiles = filesArray.map(file => {
+      if (!file.name.includes(' ')) return file;
+      
+      // Create a new file with sanitized name (replace spaces with underscores)
+      const sanitizedName = file.name.replace(/\s+/g, '_');
+      return new File([file], sanitizedName, { type: file.type });
+    });
+  
     // Calculate the total size for the provided files
-    const size = filesArray.reduce((total, file) => total + file.size, 0);
+    const size = sanitizedFiles.reduce((total, file) => total + file.size, 0);
     const estimated_time = Math.floor(size / (1024 * 1024)) * 20; // Estimation formula
     if (estimated_time > 10) {
       setProcessTime(estimated_time);
     }
-
+  
     setIsUploading(true);
     try {
-      // Use original files for S3 upload with presigned URLs
-      await uploadMultiFiles(token, filesArray);
-      
-      // Use sanitized filenames for backend only
-      await uploadToBackend(filesArray);
+      // Use sanitized files for BOTH S3 upload and backend
+      await uploadMultiFiles(token, sanitizedFiles);
+      await uploadToBackend(sanitizedFiles);
       
       await fetchSessions();
       const newSessionId = sessionStorage.getItem("sessionId");
       setLatestSessionId(newSessionId);
-
+  
       // Update session CSV/XLSX status after upload
-      updateSessionCsvXlsxStatus(filesArray);
+      updateSessionCsvXlsxStatus(sanitizedFiles);
       
       // Reset chat history when creating a new container
       if (typeof resetChatHistory === 'function') {
@@ -272,10 +271,8 @@ function Sidebar({
 
   const handleAdditionalFileUpload = async (newFiles) => {
     const newFilesArray = Array.from(newFiles);
-    setIsUploading(true);
-    const sessionId = latestSessionId || sessionStorage.getItem("sessionId");
-
-    // Create sanitized files with renamed versions (replace spaces with underscores)
+    
+    // Sanitize filenames - replace spaces with underscores
     const sanitizedFiles = newFilesArray.map(file => {
       if (!file.name.includes(' ')) return file;
       
@@ -283,30 +280,32 @@ function Sidebar({
       const sanitizedName = file.name.replace(/\s+/g, '_');
       return new File([file], sanitizedName, { type: file.type });
     });
-
+    
+    setIsUploading(true);
+    const sessionId = latestSessionId || sessionStorage.getItem("sessionId");
+  
     setSelectedSessionFiles((prevState) => ({
       ...prevState,
       [sessionId]: [...(prevState[sessionId] || []), ...sanitizedFiles],
     }));
-
+  
     try {
-      // Use original files for S3 upload with presigned URLs
-      addUploadFiles(token, sessionId, newFilesArray);
-
+      // Use sanitized files for BOTH S3 upload and backend
+      addUploadFiles(token, sessionId, sanitizedFiles);
+  
       const formData = new FormData();
-      // Use sanitized files for backend upload
       sanitizedFiles.forEach((file) => formData.append("files", file));
       formData.append("token", sessionStorage.getItem("token"));
       formData.append("sessionId", sessionId);
-
+  
       await axios.post(
         `${process.env.REACT_APP_BACKEND_URL}/add-upload`,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
-
+  
       setFiles([sanitizedFiles[0]]);
-
+  
       // Update session CSV/XLSX status after additional upload
       updateSessionCsvXlsxStatus(
         sanitizedFiles,

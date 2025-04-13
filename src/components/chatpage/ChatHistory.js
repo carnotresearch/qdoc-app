@@ -126,6 +126,14 @@ const ChatHistory = ({ chat, index, outputLanguage, loadSessionDocument }) => {
 
   // Handle viewing a specific page in a PDF
   const handleViewPage = async (filename, pageNo) => {
+    // Check if the file is a PDF by looking at the extension
+  const fileExtension = filename.split('.').pop().toLowerCase();
+  
+  // Only proceed for PDF files, return early for all other file types
+  if (fileExtension !== 'pdf') {
+    console.log(`File ${filename} is not a PDF. Page navigation is only supported for PDF files.`);
+    return;
+  }
     if (filename !== sessionStorage.getItem("currentFile")) {
       await loadSessionDocument(sessionStorage.getItem("sessionId"), filename);
     }
@@ -203,7 +211,7 @@ const ChatHistory = ({ chat, index, outputLanguage, loadSessionDocument }) => {
             <div className="message-footer">
               {/* Reference section on the left */}
               <div className="reference-section">
-                {getSources().length > 0 && (
+                {getSources().length > 0 && getSources().some(source => source.fileName.toLowerCase().endsWith('.pdf')) && (
                   <div style={styles.referencesWrapper}>
                     <div style={styles.referenceLabel}>
                       References
