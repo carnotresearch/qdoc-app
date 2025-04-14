@@ -82,40 +82,80 @@ function Home({
       ];
       setChatHistory(newChatHistory);
 
-      try {
-        // Constructing the correct payload
-        const payload = {
-          message,
-          fingerprint: sessionStorage.getItem("fingerprint"),
-          inputLanguage,
-          outputLanguage,
-          context: "files",
-          mode: "contextual",
-        };
+     // Update only this part in the handleSendMessage function in src/components/home/index.js
 
-        const response = await axios.post(
-          `${process.env.REACT_APP_BACKEND_URL}/trialAsk`,
-          payload
-        );
-        newChatHistory[newChatHistory.length - 1].bot = response.data.answer;
-        newChatHistory[newChatHistory.length - 1].loading = false;
-        setChatHistory([...newChatHistory]);
-      } catch (error) {
-        console.error("There was an error!", error);
-        setChatHistory((prevChatHistory) => {
-          const updatedChatHistory = [...prevChatHistory];
+try {
+  // Constructing the correct payload
+  const payload = {
+    message,
+    fingerprint: sessionStorage.getItem("fingerprint"),
+    inputLanguage,
+    outputLanguage,
+    context: "files",
+    mode: "contextual",
+  };
 
-          // Update the loading field of the last object
-          if (updatedChatHistory.length > 0) {
-            updatedChatHistory[updatedChatHistory.length - 1] = {
-              ...updatedChatHistory[updatedChatHistory.length - 1],
-              loading: false,
-            };
-          }
-
-          return updatedChatHistory;
-        });
+  const response = await axios.post(
+    `${process.env.REACT_APP_BACKEND_URL}/trialAsk`,
+    payload
+  );
+  
+  // Set the answer text
+  newChatHistory[newChatHistory.length - 1].bot = response.data.answer;
+  
+  // Process sources if they exist in the response (copy logic from ChatPage.js)
+  if (response.data.sources && Array.isArray(response.data.sources)) {
+    // Clean both filenames and page numbers
+    const cleanedSources = response.data.sources.map(source => {
+      // Handle filename prefix (remove "temp/" or similar)
+      let fileName = source.fileName;
+      if (fileName && fileName.includes('/')) {
+        // Take everything after the last slash
+        fileName = fileName.split('/').pop();
       }
+      
+      // Clean page number to be a valid number
+      const pageNo = parseInt(String(source.pageNo).replace(/\D/g, ''), 10) || 1;
+      
+      return { fileName, pageNo };
+    });
+    
+    newChatHistory[newChatHistory.length - 1].sources = cleanedSources;
+  }
+  
+  // Store standalone fileName and pageNo for fallback (same as in ChatPage.js)
+  if (response.data.fileName) {
+    let fileName = response.data.fileName;
+    if (fileName && fileName.includes('/')) {
+      fileName = fileName.split('/').pop();
+    }
+    newChatHistory[newChatHistory.length - 1].fileName = fileName;
+  } else {
+    // Use current file if fileName is not in response
+    const currentFile = files.length > 0 ? files[0].name : null;
+    if (currentFile) {
+      newChatHistory[newChatHistory.length - 1].fileName = currentFile;
+    }
+  }
+  
+  if (response.data.pageNo !== undefined) {
+    // Ensure page number starts from 1 (not 0)
+    let pageNo = parseInt(String(response.data.pageNo).replace(/\D/g, ''), 10);
+    if (pageNo === 0) pageNo = 1;
+    newChatHistory[newChatHistory.length - 1].pageNo = pageNo;
+  } else {
+    // Default to page 1 if not specified
+    newChatHistory[newChatHistory.length - 1].pageNo = 1;
+  }
+  
+  newChatHistory[newChatHistory.length - 1].loading = false;
+  setChatHistory([...newChatHistory]);
+} catch (error) {
+  console.error("There was an error!", error);
+  newChatHistory[newChatHistory.length - 1].bot = "Couldn't fetch response. Please try again.";
+  newChatHistory[newChatHistory.length - 1].loading = false;
+  setChatHistory([...newChatHistory]);
+}
     }
   };
 
@@ -231,3 +271,4 @@ function Home({
 }
 
 export default Home;
+ 

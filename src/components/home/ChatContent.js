@@ -82,13 +82,19 @@ function ChatContent({
           </div>
         )}
         {chatHistory.map((chat, index) => (
-          <ChatHistory
-            chat={chat}
-            index={index}
-            outputLanguage={outputLanguage}
-            key={index}
-          />
-        ))}
+  <ChatHistory
+    chat={chat}
+    index={index}
+    outputLanguage={outputLanguage}
+    key={index}
+    loadSessionDocument={(sessionId, fileName) => {
+      // Simple implementation for free trial mode
+      console.log(`Reference clicked: ${fileName}, page: ${chat.pageNo || 1}`);
+      // Store these values in session storage so they're available if needed
+      sessionStorage.setItem("currentFile", fileName);
+    }}
+  />
+))}
       </div>
       <MessageInput
         inputLanguage={inputLanguage}
