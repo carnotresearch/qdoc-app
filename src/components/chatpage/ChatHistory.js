@@ -130,10 +130,10 @@ const ChatHistory = ({ chat, index, outputLanguage, loadSessionDocument }) => {
   const fileExtension = filename.split('.').pop().toLowerCase();
   
   // Only proceed for PDF files, return early for all other file types
-  if (fileExtension !== 'pdf') {
-    console.log(`File ${filename} is not a PDF. Page navigation is only supported for PDF files.`);
-    return;
-  }
+  // if (fileExtension !== 'pdf') {
+  //   console.log(`File ${filename} is not a PDF. Page navigation is only supported for PDF files.`);
+  //   return;
+  // }
     if (filename !== sessionStorage.getItem("currentFile")) {
       await loadSessionDocument(sessionStorage.getItem("sessionId"), filename);
     }

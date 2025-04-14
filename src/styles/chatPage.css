@@ -45,7 +45,7 @@ body {
 /* for mobile devices */
 @media (max-width: 767px) {
   .chat-container {
-    height: 90vh;
+    height: 70vh;
   }
 }
 
@@ -399,3 +399,5 @@ body.dark-mode .control-btn:hover {
     width: 100%;
   }
 }
+
+
