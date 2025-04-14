@@ -207,7 +207,7 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
         hour: "2-digit",
         minute: "2-digit",
       });
-
+  
       const ttsSupport = ttsSupportedLanguages.includes(outputLanguage);
       const newChatHistory = [
         ...chatHistory,
@@ -223,13 +223,13 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
       setChatHistory(newChatHistory);
       const token = sessionStorage.getItem("token");
       const context = files.length > 0 ? "files" : "";
-
+  
       const hasCsvOrXlsx =
         sessionStorage.getItem("currentSessionHasCsvOrXlsx") === "true";
-
+  
       try {
         const context_mode = sessionStorage.getItem("answerMode");
-
+  
         if (isScannedDocument) {
           newChatHistory[newChatHistory.length - 1].bot =
             scannedDocumentWarning(files[0].name);
@@ -256,62 +256,68 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
           console.log("%c Answer:", "color: #ff6600; font-weight: bold;", response.data.answer);
           console.log("%c Sources Array:", "color: #ff6600; font-weight: bold;", response.data.sources);
           
-          // Log cleaned filename (remove temp/ prefix)
-          const cleanedFileName = response.data.fileName ? 
-            (response.data.fileName.includes('/') ? response.data.fileName.split('/').pop() : response.data.fileName) : '';
-          console.log("%c Filename (cleaned):", "color: #ff6600; font-weight: bold;", cleanedFileName);
-          console.log("%c Original Filename:", "color: #ff6600; font-weight: bold;", response.data.fileName);
-          console.log("%c Page Number:", "color: #ff6600; font-weight: bold;", response.data.pageNo);
-          console.log("%c ===============================", "background: #000; color: #00ff00; font-size: 16px; font-weight: bold;");
-          
-          // Get the answer from the response
-          newChatHistory[newChatHistory.length - 1].bot = response.data.answer;
-          
-          // Process sources if they exist in the response
-          if (response.data.sources && Array.isArray(response.data.sources)) {
-            // Clean both filenames and page numbers
-            const cleanedSources = response.data.sources.map(source => {
-              // Handle filename prefix (remove "temp/" or similar)
-              let fileName = source.fileName;
+          // Check if response.data is a string (error message) instead of an object with expected properties
+          if (typeof response.data === 'string') {
+            // If response is a string, use it directly
+            newChatHistory[newChatHistory.length - 1].bot = response.data;
+          } else if (response.data.answer) {
+            // Get the answer from the response object
+            newChatHistory[newChatHistory.length - 1].bot = response.data.answer;
+            
+            // Log cleaned filename (remove temp/ prefix)
+            const cleanedFileName = response.data.fileName ? 
+              (response.data.fileName.includes('/') ? response.data.fileName.split('/').pop() : response.data.fileName) : '';
+            console.log("%c Filename (cleaned):", "color: #ff6600; font-weight: bold;", cleanedFileName);
+            console.log("%c Original Filename:", "color: #ff6600; font-weight: bold;", response.data.fileName);
+            console.log("%c Page Number:", "color: #ff6600; font-weight: bold;", response.data.pageNo);
+            console.log("%c ===============================", "background: #000; color: #00ff00; font-size: 16px; font-weight: bold;");
+            
+            // Process sources if they exist in the response
+            if (response.data.sources && Array.isArray(response.data.sources)) {
+              // Clean both filenames and page numbers
+              const cleanedSources = response.data.sources.map(source => {
+                // Handle filename prefix (remove "temp/" or similar)
+                let fileName = source.fileName;
+                if (fileName && fileName.includes('/')) {
+                  // Take everything after the last slash
+                  fileName = fileName.split('/').pop();
+                }
+                
+                // Clean page number to be a valid number
+                const pageNo = parseInt(String(source.pageNo).replace(/\D/g, ''), 10) || 1;
+                
+                return { fileName, pageNo };
+              });
+              
+              newChatHistory[newChatHistory.length - 1].sources = cleanedSources;
+              console.log("Cleaned sources:", cleanedSources);
+            }
+            
+            // Store standalone fileName and pageNo for fallback
+            if (response.data.fileName) {
+              let fileName = response.data.fileName;
               if (fileName && fileName.includes('/')) {
-                // Take everything after the last slash
                 fileName = fileName.split('/').pop();
               }
-              
-              // Clean page number to be a valid number
-              const pageNo = parseInt(String(source.pageNo).replace(/\D/g, ''), 10) || 1;
-              
-              return { fileName, pageNo };
-            });
+              newChatHistory[newChatHistory.length - 1].fileName = fileName;
+            } else {
+              // Use current file if fileName is not in response
+              const currentFile = sessionStorage.getItem("currentFile");
+              if (currentFile) {
+                newChatHistory[newChatHistory.length - 1].fileName = currentFile;
+              }
+            }
             
-            newChatHistory[newChatHistory.length - 1].sources = cleanedSources;
-            console.log("Cleaned sources:", cleanedSources);
-          }
-          
-          // Store standalone fileName and pageNo for fallback
-          if (response.data.fileName) {
-            let fileName = response.data.fileName;
-            if (fileName && fileName.includes('/')) {
-              fileName = fileName.split('/').pop();
+            if (response.data.pageNo !== undefined) {
+              // Ensure page number starts from 1 (not 0)
+              let pageNo = parseInt(String(response.data.pageNo).replace(/\D/g, ''), 10);
+              // If pageNo is 0, change to 1
+              if (pageNo === 0) pageNo = 1;
+              newChatHistory[newChatHistory.length - 1].pageNo = pageNo;
+            } else {
+              // Default to page 1 if not specified
+              newChatHistory[newChatHistory.length - 1].pageNo = 1;
             }
-            newChatHistory[newChatHistory.length - 1].fileName = fileName;
-          } else {
-            // Use current file if fileName is not in response
-            const currentFile = sessionStorage.getItem("currentFile");
-            if (currentFile) {
-              newChatHistory[newChatHistory.length - 1].fileName = currentFile;
-            }
-          }
-          
-          if (response.data.pageNo !== undefined) {
-            // Ensure page number starts from 1 (not 0)
-            let pageNo = parseInt(String(response.data.pageNo).replace(/\D/g, ''), 10);
-            // If pageNo is 0, change to 1
-            if (pageNo === 0) pageNo = 1;
-            newChatHistory[newChatHistory.length - 1].pageNo = pageNo;
-          } else {
-            // Default to page 1 if not specified
-            newChatHistory[newChatHistory.length - 1].pageNo = 1;
           }
           
           newChatHistory[newChatHistory.length - 1].loading = false;

@@ -211,7 +211,7 @@ const ChatHistory = ({ chat, index, outputLanguage, loadSessionDocument }) => {
             <div className="message-footer">
               {/* Reference section on the left */}
               <div className="reference-section">
-                {getSources().length > 0 && getSources().some(source => source.fileName.toLowerCase().endsWith('.pdf')) && (
+                {getSources().length > 0  && (
                   <div style={styles.referencesWrapper}>
                     <div style={styles.referenceLabel}>
                       References

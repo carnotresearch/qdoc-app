@@ -389,3 +389,13 @@ body.dark-mode .control-btn:hover {
 .control-btn:active {
   transform: translateY(0);
 }
+
+/* Add this to your main CSS file */
+@media (max-width: 767px) {
+  body {
+    overflow: hidden;
+    height: 100%;
+    position: fixed;
+    width: 100%;
+  }
+}
