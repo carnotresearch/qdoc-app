@@ -39,6 +39,24 @@ function ChatContent({
     }
   }, [chatHistory]);
 
+  // Simple loadSessionDocument function for free trial mode
+  const loadSessionDocument = (sessionId, fileName) => {
+    // For free trial, we just log the reference click
+    console.log(`Reference clicked in free trial mode: ${fileName}`);
+    
+    // If needed, we can still set the current file in session storage
+    // but this is probably already set when uploading the file
+    if (fileName) {
+      sessionStorage.setItem("currentFile", fileName);
+    }
+    
+    // Find the PDF viewer container and scroll to it
+    const fileViewer = document.querySelector(".file-viewer");
+    if (fileViewer) {
+      fileViewer.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
   return (
     <div className="chat-content">
       <div className="chat-history" ref={chatHistoryRef}>
@@ -82,19 +100,14 @@ function ChatContent({
           </div>
         )}
         {chatHistory.map((chat, index) => (
-  <ChatHistory
-    chat={chat}
-    index={index}
-    outputLanguage={outputLanguage}
-    key={index}
-    loadSessionDocument={(sessionId, fileName) => {
-      // Simple implementation for free trial mode
-      console.log(`Reference clicked: ${fileName}, page: ${chat.pageNo || 1}`);
-      // Store these values in session storage so they're available if needed
-      sessionStorage.setItem("currentFile", fileName);
-    }}
-  />
-))}
+          <ChatHistory
+            chat={chat}
+            index={index}
+            outputLanguage={outputLanguage}
+            key={index}
+            loadSessionDocument={loadSessionDocument}
+          />
+        ))}
       </div>
       <MessageInput
         inputLanguage={inputLanguage}

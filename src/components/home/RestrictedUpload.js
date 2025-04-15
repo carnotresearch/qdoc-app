@@ -51,8 +51,16 @@ const RestrictedUpload = ({ isLandingPage }) => {
       try {
         const fingerprint = sessionStorage.getItem("fingerprint");
         const filesArray = Array.from(files);
+        
+        // Sanitize filenames by replacing non-alphanumeric chars with underscores
+        // This matches the sanitization done in Sidebar.js
+        const sanitizedFiles = filesArray.map(file => {
+          const sanitizedName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
+          return new File([file], sanitizedName, { type: file.type });
+        });
+        
         const formData = new FormData();
-        filesArray.forEach((file) => formData.append("files", file));
+        sanitizedFiles.forEach((file) => formData.append("files", file));
         formData.append("fingerprint", fingerprint);
 
         const response = await axios.post(
@@ -60,6 +68,7 @@ const RestrictedUpload = ({ isLandingPage }) => {
           formData,
           { headers: { "Content-Type": "multipart/form-data" } }
         );
+        
         if (
           response.data.message &&
           response.data.message === "No data was extracted!"
@@ -67,7 +76,13 @@ const RestrictedUpload = ({ isLandingPage }) => {
           alert("Kindly login to upload scanned documents");
           return;
         }
-        setFiles(filesArray);
+        
+        // Store the sanitized files in context
+        setFiles(sanitizedFiles);
+        
+        // Store the current filename in session storage for reference
+        sessionStorage.setItem("currentFile", sanitizedFiles[0].name);
+        
       } catch (error) {
         console.error("Error uploading file:", error);
       } finally {
