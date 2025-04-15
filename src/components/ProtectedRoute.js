@@ -3,7 +3,7 @@ import { Navigate } from "react-router-dom";
 
 function isWithinExpiryTime(expiryTime) {
   const currentTime = Date.now();
-  return currentTime <= expiryTime;
+  return currentTime <= parseInt(expiryTime);
 }
 
 const ProtectedRoute = ({ children }) => {

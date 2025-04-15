@@ -72,6 +72,9 @@ const RestrictedUpload = ({ isLandingPage }) => {
         console.error("Error uploading file:", error);
       } finally {
         sessionStorage.setItem("trialUsed", "true");
+        // Set 30-minute timeout for free trial
+        const trialExpiryTime = Date.now() + 30 * 60 * 1000; // 30 minutes
+        sessionStorage.setItem("freeTrialExpiryTime", trialExpiryTime.toString());
         setIsUploading(false);
       }
     } else {

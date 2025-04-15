@@ -29,6 +29,43 @@ function App() {
     document.body.classList.toggle("dark-mode", darkMode);
   }, [darkMode]);
 
+  // Check session validity periodically
+  useEffect(() => {
+    // Check if user is logged in
+    const token = sessionStorage.getItem("token");
+    if (token) {
+      setIsLoggedIn(true);
+    }
+
+    // Setup interval to check session timeouts
+    const checkSessionInterval = setInterval(() => {
+      // Check logged-in user timeout
+      const expiryTime = sessionStorage.getItem("expiryTime");
+      if (expiryTime && Date.now() > parseInt(expiryTime)) {
+        // Session expired, logout user
+        sessionStorage.removeItem("token");
+        sessionStorage.removeItem("expiryTime");
+        sessionStorage.removeItem("paymentStatus");
+        sessionStorage.removeItem("answerMode");
+        setIsLoggedIn(false);
+        window.location.href = "/login";
+      }
+
+      // Check free trial timeout
+      const trialUsed = sessionStorage.getItem("trialUsed");
+      const freeTrialExpiryTime = sessionStorage.getItem("freeTrialExpiryTime");
+      if (trialUsed && freeTrialExpiryTime && Date.now() > parseInt(freeTrialExpiryTime)) {
+        // Free trial expired, reset session
+        sessionStorage.removeItem("freeTrialExpiryTime");
+        sessionStorage.removeItem("fingerprint");
+        sessionStorage.removeItem("trialUsed");
+        window.location.reload();
+      }
+    }, 60000); // Check every minute
+
+    return () => clearInterval(checkSessionInterval);
+  }, []);
+
   return (
     <FileProvider>
       <PageViewProvider>
