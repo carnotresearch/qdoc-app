@@ -161,11 +161,11 @@ const ChatHistory = ({ chat, index, outputLanguage, loadSessionDocument }) => {
       return chat.sources;
     }
     
-    // Fallback: If sources is empty array or undefined but we have fileName and pageNo fields
-    if (chat.fileName && chat.pageNo !== undefined) {
-      console.log("Sources empty, using standalone fileName and pageNo");
-      return [{ fileName: chat.fileName, pageNo: chat.pageNo }];
-    }
+    // // Fallback: If sources is empty array or undefined but we have fileName and pageNo fields
+    // if (chat.fileName && chat.pageNo !== undefined) {
+    //   console.log("Sources empty, using standalone fileName and pageNo");
+    //   return [{ fileName: chat.fileName, pageNo: chat.pageNo }];
+    // }
     
     return [];
   };

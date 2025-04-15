@@ -181,13 +181,12 @@ function Sidebar({
     }
   
     // Sanitize filenames - replace spaces with underscores
-    const sanitizedFiles = filesArray.map(file => {
-      if (!file.name.includes(' ')) return file;
-      
-      // Create a new file with sanitized name (replace spaces with underscores)
-      const sanitizedName = file.name.replace(/\s+/g, '_');
-      return new File([file], sanitizedName, { type: file.type });
-    });
+   // Fix for handleFileUpload
+const sanitizedFiles = filesArray.map(file => {
+  // Always sanitize the filename, not just when it includes spaces
+  const sanitizedName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
+  return new File([file], sanitizedName, { type: file.type });
+});
   
     // Calculate the total size for the provided files
     const size = sanitizedFiles.reduce((total, file) => total + file.size, 0);
@@ -273,13 +272,12 @@ function Sidebar({
     const newFilesArray = Array.from(newFiles);
     
     // Sanitize filenames - replace spaces with underscores
-    const sanitizedFiles = newFilesArray.map(file => {
-      if (!file.name.includes(' ')) return file;
-      
-      // Create a new file with sanitized name (replace spaces with underscores)
-      const sanitizedName = file.name.replace(/\s+/g, '_');
-      return new File([file], sanitizedName, { type: file.type });
-    });
+    // Fix for handleFileUpload
+const sanitizedFiles = newFilesArray.map(file => {
+  // Always sanitize the filename, not just when it includes spaces
+  const sanitizedName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
+  return new File([file], sanitizedName, { type: file.type });
+});
     
     setIsUploading(true);
     const sessionId = latestSessionId || sessionStorage.getItem("sessionId");
