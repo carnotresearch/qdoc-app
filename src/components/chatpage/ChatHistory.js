@@ -127,17 +127,23 @@ const ChatHistory = ({ chat, index, outputLanguage, loadSessionDocument }) => {
   // Handle viewing a specific page in a PDF
   const handleViewPage = async (filename, pageNo) => {
     // Check if the file is a PDF by looking at the extension
-  const fileExtension = filename.split('.').pop().toLowerCase();
-  
-  // Only proceed for PDF files, return early for all other file types
-  // if (fileExtension !== 'pdf') {
-  //   console.log(`File ${filename} is not a PDF. Page navigation is only supported for PDF files.`);
-  //   return;
-  // }
+    const fileExtension = filename.split('.').pop().toLowerCase();
+    
+    // If filename is different than current file, load it first
     if (filename !== sessionStorage.getItem("currentFile")) {
       await loadSessionDocument(sessionStorage.getItem("sessionId"), filename);
+    } else {
+      // If on mobile, manually trigger tab switch since loadSessionDocument won't run
+      const isMobile = window.innerWidth <= 768;
+      if (isMobile) {
+        // Set mobile view to file
+        const event = new CustomEvent('switchToFileView');
+        window.dispatchEvent(event);
+      }
     }
-    // Add an artificial delay to ensure state updates are processed
+    
+    // Use viewPage from context to navigate to specific page
+    // Add a longer delay to ensure file viewer is visible and document is rendered
     setTimeout(() => {
       viewPage(filename, pageNo);
 
@@ -146,7 +152,7 @@ const ChatHistory = ({ chat, index, outputLanguage, loadSessionDocument }) => {
       if (fileViewer) {
         fileViewer.scrollIntoView({ behavior: "smooth", block: "start" });
       }
-    }, 100);
+    }, 300); // Increased delay to allow file viewer to render
   };
 
   // Get sources from the chat message
@@ -160,12 +166,6 @@ const ChatHistory = ({ chat, index, outputLanguage, loadSessionDocument }) => {
       console.log("Using sources array:", chat.sources);
       return chat.sources;
     }
-    
-    // // Fallback: If sources is empty array or undefined but we have fileName and pageNo fields
-    // if (chat.fileName && chat.pageNo !== undefined) {
-    //   console.log("Sources empty, using standalone fileName and pageNo");
-    //   return [{ fileName: chat.fileName, pageNo: chat.pageNo }];
-    // }
     
     return [];
   };

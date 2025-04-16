@@ -400,4 +400,56 @@ body.dark-mode .control-btn:hover {
   }
 }
 
+@media (max-width: 768px) {
+  .chat-container.mobile-screen .chat-content {
+    position: absolute;
+    left: 60px; /* Start after the collapsed sidebar */
+    right: 0;
+    top: 130px; /* Position below tabs */
+    width: calc(100% - 60px); /* Adjust width to account for sidebar */
+    height: auto;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Adjust chat history height for mobile */
+  .chat-container.mobile-screen .chat-history {
+    flex: 1;
+    max-height: calc(100vh - 340px);
+    overflow-y: auto;
+    margin-bottom: 0;
+  }
+  
+  /* Position the input controls at the bottom with proper spacing */
+  .chat-container.mobile-screen .mobile-chat-controls {
+    position: fixed;
+    bottom: 60px; /* Move up from bottom by 60px */
+    left: 60px;
+    right: 0;
+    background: white;
+    padding: 10px;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+    z-index: 1000;
+  }
+  
+  /* Reduce spacing for download button on mobile */
+  .chat-container.mobile-screen .download-button-container {
+    margin: 5px 0;
+  }
+  
+  /* Customize message input for mobile */
+  .chat-container.mobile-screen .message-input-container {
+    margin-bottom: 5px;
+    padding-bottom: 0;
+  }
+  
+  /* Fix scrolling issues on mobile */
+  .chat-container.mobile-screen {
+    overflow: hidden;
+    height: 100vh;
+  }
+}
+
 

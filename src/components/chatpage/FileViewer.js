@@ -4,7 +4,7 @@ import { renderAsync } from "docx-preview";
 import * as XLSX from "xlsx";
 import "../../styles/fileViewer.css";
 
-function FileViewer({ files }) {
+function FileViewer({ files, style, className = '' }) {
   const [fileContents, setFileContents] = useState([]);
   const docxRefs = useRef([]);
 
@@ -105,14 +105,14 @@ function FileViewer({ files }) {
   }
 
   return (
-    <div className="file-viewer">
+    <div className={`file-viewer ${className}`} style={style}>
       {fileContents.map((file, index) => (
         <div key={index} className="file-page" style={{ color: "black" }}>
-          <h4>{file.name}</h4>
+          <h4 style={{ wordBreak: "break-word", maxWidth: "100%" }}>{file.name}</h4>
           {file.type === "pdf" ? (
             <>
               <div style={{ marginBottom: '10px' }}>
-                <small style={{ backgroundColor: '#f8f9fa', padding: '3px 6px', borderRadius: '3px' }}>
+                <small style={{ backgroundColor: '#f8f9fa', padding: '3px 6px', borderRadius: '3px', display: 'inline-block', maxWidth: '100%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                   Currently viewing: {file.name}
                 </small>
               </div>
@@ -125,24 +125,28 @@ function FileViewer({ files }) {
             />
           ) : file.type === "text" ? (
             <div className="doc-page">
-              <div>{file.content}</div>
+              <div style={{ whiteSpace: 'pre-wrap', overflowWrap: 'break-word', wordBreak: 'break-word' }}>{file.content}</div>
             </div>
           ) : file.type === "spreadsheet" ? (
             <div className="spreadsheet-viewer">
               <p className="preview-message">
                 This is a preview of the file displaying the first 50 rows.
               </p>
-              <table border="1">
-                <tbody>
-                  {file.content.map((row, rowIndex) => (
-                    <tr key={rowIndex}>
-                      {row.map((cell, cellIndex) => (
-                        <td key={cellIndex}>{cell}</td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <div style={{ overflowX: 'auto', maxWidth: '100%' }}>
+                <table border="1">
+                  <tbody>
+                    {file.content.map((row, rowIndex) => (
+                      <tr key={rowIndex}>
+                        {row.map((cell, cellIndex) => (
+                          <td key={cellIndex} style={{ maxWidth: '150px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                            {cell}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           ) : null}
         </div>

@@ -23,23 +23,79 @@
   border-radius: 5px;
   background-color: #ffffff;
   overflow-wrap: break-word;
+  max-width: 100%;
 }
 
+/* Only hide by default on mobile - can be overridden with inline styles */
 @media (max-width: 992px) {
   .file-viewer {
-    display: none !important; /* Completely removes it */
-    visibility: hidden; /* Ensures it's not visible */
-    width: 0;
-    height: 0;
-    overflow: hidden;
+    display: none; /* Can be overridden by inline styles */
   }
 
   #resizer {
     display: none !important; /* Hide the resizer */
   }
-
+  
+  /* Special class for mobile view when file viewer is visible */
+  .file-viewer.mobile-view {
+    display: flex !important;
+    position: fixed;
+    top: 130px; /* Adjusted for tab height */
+    left: 60px; /* Leave space for collapsed sidebar */
+    right: 0;
+    bottom: 0;
+    width: calc(100% - 60px) !important; /* Adjust width to account for sidebar */
+    height: calc(100vh - 130px); /* Adjust height to account for tabs */
+    z-index: 900;
+    background: white;
+    padding: 15px;
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+  }
+  
+  /* Mobile specific overrides to prevent horizontal scrolling */
+  .file-viewer.mobile-view .file-page {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 10px 5px;
+    overflow-x: hidden;
+  }
+  
+  .file-viewer.mobile-view .pdf-viewer {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0;
+  }
+  
+  .file-viewer.mobile-view .pdf-viewer canvas {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  
+  .file-viewer.mobile-view .doc-page {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden;
+  }
+  
+  /* Make tables fit mobile screen */
+  .file-viewer.mobile-view .spreadsheet-viewer {
+    width: 100%;
+    overflow-x: auto; /* Allow scrolling for tables only if needed */
+  }
+  
+  .file-viewer.mobile-view .spreadsheet-viewer table {
+    width: 100%;
+    table-layout: fixed; /* Force table to respect container width */
+  }
+  
+  .file-viewer.mobile-view .spreadsheet-viewer td,
+  .file-viewer.mobile-view .spreadsheet-viewer th {
+    word-break: break-word; /* Break long words */
+    max-width: 100px; /* Limit cell width */
+    overflow: hidden;
+    text-overflow: ellipsis; /* Show ellipsis for overflow text */
+  }
 }
-
 
 .doc-page {
   border: 1px solid #ddd;
@@ -62,11 +118,14 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  max-width: 100%;
 }
 
 .pdf-viewer canvas {
+  max-width: 100%; /* Ensure canvas fits within viewport */
   width: calc(50% - 20px); /* Adjust width for two columns on smaller screens */
   margin: 10px; /* Margin around canvas elements */
+  height: auto !important; /* Always maintain aspect ratio */
 }
 
 /* PDF page highlighting */

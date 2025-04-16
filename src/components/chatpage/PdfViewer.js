@@ -10,56 +10,58 @@ const PdfViewer = React.memo(({ pdfUrl, filename }) => {
   const { pageToView, highlightPage, counter } = usePageView();
   const pageRefs = useRef({});
   const containerRef = useRef(null);
-
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  
+  // Update isMobile state on window resize
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+  
   // Debug logging for props and context
   useEffect(() => {
     console.log("[DEBUG] PdfViewer props:", { pdfUrl, filename });
     console.log("[DEBUG] PageView context:", { pageToView, highlightPage });
   }, [pdfUrl, filename, pageToView, highlightPage]);
 
-  // Handle page navigation when pageToView changes
-  useEffect(() => {
-    if (pageToView && pageToView.pageNumber) {
-      console.log("[DEBUG] Processing navigation request:", pageToView);
-      
-      // For testing: if we're using the test document or the filenames match
-      const isMatchingFile = pageToView.filename === filename || 
-                           (pageToView.filename === "document.pdf" && !filename) ||
-                           true; // Force matching for testing
-      
-      if (isMatchingFile) {
-        console.log(`[DEBUG] Navigating to page ${pageToView.pageNumber}`);
-        
-        // Scroll to the page with a longer delay to ensure the document is rendered
-        setTimeout(() => {
-          const pageElement = pageRefs.current[pageToView.pageNumber];
-          console.log("[DEBUG] Page element:", pageElement);
-          console.log("[DEBUG] Container element:", containerRef.current);
-          
-          if (pageElement && containerRef.current) {
-            console.log("[DEBUG] Scrolling to page", pageToView.pageNumber);
-            pageElement.scrollIntoView({ behavior: "smooth", block: "start" });
-            
-            // Apply a temporary highlight effect with inline styles as well
-            pageElement.style.border = "4px solid #4CAF50";
-            pageElement.style.boxShadow = "0 0 15px rgba(76, 175, 80, 0.7)";
-            
-            setTimeout(() => {
-              pageElement.style.border = "";
-              pageElement.style.boxShadow = "";
-            }, 2000);
-          } else {
-            console.error("[DEBUG] Could not find page element to scroll to");
-          }
-        }, 500); // Increased timeout for more reliable scrolling
-      }
-    }
-  }, [pageToView, filename, counter]);
-
-  const onDocumentLoadSuccess = useCallback(({ numPages }) => {
-    console.log("Document loaded, number of pages:", numPages);
+  const onDocumentLoadSuccess = ({ numPages }) => {
+    console.log(`[DEBUG] Document loaded with ${numPages} pages`);
     setNumPages(numPages);
+    
+    // If there's a pageToView, scroll to it after a slight delay
+    if (pageToView && pageToView.filename === filename) {
+      setTimeout(() => {
+        scrollToPage(pageToView.pageNumber);
+      }, 300);
+    }
+  };
+  
+  const scrollToPage = useCallback((pageNumber) => {
+    console.log(`[DEBUG] Attempting to scroll to page ${pageNumber}`);
+    const pageElement = pageRefs.current[pageNumber];
+    
+    if (pageElement) {
+      console.log(`[DEBUG] Found element for page ${pageNumber}, scrolling...`);
+      pageElement.scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'start'
+      });
+    } else {
+      console.log(`[DEBUG] No element found for page ${pageNumber}`);
+    }
   }, []);
+
+  // Watch for changes to pageToView and scroll when needed
+  useEffect(() => {
+    if (pageToView && pageToView.filename === filename && numPages > 0) {
+      console.log(`[DEBUG] Page to view changed: ${pageToView.pageNumber} in ${filename}`);
+      scrollToPage(pageToView.pageNumber);
+    }
+  }, [pageToView, filename, numPages, scrollToPage, counter]);
 
   return (
     <div className="pdf-viewer" ref={containerRef}>
@@ -90,10 +92,11 @@ const PdfViewer = React.memo(({ pdfUrl, filename }) => {
               style={{ 
                 margin: '10px 0', 
                 padding: '5px',
-                scrollMarginTop: '50px' // Add scroll margin to improve scrollIntoView behavior
+                scrollMarginTop: '50px', // Add scroll margin to improve scrollIntoView behavior
+                width: '100%'
               }}
             >
-              <div style={{ position: 'relative' }}>
+              <div style={{ position: 'relative', width: '100%', display: 'flex', justifyContent: 'center' }}>
                 {/* Page number indicator for debugging */}
                 <div style={{ 
                   position: 'absolute', 
@@ -110,6 +113,8 @@ const PdfViewer = React.memo(({ pdfUrl, filename }) => {
                 <Page 
                   pageNumber={pageNumber} 
                   renderTextLayer={false}
+                  width={isMobile ? window.innerWidth - 40 : undefined} // Set fixed width on mobile
+                  scale={isMobile ? 1.0 : undefined} // Adjust scale to fit
                 />
               </div>
             </div>

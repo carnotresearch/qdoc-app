@@ -5,7 +5,7 @@ import React, {
   useContext,
   useCallback,
 } from "react";
-import { FaDownload } from "react-icons/fa";
+import { FaDownload, FaComments, FaFileAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 // components
@@ -39,6 +39,8 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
   const [isScannedDocument, setIsScannedDocument] = useState(false);
   const navigate = useNavigate();
   const isMobileScreen = window.innerWidth <= 768;
+  // Add state to track mobile view mode (file or chat)
+  const [mobileViewMode, setMobileViewMode] = useState('chat');
   const scannedDocumentWarning = (documentName) =>
     `Unfortunately we couldn't read document: '${documentName}', as it seems to be a scanned document. Kindly upload a readable document.`;
 
@@ -114,6 +116,19 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
     fetchSessions();
   }, [fetchSessions]);
 
+  // Listen for custom event to switch to file view
+  useEffect(() => {
+    const handleSwitchToFileView = () => {
+      setMobileViewMode('file');
+    };
+    
+    window.addEventListener('switchToFileView', handleSwitchToFileView);
+    
+    return () => {
+      window.removeEventListener('switchToFileView', handleSwitchToFileView);
+    };
+  }, []);
+
   useEffect(() => {
     setChatHistory([]);
     const handleResize = () => {
@@ -121,6 +136,8 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
         setSidebarCollapsed(true);
       } else {
         setSidebarCollapsed(false);
+        // Reset to default view when switching to desktop
+        setMobileViewMode('chat');
       }
     };
     handleResize();
@@ -160,7 +177,10 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
       setSidebarCollapsed(true);
     }
     
-    messageInputRef.current.focus();
+    // Add null check before focusing
+    if (messageInputRef.current) {
+      messageInputRef.current.focus();
+    }
   }, [files, setIsLoggedIn, isFileUpdated]);
 
   useEffect(() => {
@@ -170,7 +190,7 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
   }, [chatHistory]);
 
   // Load a document from S3
-  const loadSessionDocument = async (sessionId, fileName) => {
+  const loadSessionDocument = async (sessionId, fileName, pageNo = null) => {
     const token = sessionStorage.getItem("token");
     if (!token) {
       alert("User session is expired!");
@@ -190,10 +210,20 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
       setFiles([file]);
       sessionStorage.setItem("currentFile", fileName);
       
+      // Store page number if provided
+      if (pageNo) {
+        sessionStorage.setItem("currentPageNo", pageNo);
+      }
+      
       // Only show "files uploaded" message for new uploads, not reference clicks
       if (isFromReferenceClick) {
         setIsFileUpdated(false);
         console.log("Reference click detected - not showing upload message");
+      }
+      
+      // Only switch to file view on mobile - do NOT interfere with page navigation
+      if (isMobileScreen) {
+        setMobileViewMode('file');
       }
     } catch (error) {
       console.error("Error fetching file from S3:", error);
@@ -385,6 +415,7 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
       <div
         ref={sidebarRef} // Attach the ref to the sidebar
         className={`sidebar ${sidebarCollapsed ? "collapsed" : ""}`}
+        style={{ zIndex: 1100 }} // Ensure sidebar appears above tabs and file viewer
       >
         <Button
           variant="secondary"
@@ -407,84 +438,199 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
           />
         )}
       </div>
-      <FileViewer files={files} />
-      <div id="resizer" onMouseDown={resizeMusedown}></div>
-      <div className="chat-content">
-        <div className="chat-history" ref={chatHistoryRef}>
-          <div className="message bot">
-            <div className="message-box">
-              <span className="message-text">
-                <b>Welcome to icarKno-chat</b>
-                <p style={{ marginBottom: "0" }}>
-                  icarKno-chat is a knowledge agent that allows you to query
-                  multiple documents in diverse languages.
-                </p>
-                {files.length > 0 && (
-                  <>
-                    You can interact with the application by typing in questions
-                    such as:
-                    <ul className="custom-list">
-                      {startingQuestions.map((question, index) => (
-                        <li key={index}>
-                          <FontAwesomeIcon
-                            icon={faCheckCircle}
-                            style={iconStyles}
-                          />
-                          {question}
-                        </li>
-                      ))}
-                    </ul>
-                  </>
-                )}
-              </span>
-            </div>
+      
+      {/* Mobile tabs interface - only show on mobile */}
+      {isMobileScreen && (
+        <div 
+          className="mobile-tabs"
+          style={{
+            position: 'fixed',
+            top: '60px',
+            left: '60px', // Leave space for collapsed sidebar
+            right: '0',
+            display: 'flex',
+            zIndex: 1001,
+            background: '#f8f9fa',
+            boxShadow: '0 1px 4px rgba(0,0,0,0.08)',
+            borderRadius: '4px 4px 0 0',
+            margin: '0 5px',
+            overflow: 'hidden'
+          }}
+        >
+          <div 
+            className={`mobile-tab ${mobileViewMode === 'chat' ? 'active' : ''}`}
+            onClick={() => setMobileViewMode('chat')}
+            style={{
+              flex: 1,
+              textAlign: 'center',
+              padding: '12px 5px',
+              fontWeight: '500',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease',
+              color: mobileViewMode === 'chat' ? '#4a4a4a' : '#777',
+              backgroundColor: mobileViewMode === 'chat' ? '#e9ecef' : 'transparent',
+              position: 'relative',
+              borderRight: '1px solid #eee'
+            }}
+          >
+            <span style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center',
+              gap: '6px'
+            }}>
+              <FaComments style={{ fontSize: '16px' }} />
+              <span style={{ marginTop: '0px' }}>Chat</span>
+            </span>
           </div>
-          {chatHistory.map((chat, index) => (
-            <ChatHistory
-              chat={chat}
-              index={index}
-              outputLanguage={outputLanguage}
-              loadSessionDocument={loadSessionDocument}
-              key={index}
-            />
-          ))}
-          {isFileUpdated &&
-            (files.length > 0 ? (
-              <div className="message bot">
-                <div className="message-box">
-                  <span className={"message-text"}>
-                    Your files have been uploaded!
-                  </span>
-                </div>
-              </div>
-            ) : (
-              <div className="message bot">
-                <div className="message-box">
-                  <span className={"message-text"}>
-                    <p>
-                      Kindly upload files using sidebar or Select an existing
-                      knowledge container from the Left Menu.{" "}
-                      <FaChevronCircleLeft
-                        style={{ cursor: "pointer" }}
-                        onClick={() => setSidebarCollapsed(false)}
-                      />
-                    </p>
-                  </span>
-                </div>
-              </div>
-            ))}
+          <div 
+            className={`mobile-tab ${mobileViewMode === 'file' ? 'active' : ''}`}
+            onClick={() => setMobileViewMode('file')}
+            style={{
+              flex: 1,
+              textAlign: 'center',
+              padding: '12px 5px',
+              fontWeight: '500',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease',
+              color: mobileViewMode === 'file' ? '#4a4a4a' : '#777',
+              backgroundColor: mobileViewMode === 'file' ? '#e9ecef' : 'transparent',
+              position: 'relative',
+              borderLeft: '1px solid #eee'
+            }}
+          >
+            <span style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center',
+              gap: '6px'
+            }}>
+              <FaFileAlt style={{ fontSize: '16px' }} />
+              <span style={{ marginTop: '0px' }}>File</span>
+            </span>
+          </div>
         </div>
-        <div className="download-button-container">
-          <button onClick={downloadChat}>
-            <FaDownload /> Download Chat History
-          </button>
-        </div>
-        <MessageInput
-          inputLanguage={inputLanguage}
-          messageInputRef={messageInputRef}
-          handleSendMessage={handleSendMessage}
+      )}
+      
+      {/* Show FileViewer on desktop or if mobile view mode is 'file' */}
+      {(!isMobileScreen || mobileViewMode === 'file') && (
+        <FileViewer 
+          files={files} 
+          style={isMobileScreen && mobileViewMode === 'file' ? {
+            display: 'flex', // Override display:none
+            background: 'white',
+            top: '130px', // Adjust top position to make space for the tabs
+            left: '60px' // Position after sidebar
+          } : {}}
+          className={isMobileScreen && mobileViewMode === 'file' ? 'mobile-view' : ''}
         />
-      </div>
+      )}
+      
+      <div id="resizer" onMouseDown={resizeMusedown}></div>
+      
+      {/* Show chat content on desktop or if mobile view mode is 'chat' */}
+      {(!isMobileScreen || mobileViewMode === 'chat') && (
+        <div className="chat-content" style={isMobileScreen ? {
+          position: 'absolute',
+          top: '130px', // Position below tabs
+          left: '60px', // Position after sidebar
+          width: 'calc(100% - 60px)', // Width equals viewport minus sidebar
+          bottom: 0,
+          paddingBottom: '0px',
+          margin: 0,
+          display: 'flex',
+          flexDirection: 'column'
+        } : {}}>
+          <div className="chat-history" ref={chatHistoryRef} style={isMobileScreen ? {
+            flex: '1 1 auto',
+            height: 'calc(100vh - 340px)', /* Adjusted height for mobile */
+            maxHeight: 'none'
+          } : {}}>
+            <div className="message bot">
+              <div className="message-box">
+                <span className="message-text">
+                  <b>Welcome to icarKno-chat</b>
+                  <p style={{ marginBottom: "0" }}>
+                    icarKno-chat is a knowledge agent that allows you to query
+                    multiple documents in diverse languages.
+                  </p>
+                  {files.length > 0 && (
+                    <>
+                      You can interact with the application by typing in questions
+                      such as:
+                      <ul className="custom-list">
+                        {startingQuestions.map((question, index) => (
+                          <li key={index}>
+                            <FontAwesomeIcon
+                              icon={faCheckCircle}
+                              style={iconStyles}
+                            />
+                            {question}
+                          </li>
+                        ))}
+                      </ul>
+                    </>
+                  )}
+                </span>
+              </div>
+            </div>
+            {chatHistory.map((chat, index) => (
+              <ChatHistory
+                chat={chat}
+                index={index}
+                outputLanguage={outputLanguage}
+                loadSessionDocument={loadSessionDocument}
+                key={index}
+              />
+            ))}
+            {isFileUpdated &&
+              (files.length > 0 ? (
+                <div className="message bot">
+                  <div className="message-box">
+                    <span className={"message-text"}>
+                      Your files have been uploaded!
+                    </span>
+                  </div>
+                </div>
+              ) : (
+                <div className="message bot">
+                  <div className="message-box">
+                    <span className={"message-text"}>
+                      <p>
+                        Kindly upload files using sidebar or Select an existing
+                        knowledge container from the Left Menu.{" "}
+                        <FaChevronCircleLeft
+                          style={{ cursor: "pointer" }}
+                          onClick={() => setSidebarCollapsed(false)}
+                        />
+                      </p>
+                    </span>
+                  </div>
+                </div>
+              ))}
+          </div>
+          <div className="mobile-chat-controls" style={isMobileScreen ? {
+            position: 'relative',
+            bottom: '80px',
+            left: '0',
+            right: '0',
+            zIndex: 900,
+            backgroundColor: '#fff',
+            padding: '10px 0'
+          } : {}}>
+            <div className="download-button-container" style={isMobileScreen ? {marginTop: '5px', marginBottom: '5px'} : {}}>
+              <button onClick={downloadChat}>
+                <FaDownload /> Download Chat History
+              </button>
+            </div>
+            <MessageInput
+              inputLanguage={inputLanguage}
+              messageInputRef={messageInputRef}
+              handleSendMessage={handleSendMessage}
+            />
+          </div>
+        </div>
+      )}
     </Container>
   );
 }
