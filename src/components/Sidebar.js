@@ -181,12 +181,11 @@ function Sidebar({
     }
   
     // Sanitize filenames - replace spaces with underscores
-   // Fix for handleFileUpload
-const sanitizedFiles = filesArray.map(file => {
-  // Always sanitize the filename, not just when it includes spaces
-  const sanitizedName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
-  return new File([file], sanitizedName, { type: file.type });
-});
+    const sanitizedFiles = filesArray.map(file => {
+      // First replace spaces with underscores, then remove all other special characters except alphanumeric, dots, underscores, and hyphens
+      const sanitizedName = file.name.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_.-]/g, '');
+      return new File([file], sanitizedName, { type: file.type });
+    });
   
     // Calculate the total size for the provided files
     const size = sanitizedFiles.reduce((total, file) => total + file.size, 0);
@@ -272,12 +271,11 @@ const sanitizedFiles = filesArray.map(file => {
     const newFilesArray = Array.from(newFiles);
     
     // Sanitize filenames - replace spaces with underscores
-    // Fix for handleFileUpload
-const sanitizedFiles = newFilesArray.map(file => {
-  // Always sanitize the filename, not just when it includes spaces
-  const sanitizedName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
-  return new File([file], sanitizedName, { type: file.type });
-});
+    const sanitizedFiles = newFilesArray.map(file => {
+      // First replace spaces with underscores, then remove all other special characters except alphanumeric, dots, underscores, and hyphens
+      const sanitizedName = file.name.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_.-]/g, '');
+      return new File([file], sanitizedName, { type: file.type });
+    });
     
     setIsUploading(true);
     const sessionId = latestSessionId || sessionStorage.getItem("sessionId");

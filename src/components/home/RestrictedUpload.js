@@ -55,7 +55,8 @@ const RestrictedUpload = ({ isLandingPage }) => {
         // Sanitize filenames by replacing non-alphanumeric chars with underscores
         // This matches the sanitization done in Sidebar.js
         const sanitizedFiles = filesArray.map(file => {
-          const sanitizedName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
+          // First replace spaces with underscores, then remove all other special characters except alphanumeric, dots, underscores, and hyphens
+          const sanitizedName = file.name.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_.-]/g, '');
           return new File([file], sanitizedName, { type: file.type });
         });
         

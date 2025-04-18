@@ -13,6 +13,7 @@ import { FileContext } from "./FileContext";
 import { ttsSupportedLanguages } from "../constant/data";
 import FileViewer from "./chatpage/FileViewer";
 import Sidebar from "./Sidebar";
+import SuggestedQuestions from "./chatpage/SuggestedQuestions";
 // icons and style
 import { FaChevronCircleLeft } from "react-icons/fa";
 import { Button, Container } from "react-bootstrap";
@@ -37,6 +38,7 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
   const [latestSessionId, setLatestSessionId] = useState("");
   const [selectedSessionFiles, setSelectedSessionFiles] = useState({});
   const [isScannedDocument, setIsScannedDocument] = useState(false);
+  const [selectedQuestion, setSelectedQuestion] = useState(""); // New state for selected question
   const navigate = useNavigate();
   const isMobileScreen = window.innerWidth <= 768;
   // Add state to track mobile view mode (file or chat)
@@ -156,6 +158,10 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
       // We add a small delay to ensure files have been rendered
       setTimeout(() => {
         setIsFileUpdated(true);
+        // Set mobile view mode to 'chat' if on mobile
+        if (isMobileScreen) {
+          setMobileViewMode('chat');
+        }
         console.log("Files uploaded event received - showing upload message");
       }, 300);
     };
@@ -221,14 +227,41 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
         console.log("Reference click detected - not showing upload message");
       }
       
-      // Only switch to file view on mobile - do NOT interfere with page navigation
-      if (isMobileScreen) {
+      // Only switch to file view on mobile if it's a reference button click, not for regular uploads
+      if (isMobileScreen && isFromReferenceClick) {
         setMobileViewMode('file');
+      } else if (isMobileScreen) {
+        // For regular uploads on mobile, keep in chat mode
+        setMobileViewMode('chat');
       }
     } catch (error) {
       console.error("Error fetching file from S3:", error);
     }
   };
+
+  // Handle selecting a suggested question
+  const handleQuestionSelect = (question) => {
+    // First reset any previous selection to ensure state change is detected
+    setSelectedQuestion("");
+    
+    // Use setTimeout to ensure the reset happens before setting the new value
+    setTimeout(() => {
+      setSelectedQuestion(question);
+      // Focus the input field after setting the question
+      if (messageInputRef.current) {
+        messageInputRef.current.focus();
+      }
+    }, 10);
+  };
+
+  // Sample fallback questions to use when backend doesn't provide any
+  const fallbackQuestions = [
+    "Can you explain this in more detail?",
+    "What are the key insights from this document?",
+    "How does this relate to industry standards?",
+    "What are the implications of this information?",
+    "Can you provide more examples from the document?"
+  ];
 
   const handleSendMessage = async (message) => {
     setIsFileUpdated(false);
@@ -247,7 +280,8 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
           loading: true,
           timestamp,
           ttsSupport,
-          sources: [], // Initialize sources array
+          sources: [], 
+          suggestedQuestions: [],
         },
       ];
       setChatHistory(newChatHistory);
@@ -285,14 +319,27 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
           console.log("%c Full Response Object:", "color: #ff6600; font-weight: bold;", response.data);
           console.log("%c Answer:", "color: #ff6600; font-weight: bold;", response.data.answer);
           console.log("%c Sources Array:", "color: #ff6600; font-weight: bold;", response.data.sources);
+          console.log("%c Questions Array:", "color: #ff6600; font-weight: bold;", response.data.questions);
           
           // Check if response.data is a string (error message) instead of an object with expected properties
           if (typeof response.data === 'string') {
             // If response is a string, use it directly
             newChatHistory[newChatHistory.length - 1].bot = response.data;
+            // Add fallback questions even for error responses
+            newChatHistory[newChatHistory.length - 1].suggestedQuestions = fallbackQuestions;
           } else if (response.data.answer) {
             // Get the answer from the response object
             newChatHistory[newChatHistory.length - 1].bot = response.data.answer;
+            
+            // Add suggested questions if available, otherwise use fallback questions
+            if (response.data.questions && Array.isArray(response.data.questions) && response.data.questions.length > 0) {
+              newChatHistory[newChatHistory.length - 1].suggestedQuestions = response.data.questions;
+              console.log("Using questions from backend:", response.data.questions);
+            } else {
+              // Use fallback questions when backend doesn't provide any
+              newChatHistory[newChatHistory.length - 1].suggestedQuestions = fallbackQuestions;
+              console.log("Using fallback questions:", fallbackQuestions);
+            }
             
             // Log cleaned filename (remove temp/ prefix)
             const cleanedFileName = response.data.fileName ? 
@@ -363,6 +410,8 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
         }
         newChatHistory[newChatHistory.length - 1].bot =
           "Couldn't fetch response, kindly reload the page.";
+        // Add fallback questions even for error responses
+        newChatHistory[newChatHistory.length - 1].suggestedQuestions = fallbackQuestions;
         newChatHistory[newChatHistory.length - 1].loading = false;
         setChatHistory([...newChatHistory]);
       }
@@ -372,13 +421,6 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
   const downloadChat = () => {
     handleDownloadChat(chatHistory); // Call the function with chatHistory
   };
-
-  const iconStyles = { color: "green", marginRight: "5px" };
-  const startingQuestions = [
-    "Summarise the document.",
-    "Give me any five silent issues highlighted in the document.",
-    "Explain one feature mentioned in the document.",
-  ];
 
   function resizeMusedown(e) {
     document.addEventListener("mousemove", resize);
@@ -556,19 +598,13 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
                   </p>
                   {files.length > 0 && (
                     <>
-                      You can interact with the application by typing in questions
-                      such as:
-                      <ul className="custom-list">
-                        {startingQuestions.map((question, index) => (
-                          <li key={index}>
-                            <FontAwesomeIcon
-                              icon={faCheckCircle}
-                              style={iconStyles}
-                            />
-                            {question}
-                          </li>
-                        ))}
-                      </ul>
+                      <p>You can interact with the application by typing in your questions or clicking on the suggested questions below:</p>
+                      <div style={{ marginTop: "10px" }}>
+                        <SuggestedQuestions
+                          questions={fallbackQuestions}
+                          onQuestionClick={handleQuestionSelect}
+                        />
+                      </div>
                     </>
                   )}
                 </span>
@@ -580,6 +616,7 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
                 index={index}
                 outputLanguage={outputLanguage}
                 loadSessionDocument={loadSessionDocument}
+                onQuestionSelect={handleQuestionSelect}
                 key={index}
               />
             ))}
@@ -627,6 +664,7 @@ function ChatPage({ inputLanguage, outputLanguage, setIsLoggedIn }) {
               inputLanguage={inputLanguage}
               messageInputRef={messageInputRef}
               handleSendMessage={handleSendMessage}
+              selectedQuestion={selectedQuestion}
             />
           </div>
         </div>

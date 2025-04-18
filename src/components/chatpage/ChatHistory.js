@@ -13,6 +13,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import LoadingDots from "./LoadingDots";
 import { usePageView } from "../PageViewContext";
+import SuggestedQuestions from "./SuggestedQuestions";
 
 // Simple and clean reference styles
 const styles = {
@@ -64,10 +65,15 @@ const styles = {
     marginLeft: "8px",
     color: "#268080",
     fontWeight: "500",
+  },
+  suggestedQuestionsContainer: {
+    marginTop: "15px",
+    borderTop: "1px solid rgba(0,0,0,0.05)",
+    paddingTop: "12px",
   }
 };
 
-const ChatHistory = ({ chat, index, outputLanguage, loadSessionDocument }) => {
+const ChatHistory = ({ chat, index, outputLanguage, loadSessionDocument, onQuestionSelect }) => {
   const [currentUtterance, setCurrentUtterance] = useState(null); // currently playing audio
   const [playingIndex, setPlayingIndex] = useState(null); // Index of currently playing response
   const [copiedIndex, setCopiedIndex] = useState(null);
@@ -185,6 +191,11 @@ const ChatHistory = ({ chat, index, outputLanguage, loadSessionDocument }) => {
     return extension ? `${truncatedName}.${extension}` : truncatedName;
   };
 
+  // Handle suggested question click
+  const handleQuestionClick = (question) => {
+    onQuestionSelect(question);
+  };
+
   return (
     <div key={index} className="message-wrapper">
       <div className="message user">
@@ -208,81 +219,99 @@ const ChatHistory = ({ chat, index, outputLanguage, loadSessionDocument }) => {
           </span>
           
           {!chat.loading && (
-            <div className="message-footer">
-              {/* Reference section on the left */}
-              <div className="reference-section">
-                {getSources().length > 0  && (
-                  <div style={styles.referencesWrapper}>
-                    <div style={styles.referenceLabel}>
-                      References
+            <>
+              <div className="message-footer">
+                {/* Reference section on the left */}
+                <div className="reference-section">
+                  {getSources().length > 0  && (
+                    <div style={styles.referencesWrapper}>
+                      <div style={styles.referenceLabel}>
+                        References
+                      </div>
+                      <div style={styles.referencesList}>
+                        {getSources().map((source, idx) => (
+                          <div
+                            key={idx}
+                            style={{
+                              ...styles.referenceItem,
+                              ...(hoveredReference === idx ? styles.referenceItemHover : {})
+                            }}
+                            onClick={() => handleViewPage(source.fileName, source.pageNo)}
+                            title={`View page ${source.pageNo} in ${source.fileName}`}
+                            onMouseEnter={() => setHoveredReference(idx)}
+                            onMouseLeave={() => setHoveredReference(null)}
+                          >
+                            <FontAwesomeIcon icon={faFileAlt} style={styles.referenceIcon} />
+                            <span style={styles.filename}>
+                              {truncateFilename(source.fileName)}
+                            </span>
+                            <span style={styles.pageInfo}>pg: {source.pageNo || 1}</span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                    <div style={styles.referencesList}>
-                      {getSources().map((source, idx) => (
-                        <div
-                          key={idx}
-                          style={{
-                            ...styles.referenceItem,
-                            ...(hoveredReference === idx ? styles.referenceItemHover : {})
-                          }}
-                          onClick={() => handleViewPage(source.fileName, source.pageNo)}
-                          title={`View page ${source.pageNo} in ${source.fileName}`}
-                          onMouseEnter={() => setHoveredReference(idx)}
-                          onMouseLeave={() => setHoveredReference(null)}
+                  )}
+                </div>
+                
+                {/* Audio and copy controls - position based on whether references exist */}
+                <div className="controls-section" style={{ 
+                  marginLeft: getSources().length > 0 ? 'auto' : '0',
+                  justifyContent: getSources().length > 0 ? 'flex-end' : 'flex-start',
+                  marginRight: getSources().length > 0 ? '0' : 'auto'
+                }}>
+                  {chat.ttsSupport &&
+                    (playingIndex === index ? (
+                      <>
+                        <Button
+                          onClick={() => handleSpeechOutput(chat.bot, "pause", index)}
+                          variant="link"
+                          className="control-btn"
                         >
-                          <FontAwesomeIcon icon={faFileAlt} style={styles.referenceIcon} />
-                          <span style={styles.filename}>
-                            {truncateFilename(source.fileName)}
-                          </span>
-                          <span style={styles.pageInfo}>pg: {source.pageNo || 1}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
+                          <FontAwesomeIcon icon={faPause} />
+                        </Button>
+                        <Button
+                          onClick={() => handleSpeechOutput(chat.bot, "restart", index)}
+                          variant="link"
+                          className="control-btn"
+                        >
+                          <FontAwesomeIcon icon={faRedo} />
+                        </Button>
+                      </>
+                    ) : (
+                      <>
+                        <Button
+                          onClick={() => handleSpeechOutput(chat.bot, "play", index)}
+                          variant="link"
+                          className="control-btn"
+                        >
+                          <FontAwesomeIcon icon={faPlay} />
+                        </Button>
+                      </>
+                    ))}
+                  <Button
+                    onClick={() => handleCopy(chat.bot, index)}
+                    variant="link"
+                    className="control-btn"
+                  >
+                    {copiedIndex === index ? (
+                      <FontAwesomeIcon icon={faCheck} />
+                    ) : (
+                      <FontAwesomeIcon icon={faCopy} />
+                    )}
+                  </Button>
+                </div>
               </div>
               
-              {/* Audio and copy controls on the right */}
-              <div className="controls-section">
-                {chat.ttsSupport &&
-                  (playingIndex === index ? (
-                    <>
-                      <Button
-                        onClick={() => handleSpeechOutput(chat.bot, "pause", index)}
-                        variant="link"
-                        className="control-btn"
-                      >
-                        <FontAwesomeIcon icon={faPause} />
-                      </Button>
-                      <Button
-                        onClick={() => handleSpeechOutput(chat.bot, "restart", index)}
-                        variant="link"
-                        className="control-btn"
-                      >
-                        <FontAwesomeIcon icon={faRedo} />
-                      </Button>
-                    </>
-                  ) : (
-                    <Button
-                      onClick={() => handleSpeechOutput(chat.bot, "play", index)}
-                      variant="link"
-                      className="control-btn"
-                    >
-                      <FontAwesomeIcon icon={faPlay} />
-                    </Button>
-                  ))}
-                <Button
-                  onClick={() => handleCopy(chat.bot, index)}
-                  variant="link"
-                  className="control-btn"
-                >
-                  {copiedIndex === index ? (
-                    <FontAwesomeIcon icon={faCheck} />
-                  ) : (
-                    <FontAwesomeIcon icon={faCopy} />
-                  )}
-                </Button>
-              </div>
-            </div>
+              {/* Suggested Questions section - moved outside of message-footer */}
+              {chat.suggestedQuestions && chat.suggestedQuestions.length > 0 && (
+                <div style={styles.suggestedQuestionsContainer}>
+                  <SuggestedQuestions 
+                    questions={chat.suggestedQuestions} 
+                    onQuestionClick={handleQuestionClick} 
+                  />
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>

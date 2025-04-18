@@ -11,12 +11,20 @@ const MessageInput = ({
   messageInputRef,
   handleSendMessage,
   handleInputFocus,
+  selectedQuestion,
 }) => {
   const [showMicrophone, setShowMicrophone] = useState(true);
   const sttSupportedLanguagesRef = useRef(sttSupportedLanguages);
   const [recognizing, setRecognizing] = useState(false); // voice recognizer
   const [userQuery, setUserQuery] = useState(""); // input query
   const recognition = useRef(null);
+
+  // Update the input field when a suggested question is selected
+  useEffect(() => {
+    if (selectedQuestion) {
+      setUserQuery(selectedQuestion);
+    }
+  }, [selectedQuestion]);
 
   useEffect(() => {
     setShowMicrophone(
